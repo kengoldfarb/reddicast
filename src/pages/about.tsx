@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 
-import React from 'react'
+import packageInfo from '../../package.json'
 import Head from 'next/head'
 import Link from 'next/link'
+import React from 'react'
 import { AiOutlineGithub } from 'react-icons/ai'
-import packageInfo from '../../package.json'
 const VERSION = packageInfo.version
 const link = 'text-th-link hover:underline hover:text-th-linkHover '
 const AboutPage = ({ changelog }) => {

@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 
-import React, { useEffect, useState } from 'react'
+import packageInfo from '../../package.json'
 import Head from 'next/head'
 import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
 import { AiOutlineGithub } from 'react-icons/ai'
-import packageInfo from '../../package.json'
-const VERSION = packageInfo.version
-const link = 'text-th-link hover:underline hover:text-th-linkHover '
+const _VERSION = packageInfo.version
+const _link = 'text-th-link hover:underline hover:text-th-linkHover '
 import { useCheckSigner, useToken } from '@farsign/hooks'
 let QRCode
 if (typeof window !== 'undefined') {
@@ -16,7 +16,7 @@ if (typeof window !== 'undefined') {
 const CLIENT_NAME = 'Feddit'
 
 const LoginPage: React.FC = () => {
-	const [token, setToken] = useToken(CLIENT_NAME)
+	const [token, _setToken] = useToken(CLIENT_NAME)
 	const [isConnected] = useCheckSigner(CLIENT_NAME)
 	const [qrcode, setQRCode] = useState<undefined | any>()
 
@@ -60,7 +60,7 @@ const LoginPage: React.FC = () => {
 			<div className='h-full text-justify text-th-text '>
 				<div className='flex flex-col justify-center max-w-xl min-h-full gap-4 mx-auto space-y-1 overflow-y-scroll scrollbar-none '>
 					<h2>Login With Warpcast</h2>
-					<div id='qr-login'></div>
+					<div id='qr-login' />
 				</div>
 			</div>
 		</div>

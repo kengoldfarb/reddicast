@@ -1,10 +1,10 @@
+import { useSubsContext } from '../MySubs'
+import { Dialog, Transition } from '@headlessui/react'
+import { useSession } from 'next-auth/react'
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useEffect, useRef, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import { RiArrowGoBackLine } from 'react-icons/ri'
-import { useSession } from 'next-auth/react'
-import { useSubsContext } from '../MySubs'
 import React from 'react'
+import { RiArrowGoBackLine } from 'react-icons/ri'
 
 const MultiManageModal = ({ toOpen, subreddits, multiname = '', mode }) => {
 	const { data: session, status } = useSession()
@@ -56,7 +56,7 @@ const MultiManageModal = ({ toOpen, subreddits, multiname = '', mode }) => {
 			if (subsForMulti.length > 0) {
 				if (session) {
 					setWaiting(true)
-					let res = await createRedditMulti(input, subsForMulti, session.user.name)
+					const res = await createRedditMulti(input, subsForMulti, session.user.name)
 					if (!res) setErr('Feed Already Exists')
 					else {
 						setWaiting(false)
@@ -64,7 +64,7 @@ const MultiManageModal = ({ toOpen, subreddits, multiname = '', mode }) => {
 					}
 				} else {
 					setWaiting(true)
-					let res = await createLocalMulti(input, subsForMulti)
+					const res = await createLocalMulti(input, subsForMulti)
 					if (res) setOpen(false)
 					else {
 						setWaiting(false)
@@ -126,16 +126,14 @@ const MultiManageModal = ({ toOpen, subreddits, multiname = '', mode }) => {
 												{subreddits.map((s, i) => (
 													<div
 														key={s}
-														className={
-															'flex items-center justify-between ' +
-															(i === subreddits.length - 1 && subreddits.length > 5 && ' min-w-full')
-														}
+														className={`flex items-center justify-between ${
+															i === subreddits.length - 1 && subreddits.length > 5 && ' min-w-full'
+														}`}
 													>
 														<div
-															className={
-																'flex items-center px-3 py-1 border rounded-full select-none bg-th-base border-th-border hover:bg-th-highlight cursor-pointer ' +
-																(subsForMulti.includes(s) ? ' ring-2 ring-th-accent border-transparent ' : ' ')
-															}
+															className={`flex items-center px-3 py-1 border rounded-full select-none bg-th-base border-th-border hover:bg-th-highlight cursor-pointer ${
+																subsForMulti.includes(s) ? ' ring-2 ring-th-accent border-transparent ' : ' '
+															}`}
 															onClick={() => toggleSubSelect(s)}
 														>
 															<h1>{s}</h1>
@@ -168,13 +166,12 @@ const MultiManageModal = ({ toOpen, subreddits, multiname = '', mode }) => {
 													<button
 														aria-label='create'
 														onClick={createMultiButton}
-														className={
-															(waiting ? ' opacity-50 ' : ' hover:border-th-borderHighlight ') +
-															' flex-shrink-0 px-2 py-1  border-th-border hover:border-th-borderHighlight hover:bg-th-highlight border rounded-md   focus:outline-none '
-														}
+														className={`${
+															waiting ? ' opacity-50 ' : ' hover:border-th-borderHighlight '
+														} flex-shrink-0 px-2 py-1  border-th-border hover:border-th-borderHighlight hover:bg-th-highlight border rounded-md   focus:outline-none `}
 														type='button'
 													>
-														{`Create`}
+														{'Create'}
 													</button>
 												</div>
 											</form>

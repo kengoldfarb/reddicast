@@ -20,5 +20,5 @@ export default function LoginProfile() {
 				</button>
 			</Link>
 		)
-	return <div className='w-full h-full'></div>
+	return <div className='w-full h-full' />
 }

@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
-import { useMainContext } from '../MainContext'
-import { useSession } from 'next-auth/react'
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
-import { findDuplicates } from '../RedditAPI'
 import { findMediaInfo } from '../../lib/utils'
+import { useMainContext } from '../MainContext'
+import { findDuplicates } from '../RedditAPI'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
+import React, { useState } from 'react'
 
 const useDuplicates = ({ enabled, permalink }) => {
 	const { data: session, status } = useSession()
 	const context: any = useMainContext()
-	const loading = status === 'loading'
+	const _loading = status === 'loading'
 	// const [totalDuplicates, setTotalDuplicates] = useState(0);
 	const fetchDuplicates = async (fetchParams) => {
 		const feedParams = {
@@ -61,7 +61,7 @@ const useDuplicates = ({ enabled, permalink }) => {
 		//   return formatInitialData();
 		// },
 	})
-	const flatPosts = duplicateQuery.data?.pages?.map((p) => p?.posts)?.flat()
+	const flatPosts = duplicateQuery.data?.pages?.flatMap((p) => p?.posts)
 	return {
 		flatPosts,
 		duplicateQuery,

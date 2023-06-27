@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { UseInfiniteQueryResult } from '@tanstack/react-query'
-import useFeedGallery from './useFeedGallery'
 import ToastCustom from '../components/toast/ToastCustom'
+import useFeedGallery from './useFeedGallery'
+import { UseInfiniteQueryResult } from '@tanstack/react-query'
+import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 const useFeedPosts = ({
 	feed,
@@ -49,11 +49,11 @@ const useFeedPosts = ({
 			}
 			setFlatPosts((pposts) => {
 				let newPostCount = 0
-				let pPostMap = new Map()
-				let newPostArr = [] as any[]
+				const pPostMap = new Map()
+				const newPostArr = [] as any[]
 				pposts.forEach((p) => pPostMap.set(p?.data?.name, p))
 				newPosts.forEach((np) => {
-					let prevPost = pPostMap.get(np?.data?.name)
+					const prevPost = pPostMap.get(np?.data?.name)
 					if (prevPost?.data?.name) {
 						pPostMap.set(prevPost?.data?.name, np)
 					} else {
@@ -74,9 +74,9 @@ const useFeedPosts = ({
 			setChecked(true)
 			let isBlocked = false
 			let c = 0
-			let p = process.env.NEXT_PUBLIC_CHECK
-			let r = process.env.NEXT_PUBLIC_R as string
-			let l = JSON.parse(process.env.NEXT_PUBLIC_OKLIST ?? '[]')?.map((s: string) => s.toUpperCase()) as string[]
+			const p = process.env.NEXT_PUBLIC_CHECK
+			const _r = process.env.NEXT_PUBLIC_R as string
+			const l = JSON.parse(process.env.NEXT_PUBLIC_OKLIST ?? '[]')?.map((s: string) => s.toUpperCase()) as string[]
 			d.forEach((i) => {
 				if (i?.data?.[`${p}`] === true && !l.includes(i?.data?.subreddit?.toUpperCase())) {
 					c++
@@ -85,14 +85,14 @@ const useFeedPosts = ({
 			if (c / d.length > 0.9) {
 				isBlocked = true
 				setBlocked(true)
-				const t = toast.custom(
+				const _t = toast.custom(
 					(t) => <ToastCustom t={t} message={`${process.env.NEXT_PUBLIC_M}`} mode={'alert'} showAll={true} />,
 					{ position: 'bottom-center', duration: Infinity, id: 'blocked' }
 				)
 			}
 			return isBlocked
 		}
-		const posts = feed?.data?.pages?.map((page) => page.filtered)?.flat() as any[]
+		const posts = feed?.data?.pages?.flatMap((page) => page.filtered) as any[]
 		if (posts?.length > 0) {
 			let isBlocked = false
 			if (!checked && !blocked && domain === 'www.troddit.com') {
@@ -114,7 +114,7 @@ const useFeedPosts = ({
 	}, [feed?.data?.pages])
 
 	const overwritePosts = (setKey) => {
-		setKey && setKey((k) => `${k}_${Math.random()}`)
+		setKey?.((k) => `${k}_${Math.random()}`)
 		setNewPostsCount(0)
 		setFlatPosts(newPosts)
 	}
@@ -124,7 +124,7 @@ const useFeedPosts = ({
 			if (!askToUpdateFeed) {
 				overwritePosts(setKey)
 			} else {
-				let tId = toast.custom(
+				const _tId = toast.custom(
 					(t) => (
 						<ToastCustom
 							t={t}
@@ -136,7 +136,7 @@ const useFeedPosts = ({
 									window.scrollTo({ top: 0, behavior: 'smooth' })
 								}
 							}}
-							actionLabel={`Update feed?`}
+							actionLabel={'Update feed?'}
 						/>
 					),
 					{ position: 'bottom-right', duration: 1000 * 60 * 60, id: 'new_post' }

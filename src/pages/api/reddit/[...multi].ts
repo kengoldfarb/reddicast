@@ -28,11 +28,11 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
 				const json = await r.json()
 				response.status(r.status).json(json) //.json(await r.json());
 				console.log({ json })
-			} catch (error) {
+			} catch (_error) {
 				//console.log("JSON ERR?", error);
 				response.status(r.status).json({ Status: r.statusText })
 			}
-		} catch (err) {
+		} catch (_err) {
 			//console.log("MULTI ERR?", err);
 			response.status(500).json({ Error: 'Server error' })
 		}

@@ -1,10 +1,10 @@
+import { useMainContext } from '../MainContext'
+import { hideLink } from '../RedditAPI'
+import useMutate from '../hooks/useMutate'
 import { useSession } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
 import { BiHide } from 'react-icons/bi'
 import { VscEye, VscEyeClosed } from 'react-icons/vsc'
-import useMutate from '../hooks/useMutate'
-import { useMainContext } from '../MainContext'
-import { hideLink } from '../RedditAPI'
 
 const HideButton = ({
 	id,
@@ -35,7 +35,7 @@ const HideButton = ({
 
 	const hide = async () => {
 		if (session) {
-			let pstatus = isHidden
+			const _pstatus = isHidden
 			setIsHidden((s) => !s)
 			hideMutation.mutate({ id: id, isHidden: isHidden })
 		} else if (!loading) {
@@ -43,16 +43,13 @@ const HideButton = ({
 		}
 	}
 
-	const eyeStyle =
-		'flex-none   ' +
-		(row || menu ? ' w-4 h-4 ' : ' w-6 h-6 ') +
-		(!isPortrait && !row ? ' md:mr-2 ' : ' ') +
-		(menu ? ' mr-2 ' : '') +
-		(isHidden ? ' text-th-red' : ' ')
+	const eyeStyle = `flex-none   ${row || menu ? ' w-4 h-4 ' : ' w-6 h-6 '}${!isPortrait && !row ? ' md:mr-2 ' : ' '}${
+		menu ? ' mr-2 ' : ''
+	}${isHidden ? ' text-th-red' : ' '}`
 
 	return (
 		<div
-			className={'flex flex-row items-center  ' + (menu ? ' pr-4 pl-2 py-2.5 md:py-1 ' : ' space-x-1 ')}
+			className={`flex flex-row items-center  ${menu ? ' pr-4 pl-2 py-2.5 md:py-1 ' : ' space-x-1 '}`}
 			onClick={(e) => {
 				e.preventDefault()
 				e.stopPropagation()
@@ -60,7 +57,7 @@ const HideButton = ({
 			}}
 		>
 			{(post || row || menu) && (
-				<>{isHidden ? <VscEyeClosed className={eyeStyle + ' mt-0.5'} /> : <VscEye className={eyeStyle} />}</>
+				<>{isHidden ? <VscEyeClosed className={`${eyeStyle} mt-0.5`} /> : <VscEye className={eyeStyle} />}</>
 			)}
 
 			{!isPortrait && (

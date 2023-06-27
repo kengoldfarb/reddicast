@@ -1,6 +1,6 @@
+import { useMainContext } from '../../MainContext'
 import React, { useEffect, useRef, useState } from 'react'
 import { IoMdRefresh } from 'react-icons/io'
-import { useMainContext } from '../../MainContext'
 
 interface IntInputProps {
 	label?: string
@@ -50,7 +50,7 @@ const IntInput = ({ label, subtext, setting, mini = false, rounded = true, style
 					setDefaultValue(10)
 					setInputValue(context?.autoPlayInterval ?? 10)
 					!label && setInputLabel('Auto Play Interval')
-					!subtext && setInputSubtext(`The interval, in seconds, before moving to the next post`)
+					!subtext && setInputSubtext('The interval, in seconds, before moving to the next post')
 					break
 				default:
 					break
@@ -96,13 +96,9 @@ const IntInput = ({ label, subtext, setting, mini = false, rounded = true, style
 
 	return (
 		<form
-			className={
-				'flex gap-2  hover:cursor-pointer ' +
-				(disabled ? ' opacity-50 pointer-events-none  ' : '') +
-				(rounded ? ' rounded-md ' : ' ') +
-				(mini ? '' : ' p-2 hover:bg-th-highlight ') +
-				styles
-			}
+			className={`flex gap-2  hover:cursor-pointer ${disabled ? ' opacity-50 pointer-events-none  ' : ''}${
+				rounded ? ' rounded-md ' : ' '
+			}${mini ? '' : ' p-2 hover:bg-th-highlight '}${styles}`}
 			onSubmit={(e) => e.preventDefault()}
 			onClick={(e) => {
 				e.preventDefault()
@@ -118,7 +114,7 @@ const IntInput = ({ label, subtext, setting, mini = false, rounded = true, style
 				</label>
 			)}
 
-			<div className={'flex flex-col items-end justify-center min-h-full ' + (mini ? '' : ' my-3  ')}>
+			<div className={`flex flex-col items-end justify-center min-h-full ${mini ? '' : ' my-3  '}`}>
 				<div className='relative flex justify-end flex-grow w-20 h-full px-1 text-sm text-right border rounded-md outline-none ring-0 border-th-border bg-th-highlight focus:border-th-borderHighlight'>
 					{defaultValue && (
 						<button

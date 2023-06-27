@@ -1,17 +1,17 @@
-import React from 'react'
+import { numToString, secondsToDate } from '../../../lib/utils'
+import { useMainContext } from '../../MainContext'
+import useRefresh from '../../hooks/useRefresh'
+import Login from '../Login'
+import SubButton from '../SubButton'
+import SubIcon from '../SubIcon'
+import SubOptButton from '../SubOptButton'
+import { useSession } from 'next-auth/react'
 import Image from 'next/legacy/image'
 import Link from 'next/link'
 import router from 'next/router'
+import React from 'react'
 import { useEffect, useState } from 'react'
-import { numToString, secondsToDate } from '../../../lib/utils'
-import { useMainContext } from '../../MainContext'
-import SubButton from '../SubButton'
-import SubOptButton from '../SubOptButton'
 import { BsBoxArrowInUpRight } from 'react-icons/bs'
-import Login from '../Login'
-import SubIcon from '../SubIcon'
-import useRefresh from '../../hooks/useRefresh'
-import { useSession } from 'next-auth/react'
 import { GrRefresh } from 'react-icons/gr'
 import { IoMdRefresh } from 'react-icons/io'
 
@@ -85,33 +85,29 @@ const SubCard = ({
 
 	const main = (
 		<div
-			className={
-				'relative  transition-colors bg-contain border  shadow-md bg-th-post  ' +
-				(tall ? '  ' : ' rounded-lg ') +
-				(tall
+			className={`relative  transition-colors bg-contain border  shadow-md bg-th-post  ${tall ? '  ' : ' rounded-lg '}${
+				tall
 					? ' border-transparent  border-b-th-border '
-					: ' group hover:bg-th-postHover border-th-border hover:shadow-2xl  hover:cursor-pointer ')
-			}
+					: ' group hover:bg-th-postHover border-th-border hover:shadow-2xl  hover:cursor-pointer '
+			}`}
 		>
 			<div
-				className={
-					` absolute  w-full  bg-cover bg-center  ` +
-					(tall ? ' ' : ' rounded-t-lg ') +
-					(tall ? ' h-[121px] border-b ' : ' h-16') +
-					(hideNSFW || (subBanner?.backgroundImage?.length < 9 && subBanner?.backgroundColor?.length < 2)
+				className={` absolute  w-full  bg-cover bg-center  ${tall ? ' ' : ' rounded-t-lg '}${
+					tall ? ' h-[121px] border-b ' : ' h-16'
+				}${
+					hideNSFW || (subBanner?.backgroundImage?.length < 9 && subBanner?.backgroundColor?.length < 2)
 						? '  bg-th-scrollbar '
-						: '')
-				}
+						: ''
+				}`}
 				style={hideNSFW ? {} : subBanner}
-			></div>
+			/>
 
-			<div className={'flex flex-col my-2 ' + (tall ? ' md:h-40 mx-6 md:mx-16 ' : '  h-24  mx-2 ')}>
-				<div className={'flex  ' + (tall ? ' mt-[4.5rem] flex-col md:flex-row ' : ' mt-6 flex-row')}>
+			<div className={`flex flex-col my-2 ${tall ? ' md:h-40 mx-6 md:mx-16 ' : '  h-24  mx-2 '}`}>
+				<div className={`flex  ${tall ? ' mt-[4.5rem] flex-col md:flex-row ' : ' mt-6 flex-row'}`}>
 					<div
-						className={
-							'z-20 flex-none  border-4 hover:cursor-pointer rounded-full bg-th-post ' +
-							(tall ? ' -mt-2 w-24 h-24 mx-auto md:mx-0' : ' w-16 h-16')
-						}
+						className={`z-20 flex-none  border-4 hover:cursor-pointer rounded-full bg-th-post ${
+							tall ? ' -mt-2 w-24 h-24 mx-auto md:mx-0' : ' w-16 h-16'
+						}`}
 						onClick={() => {
 							!link && openDescription() //context.setForceRefresh((p) => p + 1);
 						}}
@@ -144,16 +140,15 @@ const SubCard = ({
 					</div>
 					<div className='flex flex-col '>
 						<div
-							className={
-								'z-10 flex flex-row mx-auto    space-x-2  pl-auto bg-th-post ' +
-								(tall
+							className={`z-10 flex flex-row mx-auto    space-x-2  pl-auto bg-th-post ${
+								tall
 									? ' md:border-t  md:border-r md:pt-[6px] md:pb-[-3px] items-end mt-4 md:mt-[10px] md:rounded-tr-md md:pl-5 md:pr-2  md:-ml-3.5 md:mx-0'
-									: ' items-baseline group-hover:bg-th-postHover pt-0.5 mt-2 rounded-tr-md pl-5 pr-2  -ml-3.5')
-							}
+									: ' items-baseline group-hover:bg-th-postHover pt-0.5 mt-2 rounded-tr-md pl-5 pr-2  -ml-3.5'
+							}`}
 						>
 							{loading ? (
 								<>
-									<div className='h-6 w-52'></div>
+									<div className='h-6 w-52' />
 								</>
 							) : (
 								<>
@@ -164,10 +159,9 @@ const SubCard = ({
 									>
 										<a>
 											<h1
-												className={
-													'font-semibold hover:cursor-pointer hover:underline group-hover:underline' +
-													(tall ? ` ${data?.kind ? 'mb-[-0.075rem]' : ''} ` : ' ')
-												}
+												className={`font-semibold hover:cursor-pointer hover:underline group-hover:underline${
+													tall ? ` ${data?.kind ? 'mb-[-0.075rem]' : ''} ` : ' '
+												}`}
 												onClick={() => {
 													!link && data?.kind === 't2'
 														? invalidateKey([
@@ -206,7 +200,7 @@ const SubCard = ({
 										) : data?.data?.subscribers ? (
 											`${data?.data?.subscribers?.toLocaleString('en-US')} members`
 										) : (
-											<div className={'w-40'}></div>
+											<div className={'w-40'} />
 										)}
 									</h1>
 									{!link && data?.data?.active_user_count && (
@@ -225,19 +219,16 @@ const SubCard = ({
 					</div>
 				</div>
 
-				<div className={'flex flex-row   ' + (tall ? ' md:ml-[6.25rem]  mt-2  md:-mt-3 ' : ' pl-5 ml-[3.25rem]')}>
+				<div className={`flex flex-row   ${tall ? ' md:ml-[6.25rem]  mt-2  md:-mt-3 ' : ' pl-5 ml-[3.25rem]'}`}>
 					<h1
-						className={
-							' text-xs overflow-x-hidden overflow-y-scroll scrollbar-none md:mx-0' +
-							(tall ? ' text-center md:text-left md:h-8 md:-mt-6 mx-auto ' : ' -mt-6 h-8')
-						}
+						className={` text-xs overflow-x-hidden overflow-y-scroll scrollbar-none md:mx-0${
+							tall ? ' text-center md:text-left md:h-8 md:-mt-6 mx-auto ' : ' -mt-6 h-8'
+						}`}
 					>
 						{data?.data?.subreddit?.public_description ?? data?.data?.public_description}
 					</h1>
 					<div
-						className={
-							'relative  mb-auto ml-auto mt-[-1.6rem] space-x-1 ' + (tall ? ' hidden md:flex  flex-row  ' : ' ')
-						}
+						className={`relative  mb-auto ml-auto mt-[-1.6rem] space-x-1 ${tall ? ' hidden md:flex  flex-row  ' : ' '}`}
 					>
 						{isSelf ? (
 							<div
@@ -250,12 +241,12 @@ const SubCard = ({
 						) : (
 							<div className='flex-none w-24 h-full ml-2'>
 								<SubButton
-									sub={data?.kind == 't5' ? data?.data?.display_name : data?.data?.subreddit?.display_name}
+									sub={data?.kind === 't5' ? data?.data?.display_name : data?.data?.subreddit?.display_name}
 									userMode={data?.kind === 't2'}
 								/>
 							</div>
 						)}
-						{data?.kind == 't5' && !link && (
+						{data?.kind === 't5' && !link && (
 							<SubOptButton
 								subInfo={subInfo}
 								currMulti={currMulti}
@@ -267,9 +258,9 @@ const SubCard = ({
 				</div>
 				{tall && (
 					<div
-						className={
-							'z-20 md:hidden flex flex-row mx-auto mt-2 space-x-1  min-w-full justify-between' + (tall ? '  ' : '')
-						}
+						className={`z-20 md:hidden flex flex-row mx-auto mt-2 space-x-1  min-w-full justify-between${
+							tall ? '  ' : ''
+						}`}
 					>
 						{isSelf ? (
 							<div
@@ -282,12 +273,12 @@ const SubCard = ({
 						) : (
 							<div className='w-full'>
 								<SubButton
-									sub={data?.kind == 't5' ? data?.data?.display_name : data?.data?.subreddit?.display_name}
+									sub={data?.kind === 't5' ? data?.data?.display_name : data?.data?.subreddit?.display_name}
 									userMode={data?.kind === 't2'}
 								/>
 							</div>
 						)}
-						{data?.kind == 't5' && !link && (
+						{data?.kind === 't5' && !link && (
 							<SubOptButton
 								subInfo={subInfo}
 								currMulti={currMulti}

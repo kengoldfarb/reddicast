@@ -1,7 +1,7 @@
+import FilterSubs from '../FilterSubs'
 import { Transition } from '@headlessui/react'
 import React, { Fragment, useState } from 'react'
 import { BsChevronDown } from 'react-icons/bs'
-import FilterSubs from '../FilterSubs'
 
 const FilterEntities = () => {
 	const [advancedOpen, setAdvancedOpen] = useState(false)
@@ -14,7 +14,7 @@ const FilterEntities = () => {
 			>
 				<h1 className='px-2'>Advanced</h1>
 				<BsChevronDown
-					className={(advancedOpen ? '-rotate-180' : 'rotate-0') + ' transform transition duration-400 mr-4'}
+					className={`${advancedOpen ? '-rotate-180' : 'rotate-0'} transform transition duration-400 mr-4`}
 				/>
 			</div>
 			<Transition

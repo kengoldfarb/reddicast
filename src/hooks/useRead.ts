@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
 import { localRead, useMainContext } from '../MainContext'
+import { useEffect, useState } from 'react'
 
 interface Read {
 	numComments: number | undefined
@@ -12,7 +12,7 @@ export const useRead = (postID) => {
 
 	useEffect(() => {
 		const checkRead = async () => {
-			let read = (await localRead.getItem(postID)) as any
+			const read = (await localRead.getItem(postID)) as any
 			if (read) {
 				context.addReadPost({ postId: postID, numComments: read?.numComments })
 				setRead({ numComments: read?.numComments, time: read?.time })

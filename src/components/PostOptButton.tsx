@@ -1,25 +1,25 @@
-import { BsThreeDotsVertical } from 'react-icons/bs'
-import { BiUser, BiLink } from 'react-icons/bi'
-import { MdOutlineClear } from 'react-icons/md'
-import { AiOutlineTag } from 'react-icons/ai'
-import { FiFilter } from 'react-icons/fi'
-import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
+import { AiOutlineTag } from 'react-icons/ai'
+import { BiLink, BiUser } from 'react-icons/bi'
+import { BsThreeDotsVertical } from 'react-icons/bs'
+import { FiFilter } from 'react-icons/fi'
+import { MdOutlineClear } from 'react-icons/md'
 
-import SaveButton from './SaveButton'
-import HideButton from './HideButton'
-import IntInput from './settings/IntInput'
-import { useMainContext, localRead } from '../MainContext'
+import { localRead, useMainContext } from '../MainContext'
 import useFilterSubs from '../hooks/useFilterSubs'
 import { useRead } from '../hooks/useRead'
-import Checkbox from './ui/Checkbox'
+import HideButton from './HideButton'
+import SaveButton from './SaveButton'
 import SubButton from './SubButton'
-import { HiOutlineDocumentDuplicate } from 'react-icons/hi'
+import IntInput from './settings/IntInput'
+import Checkbox from './ui/Checkbox'
 import { useRouter } from 'next/router'
+import { HiOutlineDocumentDuplicate } from 'react-icons/hi'
 
 const MyLink = (props) => {
-	let { href, children, ...rest } = props
+	const { href, children, ...rest } = props
 	return (
 		<Link href={href} {...rest}>
 			{children}
@@ -55,7 +55,7 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 				{({ open }) => (
 					<>
 						<div
-							className={'flex items-center justify-center ' + (mode !== 'fullmedia' ? ' w-4 ' : 'md:w-4')}
+							className={`flex items-center justify-center ${mode !== 'fullmedia' ? ' w-4 ' : 'md:w-4'}`}
 							onClick={(e) => {
 								e.preventDefault()
 								e.stopPropagation()
@@ -63,19 +63,17 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 						>
 							<Menu.Button
 								aria-label='post options'
-								className={
-									' flex justify-center items-center  border rounded-md  ' +
-									(mode == 'row'
+								className={` flex justify-center items-center  border rounded-md  ${
+									mode === 'row'
 										? ' border-transparent hover:border-th-borderHighlight px-2 py-0.5 sm:p-0 '
-										: mode == 'fullmedia'
+										: mode === 'fullmedia'
 										? ` border-transparent hover:border-th-borderHighlight  bg-black/40 backdrop-blur-lg md:backdrop-blur-none rounded-full md:rounded-md md:bg-transparent md:hover:bg-black/20 hover:backdrop-blur-lg transition duration-200 ease-in-out w-10 h-10 md:w-auto md:h-auto ${buttonStyles} `
-										: ' border-th-border hover:border-th-borderHighlight ') +
-									(showUI === false ? ' opacity-50 ' : ' ')
-								}
+										: ' border-th-border hover:border-th-borderHighlight '
+								}${showUI === false ? ' opacity-50 ' : ' '}`}
 							>
 								<BsThreeDotsVertical
 									className={
-										mode == 'post'
+										mode === 'post'
 											? 'w-5 h-9'
 											: mode === 'fullmedia'
 											? 'w-5 h-5 md:w-7 md:h-[46px] '
@@ -96,18 +94,19 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 							leaveTo='transform opacity-0 scale-95'
 						>
 							<Menu.Items
-								className={
-									'absolute  z-50  bg-th-background2 ring-th-base rounded-md shadow-lg ring-1  ring-opacity-5 focus:outline-none border border-th-border select-none cursor-pointer  py-1  ' +
-									(mode === 'card2' && context.columns > 1 ? ' w-36 sm:w-52 ' : '  w-52 ') +
-									(mode === 'card2' && context.columns > 1
+								className={`absolute  z-50  bg-th-background2 ring-th-base rounded-md shadow-lg ring-1  ring-opacity-5 focus:outline-none border border-th-border select-none cursor-pointer  py-1  ${
+									mode === 'card2' && context.columns > 1 ? ' w-36 sm:w-52 ' : '  w-52 '
+								}${
+									mode === 'card2' && context.columns > 1
 										? ' translate-x-[-9.2rem] sm:translate-x-[-13.4rem] '
 										: mode !== 'fullmedia'
 										? ' translate-x-[-13.4rem] '
-										: ' translate-x-[-14rem] ') +
-									(mode == 'post' || mode == 'row' || mode === 'fullmedia'
+										: ' translate-x-[-14rem] '
+								}${
+									mode === 'post' || mode === 'row' || mode === 'fullmedia'
 										? ' top-0 origin-top-right'
-										: ' bottom-0 origin-bottom-right')
-								}
+										: ' bottom-0 origin-bottom-right'
+								}`}
 							>
 								{mode === 'fullmedia' && (
 									<>
@@ -125,7 +124,7 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 										</div>
 										<Menu.Item>
 											{({ active }) => (
-												<div className={(active ? 'bg-th-highlight ' : '') + ' flex  w-full  '}>
+												<div className={`${active ? 'bg-th-highlight ' : ''} flex  w-full  `}>
 													<Checkbox
 														toggled={context?.waitForVidInterval}
 														labelText={'Play full videos'}
@@ -138,11 +137,11 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 										</Menu.Item>
 										<Menu.Item>
 											{({ active }) => (
-												<div className={(active ? 'bg-th-highlight ' : '') + ' flex  w-full  '}>
+												<div className={`${active ? 'bg-th-highlight ' : ''} flex  w-full  `}>
 													<Checkbox
 														toggled={showUI}
 														labelText={'Show UI'}
-														clickEvent={() => setShowUI && setShowUI((u) => !u)}
+														clickEvent={() => setShowUI?.((u) => !u)}
 														reverse={false}
 														styles={' py-1 px-2 w-full justify-between'}
 													/>
@@ -151,7 +150,7 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 										</Menu.Item>
 										<Menu.Item>
 											{({ active }) => (
-												<div className={(active ? 'bg-th-highlight ' : '') + ' flex  w-full  '}>
+												<div className={`${active ? 'bg-th-highlight ' : ''} flex  w-full  `}>
 													<Checkbox
 														toggled={context.audioOnHover}
 														labelText={'Audio'}
@@ -162,7 +161,7 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 												</div>
 											)}
 										</Menu.Item>
-										<div className='py-0.5 border-b border-th-border hover:cursor-default'></div>
+										<div className='py-0.5 border-b border-th-border hover:cursor-default' />
 									</>
 								)}
 								{post?.subreddit?.substring(0, 2) !== 'u_' && (
@@ -172,7 +171,7 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 												href={`/r/${post?.subreddit}`}
 												passHref
 												onClick={(e) => e.stopPropagation()}
-												className={(active ? 'bg-th-highlight ' : '') + ' px-2 py-1 text-sm flex flex-row items-center'}
+												className={`${active ? 'bg-th-highlight ' : ''} px-2 py-1 text-sm flex flex-row items-center`}
 											>
 												<div className='flex items-center justify-center flex-none w-4 h-4 mr-2 overflow-hidden rounded-full select-none '>
 													<h1>r/</h1>
@@ -191,7 +190,7 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 											href={`/u/${post?.author}`}
 											passHref
 											onClick={(e) => e.stopPropagation()}
-											className={(active ? 'bg-th-highlight ' : '') + '  px-2 py-1 text-sm flex flex-row items-center'}
+											className={`${active ? 'bg-th-highlight ' : ''}  px-2 py-1 text-sm flex flex-row items-center`}
 										>
 											<BiUser className='flex-none w-4 h-4 mr-2' />
 											<h1 className='truncate'>{`${post?.author}`}</h1>
@@ -209,10 +208,9 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 													post?.link_flair_text
 												)}`}
 												onClick={(e) => e.stopPropagation()}
-												className={
-													(active ? 'bg-th-highlight ' : '') +
-													' px-2 py-2.5  md:py-1 text-sm flex flex-row items-center'
-												}
+												className={`${
+													active ? 'bg-th-highlight ' : ''
+												} px-2 py-2.5  md:py-1 text-sm flex flex-row items-center`}
 											>
 												<AiOutlineTag className='flex-none w-4 h-4 mr-2' />
 												<h1>Search Flair {post?.link_flair_text}</h1>
@@ -228,14 +226,13 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 												target='_blank'
 												rel='noreferrer'
 												onClick={(e) => e.stopPropagation()}
-												className={
-													(active ? 'bg-th-highlight ' : '') +
-													' px-2 py-2.5  md:py-1 text-sm flex flex-row items-center'
-												}
+												className={`${
+													active ? 'bg-th-highlight ' : ''
+												} px-2 py-2.5  md:py-1 text-sm flex flex-row items-center`}
 											>
 												<BiLink className='flex-none w-4 h-4 mr-2' />
 
-												<h1>{`Open Source Link`}</h1>
+												<h1>{'Open Source Link'}</h1>
 											</a>
 										)}
 									</Menu.Item>
@@ -247,11 +244,11 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 											onClick={(e) => {
 												e.stopPropagation()
 											}}
-											className={(active ? 'bg-th-highlight ' : '') + '  '}
+											className={`${active ? 'bg-th-highlight ' : ''}  `}
 										>
 											<button
 												aria-label='add to filters'
-												onClick={(e) => {
+												onClick={(_e) => {
 													filterMenuRef?.current?.click()
 													//e.preventDefault();
 													//e.stopPropagation();
@@ -268,10 +265,10 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 									<Menu.Item>
 										{({ active }) => (
 											<div
-												className={(active ? 'bg-th-highlight ' : '') + ' block  text-sm hover:cursor-pointer'}
+												className={`${active ? 'bg-th-highlight ' : ''} block  text-sm hover:cursor-pointer`}
 												onClick={(e) => e.stopPropagation()}
 											>
-												<SaveButton id={post?.name} saved={post?.saved} isPortrait={false} menu={true}></SaveButton>
+												<SaveButton id={post?.name} saved={post?.saved} isPortrait={false} menu={true} />
 											</div>
 										)}
 									</Menu.Item>
@@ -280,10 +277,10 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 									<Menu.Item>
 										{({ active }) => (
 											<div
-												className={(active ? 'bg-th-highlight ' : '') + ' block  text-sm hover:cursor-pointer'}
+												className={`${active ? 'bg-th-highlight ' : ''} block  text-sm hover:cursor-pointer`}
 												onClick={(e) => e.stopPropagation()}
 											>
-												<HideButton id={post?.name} hidden={post?.hidden} isPortrait={false} menu={true}></HideButton>
+												<HideButton id={post?.name} hidden={post?.hidden} isPortrait={false} menu={true} />
 											</div>
 										)}
 									</Menu.Item>
@@ -294,7 +291,7 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 											onClick={(e) => {
 												e.stopPropagation()
 											}}
-											className={(active ? 'bg-th-highlight ' : '') + '  '}
+											className={`${active ? 'bg-th-highlight ' : ''}  `}
 										>
 											<button
 												aria-label='toggle read'
@@ -328,11 +325,9 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 													{ shallow: true }
 												)
 											}}
-											className={
-												(disabled ? 'hidden ' : '') +
-												(active ? 'bg-th-highlight ' : '') +
-												' px-2 py-2.5  md:py-1 text-sm flex flex-row items-center w-full'
-											}
+											className={`${disabled ? 'hidden ' : ''}${
+												active ? 'bg-th-highlight ' : ''
+											} px-2 py-2.5  md:py-1 text-sm flex flex-row items-center w-full`}
 										>
 											<HiOutlineDocumentDuplicate className='flex-none w-4 h-4 mr-2 mt-0.5 ' />
 											<span>{'Show Other Discussions'}</span>
@@ -345,7 +340,7 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 				)}
 			</Menu>
 			<Menu as={'div'} className={'relative font-normal'}>
-				<Menu.Button aria-label='filter options' ref={filterMenuRef} className='hidden'></Menu.Button>
+				<Menu.Button aria-label='filter options' ref={filterMenuRef} className='hidden' />
 				<Transition
 					as={Fragment}
 					enter='transition ease-out duration-800'
@@ -356,21 +351,21 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 					leaveTo='transform opacity-0 scale-95'
 				>
 					<Menu.Items
-						className={
-							'absolute  z-50   bg-th-background2 rounded-md shadow-lg ring-1 ring-th-base ring-opacity-5 focus:outline-none border border-th-border select-none cursor-pointer  py-1 ' +
-							(mode === 'card2' && context.columns > 1 ? ' w-32 sm:w-52 ' : ' w-52 ') +
-							(mode == 'post'
+						className={`absolute  z-50   bg-th-background2 rounded-md shadow-lg ring-1 ring-th-base ring-opacity-5 focus:outline-none border border-th-border select-none cursor-pointer  py-1 ${
+							mode === 'card2' && context.columns > 1 ? ' w-32 sm:w-52 ' : ' w-52 '
+						}${
+							mode === 'post'
 								? ' top-[-2.31rem] origin-top-right translate-x-[-13.4rem]  '
-								: mode == 'row'
+								: mode === 'row'
 								? '  -top-0 origin-top-right right-5'
-								: mode == 'media'
+								: mode === 'media'
 								? ' origin-bottom-right bottom-0 right-[1.35rem] '
 								: mode === 'fullmedia'
 								? ' origin-top-right top-[-2.88rem] right-[2rem]'
 								: context.cardStyle === 'card2'
 								? ' origin-bottom-right bottom-0 right-[1.35rem]'
-								: ' -bottom-3 origin-bottom-right translate-x-[-14.8rem] ')
-						}
+								: ' -bottom-3 origin-bottom-right translate-x-[-14.8rem] '
+						}`}
 					>
 						<h4 className='py-1 ml-2.5' onClick={(e) => e.stopPropagation()}>
 							Add to Filter..
@@ -383,9 +378,7 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 										addSubFilter(post?.subreddit)
 										e.stopPropagation()
 									}}
-									className={
-										(active ? 'bg-th-highlight ' : '') + ' px-2 py-1 text-sm flex flex-row items-center w-full'
-									}
+									className={`${active ? 'bg-th-highlight ' : ''} px-2 py-1 text-sm flex flex-row items-center w-full`}
 								>
 									<div className='flex items-center justify-center flex-none w-4 h-4 mr-2 overflow-hidden border-black rounded-full select-none border-1'>
 										<h1>r/</h1>
@@ -402,9 +395,7 @@ const PostOptButton = ({ post, mode = '', showUI, setShowUI, buttonStyles = '' }
 										addUserFilter(post?.author)
 										e.stopPropagation()
 									}}
-									className={
-										(active ? 'bg-th-highlight ' : '') + '  px-2 py-1 text-sm flex flex-row items-center w-full'
-									}
+									className={`${active ? 'bg-th-highlight ' : ''}  px-2 py-1 text-sm flex flex-row items-center w-full`}
 								>
 									<BiUser className='flex-none w-4 h-4 mr-2' />
 									<h1>{`${post?.author}`}</h1>

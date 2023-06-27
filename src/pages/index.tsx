@@ -1,13 +1,13 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import Head from 'next/head'
-import Feed from '../components/Feed'
-import { useEffect, useState } from 'react'
-import { getSession, useSession } from 'next-auth/react'
 import { loadFront, loadPost } from '../RedditAPI'
-import { getToken } from 'next-auth/jwt'
-import React from 'react'
+import Feed from '../components/Feed'
 import Card1 from '../components/cards/Card1'
 import Modal from '../components/ui/Modal'
+import { getToken } from 'next-auth/jwt'
+import { getSession, useSession } from 'next-auth/react'
+/* eslint-disable react-hooks/rules-of-hooks */
+import Head from 'next/head'
+import { useEffect, useState } from 'react'
+import React from 'react'
 
 const index = ({ postData, user }) => {
 	const [initialData, setInitialData] = useState({})
@@ -44,7 +44,7 @@ const index = ({ postData, user }) => {
 				<meta
 					name='description'
 					content='Browse Reddit better with Troddit. Grid views, single column mode, galleries, and a number of post styles. Login with Reddit to see your own subs, vote, and comment. Open source.'
-				></meta>
+				/>
 			</Head>
 			<main>{ready && <Feed initialData={initialData} />}</main>
 		</div>
@@ -68,7 +68,7 @@ index.getInitialProps = async ({ req, query, res }) => {
 				req,
 				secret: process.env.NEXTAUTH_SECRET
 			})
-			let tokenData = {
+			const tokenData = {
 				accessToken: token.reddit.accessToken,
 				refreshToken: token.reddit.refreshToken,
 				expires: token.expires

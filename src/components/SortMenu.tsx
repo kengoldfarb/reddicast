@@ -1,22 +1,22 @@
-import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
+import { useWindowWidth } from '@react-hook/window-size'
+import { useRouter } from 'next/router'
+import { Fragment } from 'react'
+import { useEffect, useState } from 'react'
+import React from 'react'
 import { AiOutlineFire, AiOutlineRocket } from 'react-icons/ai'
+import { BsChevronDown, BsCircle } from 'react-icons/bs'
 import { GoCommentDiscussion } from 'react-icons/go'
 import { GrNew } from 'react-icons/gr'
 import { IoMdTrendingUp } from 'react-icons/io'
 import { RiBarChart2Line } from 'react-icons/ri'
-import { BsCircle, BsChevronDown } from 'react-icons/bs'
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
-import React from 'react'
-import { useWindowWidth } from '@react-hook/window-size'
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ')
 }
 
 const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
-	const [show, setShow] = useState(false)
+	const [_show, _setShow] = useState(false)
 	const [sort, setSort] = useState<any>('hot')
 	const [range, setRange] = useState('')
 	const [isUser, setIsUser] = useState(false)
@@ -24,7 +24,7 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 	const [isSubFlair, setIsSubFlair] = useState(false)
 	const [extraMenu, setExtraMenu] = useState<'' | 'TOP' | 'RELEVANCE' | 'COMMENTS'>('')
 	const router = useRouter()
-	const windowWidth = useWindowWidth()
+	const _windowWidth = useWindowWidth()
 	useEffect(() => {
 		router?.query?.t ? setRange(router.query.t.toString()) : setRange('')
 		router.query?.sort && setSort(router.query?.sort)
@@ -76,7 +76,7 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 				}
 				router.push(path)
 			} else if (router.route === '/search') {
-				let q = router.query
+				const q = router.query
 				q['sort'] = s
 				q['t'] = ''
 				//console.log(q);
@@ -90,7 +90,7 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 				if (isUser) {
 					//console.log(router.query?.slug?.[0]);
 					router.push({
-						pathname: `/u/${router.query?.slug?.[0]}${router.query?.slug?.[1] ? `/${router.query?.slug?.[1]}` : ``}`,
+						pathname: `/u/${router.query?.slug?.[0]}${router.query?.slug?.[1] ? `/${router.query?.slug?.[1]}` : ''}`,
 						query: {
 							sort: s
 						}
@@ -121,7 +121,7 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 			}
 			router.push(path)
 		} else if (router.pathname === '/search') {
-			let q = router.query
+			const q = router.query
 			q['sort'] = s
 			q['t'] = r
 			router.push({
@@ -145,7 +145,7 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 			if (isUser) {
 				//console.log(router.query?.slug?.[0]);
 				router.push({
-					pathname: `/u/${router.query?.slug?.[0]}${router.query?.slug?.[1] ? `/${router.query?.slug?.[1]}` : ``}`,
+					pathname: `/u/${router.query?.slug?.[0]}${router.query?.slug?.[1] ? `/${router.query?.slug?.[1]}` : ''}`,
 					query: {
 						sort: s,
 						t: r
@@ -200,14 +200,13 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 								disabled={disabled}
 								aria-label='sort by'
 								name='Sort Page By'
-								className={
-									(disabled ? '  ' : ' hover:border-th-border ') +
-									' flex flex-row items-center justify-between w-full h-full px-2 border border-transparent rounded-md focus:outline-none '
-								}
+								className={`${
+									disabled ? '  ' : ' hover:border-th-border '
+								} flex flex-row items-center justify-between w-full h-full px-2 border border-transparent rounded-md focus:outline-none `}
 							>
 								{showDropDownIcon && (
 									<BsChevronDown
-										className={(open ? 'rotate-180' : 'rotate-0') + ' transform transition duration-200 flex-none'}
+										className={`${open ? 'rotate-180' : 'rotate-0'} transform transition duration-200 flex-none`}
 									/>
 								)}
 
@@ -273,10 +272,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 							leaveTo='transform opacity-0 scale-95'
 						>
 							<Menu.Items
-								className={
-									'absolute right-0 w-40 mt-10  origin-top-right bg-th-background2 rounded-md shadow-lg ring-1 ring-th-base ring-opacity-5 focus:outline-none border border-th-border z-50 ' +
-									(hide && ' hidden')
-								}
+								className={`absolute right-0 w-40 mt-10  origin-top-right bg-th-background2 rounded-md shadow-lg ring-1 ring-th-base ring-opacity-5 focus:outline-none border border-th-border z-50 ${
+									hide && ' hidden'
+								}`}
 							>
 								<div className='py-1'>
 									{/* Best */}
@@ -284,7 +282,7 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 										<Menu.Item disabled={isUser}>
 											{({ active }) => (
 												<div
-													onTouchStart={(e) => setExtraMenu('')}
+													onTouchStart={(_e) => setExtraMenu('')}
 													onClick={(e) => updateSort(e, 'best')}
 													className={classNames(active ? 'bg-th-highlight' : '', 'block px-4 py-1 text-sm')}
 												>
@@ -300,7 +298,7 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 									<Menu.Item>
 										{({ active }) => (
 											<div
-												onTouchStart={(e) => setExtraMenu('')}
+												onTouchStart={(_e) => setExtraMenu('')}
 												onClick={(e) => updateSort(e, 'hot')}
 												className={classNames(
 													active || sort === 'hot' ? 'bg-th-highlight' : '',
@@ -319,7 +317,7 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 										{({ active }) => (
 											<div className='group'>
 												<div
-													onTouchStart={(e) => setExtraMenu('')}
+													onTouchStart={(_e) => setExtraMenu('')}
 													onClick={(e) => (isSubFlair ? updateRange(e, 'all', 'new') : updateSort(e, 'new'))}
 													className={classNames(
 														active || sort === 'new' ? 'bg-th-highlight' : '',
@@ -343,7 +341,7 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 														active || sort === 'top' ? 'bg-th-highlight' : '',
 														'block px-4 py-1 text-sm w-full outline-none '
 													)}
-													onTouchStart={(e) => setExtraMenu('TOP')}
+													onTouchStart={(_e) => setExtraMenu('TOP')}
 													onClick={(e) => {
 														if (extraMenu === 'TOP') {
 															e.stopPropagation()
@@ -359,18 +357,15 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 													</div>
 												</button>
 												<ul
-													className={
-														(active || extraMenu === 'TOP' ? 'block ' : 'hidden ') +
-														(isUser ? 'top-12 ' : 'top-24 ') +
-														'absolute  w-32 -left-32  bg-th-background2 rounded-md shadow-lg border border-th-border ring-1 ring-th-base text-right'
-													}
+													className={`${active || extraMenu === 'TOP' ? 'block ' : 'hidden '}${
+														isUser ? 'top-12 ' : 'top-24 '
+													}absolute  w-32 -left-32  bg-th-background2 rounded-md shadow-lg border border-th-border ring-1 ring-th-base text-right`}
 												>
 													<li>
 														<div
-															className={
-																(range === 'hour' && sort === 'top' ? `font-bold bg-th-highlight` : '') +
-																' px-3 py-3.5 text-sm hover:bg-th-highlight mt-1 cursor-pointer'
-															}
+															className={`${
+																range === 'hour' && sort === 'top' ? 'font-bold bg-th-highlight' : ''
+															} px-3 py-3.5 text-sm hover:bg-th-highlight mt-1 cursor-pointer`}
 															onClick={(e) => {
 																updateRange(e, 'hour')
 															}}
@@ -380,10 +375,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 													</li>
 													<li>
 														<div
-															className={
-																(range === 'day' && sort === 'top' ? `font-bold bg-th-highlight` : '') +
-																' px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer '
-															}
+															className={`${
+																range === 'day' && sort === 'top' ? 'font-bold bg-th-highlight' : ''
+															} px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer `}
 															onClick={(e) => {
 																updateRange(e, 'day')
 															}}
@@ -393,10 +387,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 													</li>
 													<li>
 														<div
-															className={
-																(range === 'week' && sort === 'top' ? `font-bold bg-th-highlight` : '') +
-																' px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer '
-															}
+															className={`${
+																range === 'week' && sort === 'top' ? 'font-bold bg-th-highlight' : ''
+															} px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer `}
 															onClick={(e) => {
 																updateRange(e, 'week')
 															}}
@@ -406,10 +399,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 													</li>
 													<li>
 														<div
-															className={
-																(range === 'month' && sort === 'top' ? `font-bold bg-th-highlight` : '') +
-																' px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer '
-															}
+															className={`${
+																range === 'month' && sort === 'top' ? 'font-bold bg-th-highlight' : ''
+															} px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer `}
 															onClick={(e) => {
 																updateRange(e, 'month')
 															}}
@@ -419,10 +411,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 													</li>
 													<li>
 														<div
-															className={
-																(range === 'year' && sort === 'top' ? `font-bold bg-th-highlight` : '') +
-																' px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer '
-															}
+															className={`${
+																range === 'year' && sort === 'top' ? 'font-bold bg-th-highlight' : ''
+															} px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer `}
 															onClick={(e) => {
 																updateRange(e, 'year')
 															}}
@@ -432,10 +423,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 													</li>
 													<li>
 														<div
-															className={
-																(range === 'all' && sort === 'top' ? `font-bold bg-th-highlight ` : '') +
-																' px-3 py-3.5 text-sm mb-1 hover:bg-th-highlight cursor-pointer '
-															}
+															className={`${
+																range === 'all' && sort === 'top' ? 'font-bold bg-th-highlight ' : ''
+															} px-3 py-3.5 text-sm mb-1 hover:bg-th-highlight cursor-pointer `}
 															onClick={(e) => {
 																updateRange(e, 'all')
 															}}
@@ -457,7 +447,7 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 															active || sort === 'relevance' ? 'bg-th-highlight' : '',
 															'block px-4 py-1 text-sm w-full'
 														)}
-														onTouchStart={(e) => setExtraMenu('RELEVANCE')}
+														onTouchStart={(_e) => setExtraMenu('RELEVANCE')}
 														onClick={(e) => {
 															if (extraMenu === 'RELEVANCE') {
 																e.stopPropagation()
@@ -474,18 +464,15 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 													</button>
 													{true && (
 														<ul
-															className={
-																(active || extraMenu === 'RELEVANCE' ? 'block ' : 'hidden ') +
-																(true && 'top-36 ') +
-																'absolute  w-32 -left-32  bg-th-background2 rounded-md shadow-lg border border-th-border ring-1 ring-th-base text-right'
-															}
+															className={`${active || extraMenu === 'RELEVANCE' ? 'block ' : 'hidden '}${
+																true && 'top-36 '
+															}absolute  w-32 -left-32  bg-th-background2 rounded-md shadow-lg border border-th-border ring-1 ring-th-base text-right`}
 														>
 															<li>
 																<div
-																	className={
-																		(range === 'hour' && sort === 'relevance' ? `font-bold bg-th-highlight` : '') +
-																		' px-3 py-3.5 text-sm hover:bg-th-highlight mt-1 cursor-pointer'
-																	}
+																	className={`${
+																		range === 'hour' && sort === 'relevance' ? 'font-bold bg-th-highlight' : ''
+																	} px-3 py-3.5 text-sm hover:bg-th-highlight mt-1 cursor-pointer`}
 																	onClick={(e) => {
 																		updateRange(e, 'hour', 'relevance')
 																	}}
@@ -495,10 +482,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 															</li>
 															<li>
 																<div
-																	className={
-																		(range === 'day' && sort === 'relevance' ? `font-bold bg-th-highlight` : '') +
-																		' px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer '
-																	}
+																	className={`${
+																		range === 'day' && sort === 'relevance' ? 'font-bold bg-th-highlight' : ''
+																	} px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer `}
 																	onClick={(e) => {
 																		updateRange(e, 'day', 'relevance')
 																	}}
@@ -508,10 +494,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 															</li>
 															<li>
 																<div
-																	className={
-																		(range === 'week' && sort === 'relevance' ? `font-bold bg-th-highlight` : '') +
-																		' px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer '
-																	}
+																	className={`${
+																		range === 'week' && sort === 'relevance' ? 'font-bold bg-th-highlight' : ''
+																	} px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer `}
 																	onClick={(e) => {
 																		updateRange(e, 'week', 'relevance')
 																	}}
@@ -521,10 +506,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 															</li>
 															<li>
 																<div
-																	className={
-																		(range === 'month' && sort === 'relevance' ? `font-bold bg-th-highlight` : '') +
-																		' px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer '
-																	}
+																	className={`${
+																		range === 'month' && sort === 'relevance' ? 'font-bold bg-th-highlight' : ''
+																	} px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer `}
 																	onClick={(e) => {
 																		updateRange(e, 'month', 'relevance')
 																	}}
@@ -534,10 +518,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 															</li>
 															<li>
 																<div
-																	className={
-																		(range === 'year' && sort === 'relevance' ? `font-bold bg-th-highlight` : '') +
-																		' px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer '
-																	}
+																	className={`${
+																		range === 'year' && sort === 'relevance' ? 'font-bold bg-th-highlight' : ''
+																	} px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer `}
 																	onClick={(e) => {
 																		updateRange(e, 'year', 'relevance')
 																	}}
@@ -547,10 +530,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 															</li>
 															<li>
 																<div
-																	className={
-																		(range === 'all' && sort === 'relevance' ? `font-bold bg-th-highlight ` : '') +
-																		' px-3 py-3.5 text-sm mb-1 hover:bg-th-highlight cursor-pointer '
-																	}
+																	className={`${
+																		range === 'all' && sort === 'relevance' ? 'font-bold bg-th-highlight ' : ''
+																	} px-3 py-3.5 text-sm mb-1 hover:bg-th-highlight cursor-pointer `}
 																	onClick={(e) => {
 																		updateRange(e, 'all', 'relevance')
 																	}}
@@ -591,18 +573,15 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 													</button>
 													{true && (
 														<ul
-															className={
-																(active || extraMenu === 'COMMENTS' ? 'block ' : 'hidden ') +
-																(true && 'top-48 ') +
-																'absolute  w-32 -left-32  bg-th-background2 rounded-md shadow-lg border border-th-border ring-1 ring-th-base text-right'
-															}
+															className={`${active || extraMenu === 'COMMENTS' ? 'block ' : 'hidden '}${
+																true && 'top-48 '
+															}absolute  w-32 -left-32  bg-th-background2 rounded-md shadow-lg border border-th-border ring-1 ring-th-base text-right`}
 														>
 															<li>
 																<div
-																	className={
-																		(range === 'hour' && sort === 'comments' ? `font-bold bg-th-highlight` : '') +
-																		' px-3 py-3.5 text-sm hover:bg-th-highlight mt-1 cursor-pointer'
-																	}
+																	className={`${
+																		range === 'hour' && sort === 'comments' ? 'font-bold bg-th-highlight' : ''
+																	} px-3 py-3.5 text-sm hover:bg-th-highlight mt-1 cursor-pointer`}
 																	onClick={(e) => updateRange(e, 'hour', 'comments')}
 																>
 																	Hour
@@ -610,10 +589,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 															</li>
 															<li>
 																<div
-																	className={
-																		(range === 'day' && sort === 'comments' ? `font-bold bg-th-highlight` : '') +
-																		' px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer '
-																	}
+																	className={`${
+																		range === 'day' && sort === 'comments' ? 'font-bold bg-th-highlight' : ''
+																	} px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer `}
 																	onClick={(e) => updateRange(e, 'day', 'comments')}
 																>
 																	24 Hours
@@ -621,10 +599,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 															</li>
 															<li>
 																<div
-																	className={
-																		(range === 'week' && sort === 'comments' ? `font-bold bg-th-highlight` : '') +
-																		' px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer '
-																	}
+																	className={`${
+																		range === 'week' && sort === 'comments' ? 'font-bold bg-th-highlight' : ''
+																	} px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer `}
 																	onClick={(e) => updateRange(e, 'week', 'comments')}
 																>
 																	Week
@@ -632,10 +609,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 															</li>
 															<li>
 																<div
-																	className={
-																		(range === 'month' && sort === 'comments' ? `font-bold bg-th-highlight` : '') +
-																		' px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer '
-																	}
+																	className={`${
+																		range === 'month' && sort === 'comments' ? 'font-bold bg-th-highlight' : ''
+																	} px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer `}
 																	onClick={(e) => updateRange(e, 'month', 'comments')}
 																>
 																	Month
@@ -643,10 +619,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 															</li>
 															<li>
 																<div
-																	className={
-																		(range === 'year' && sort === 'comments' ? `font-bold bg-th-highlight` : '') +
-																		' px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer '
-																	}
+																	className={`${
+																		range === 'year' && sort === 'comments' ? 'font-bold bg-th-highlight' : ''
+																	} px-3 py-3.5 text-sm hover:bg-th-highlight cursor-pointer `}
 																	onClick={(e) => updateRange(e, 'year', 'comments')}
 																>
 																	Year
@@ -654,10 +629,9 @@ const SortMenu = ({ hide = false, showDropDownIcon = true }) => {
 															</li>
 															<li>
 																<div
-																	className={
-																		(range === 'all' && sort === 'comments' ? `font-bold bg-th-highlight ` : '') +
-																		' px-3 py-3.5 text-sm mb-1 hover:bg-th-highlight cursor-pointer '
-																	}
+																	className={`${
+																		range === 'all' && sort === 'comments' ? 'font-bold bg-th-highlight ' : ''
+																	} px-3 py-3.5 text-sm mb-1 hover:bg-th-highlight cursor-pointer `}
 																	onClick={(e) => updateRange(e, 'all', 'comments')}
 																>
 																	All

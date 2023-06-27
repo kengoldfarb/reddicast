@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import Item from './Item'
 import compareObjects from './compareObjects'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 //https://github.com/moroshko/react-autosuggest/issues/778
 export default class ItemsList extends Component {
 	static propTypes = {

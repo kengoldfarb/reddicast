@@ -1,18 +1,18 @@
-import React, { Component, useState, useEffect, useRef } from 'react'
-import dynamic from 'next/dynamic'
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
-import { EditorState, convertToRaw } from 'draft-js'
-import { runMain } from 'module'
 import { useSession } from '../../node_modules/next-auth/react'
-import { postComment } from '../RedditAPI'
-import { draftToMarkdown } from 'markdown-draft-js' // import { usePlausible } from "next-plausible";
 import { useMainContext } from '../MainContext'
-import { ImSpinner2 } from 'react-icons/im'
+import { postComment } from '../RedditAPI'
 import useMutate from '../hooks/useMutate'
+import { EditorState, convertToRaw } from 'draft-js'
+import { draftToMarkdown } from 'markdown-draft-js' // import { usePlausible } from "next-plausible";
+import { runMain } from 'module'
+import dynamic from 'next/dynamic'
+import React, { Component, useEffect, useRef, useState } from 'react'
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+import { ImSpinner2 } from 'react-icons/im'
 
-const Editor: any = dynamic(() => import('react-draft-wysiwyg').then((mod) => mod.Editor), { ssr: false })
+const _Editor: any = dynamic(() => import('react-draft-wysiwyg').then((mod) => mod.Editor), { ssr: false })
 
-const editor = {
+const _editor = {
 	options: ['inline', 'blockType', 'list', 'link'],
 	inline: {
 		inDropdown: false,
@@ -56,12 +56,12 @@ const CommentReply = ({
 	parent,
 	postName,
 	getResponse,
-	onCancel = (e) => {},
+	onCancel = (_e) => {},
 	initialValue = '',
 	mode = 'REPLY'
 }: {
 	parent: string
-	postName: String
+	postName: string
 	getResponse: Function
 	onCancel?: Function
 	initialValue?: string
@@ -142,19 +142,19 @@ const CommentReply = ({
 			} else {
 				try {
 					setErr(false)
-					let res = await postCommentMutation.mutateAsync({
+					const res = await postCommentMutation.mutateAsync({
 						parent: parent,
 						textValue: textValue,
 						postName: postName
 					})
 					res && getResponse(res)
-				} catch (err) {
+				} catch (_err) {
 					setErr(true)
 				}
 			}
 		}
 		const submitEditComment = async () => {
-			let res = await editCommentMutation.mutateAsync({ parent: parent, text: textValue })
+			const res = await editCommentMutation.mutateAsync({ parent: parent, text: textValue })
 			if (res?.body_html) {
 				getResponse(res)
 			} else {
@@ -184,7 +184,7 @@ const CommentReply = ({
 			{session?.user?.name && (
 				<>
 					<div className='flex flex-row justify-between w-full select-none text-th-textLight'>
-						{mode === 'REPLY' ? <h1>Commenting as {session.user.name}</h1> : <div className='py-2'></div>}
+						{mode === 'REPLY' ? <h1>Commenting as {session.user.name}</h1> : <div className='py-2' />}
 						{(postCommentMutation.isError || editCommentMutation.isError || err) && (
 							<h1 className='text-xs text-th-red'>Something went wrong</h1>
 						)}
@@ -223,7 +223,7 @@ const CommentReply = ({
 						className='flex-wrap w-full px-3 pt-3 pb-8 font-mono text-sm leading-tight border rounded-lg outline-none scrollbar-thin scrollbar-thumb-th-scrollbar scrollbar-thumb-rounded-full bg-th-postHover hover:cursor-text border-th-border focus-within:border-th-borderHighlight focus-within:brightness-100 brightness-80 '
 						value={textValue}
 						onChange={handleTextChange}
-					></textarea>
+					/>
 					<div className='flex flex-wrap items-end justify-between w-full mt-2'>
 						<p className='mb-1 ml-1 text-xs italic select-none text-th-textLight'>using markdown editor</p>
 						<div className='flex items-end justify-end gap-2 ml-auto'>

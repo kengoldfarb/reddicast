@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react'
-import { Menu, Transition } from '@headlessui/react'
 import { useMainContext } from '../../MainContext'
+import { Menu, Transition } from '@headlessui/react'
+import React, { Fragment } from 'react'
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ')
@@ -66,19 +66,19 @@ const ColumnCardOptions = ({ mode }: Mode) => {
 				className='w-full py-2 capitalize border rounded-md focus:outline-none hover:bg-th-highlight border-th-border hover:border-th-borderHighlight'
 			>
 				{mode === 'columns'
-					? context.columnOverride == 0
+					? context.columnOverride === 0
 						? 'auto'
-						: context.columnOverride == 1
+						: context.columnOverride === 1
 						? 'one'
-						: context.columnOverride == 2
+						: context.columnOverride === 2
 						? 'two'
-						: context.columnOverride == 3
+						: context.columnOverride === 3
 						? 'three'
-						: context.columnOverride == 4
+						: context.columnOverride === 4
 						? 'four'
-						: context.columnOverride == 5
+						: context.columnOverride === 5
 						? 'five'
-						: context.columnOverride == 7 && 'seven'
+						: context.columnOverride === 7 && 'seven'
 					: mode === 'cards' &&
 					  (context.cardStyle === 'card2'
 							? 'Compact'
@@ -117,19 +117,19 @@ const ColumnCardOptions = ({ mode }: Mode) => {
 									}}
 								>
 									<div className='flex flex-row items-center justify-center h-6 capitalize'>
-										{num == 0
+										{num === 0
 											? 'auto'
-											: num == 1
+											: num === 1
 											? 'one'
-											: num == 2
+											: num === 2
 											? 'two'
-											: num == 3
+											: num === 3
 											? 'three'
-											: num == 4
+											: num === 4
 											? 'four'
-											: num == 5
+											: num === 5
 											? 'five'
-											: num == 7 && 'seven'}
+											: num === 7 && 'seven'}
 									</div>
 								</div>
 							)}
@@ -146,16 +146,16 @@ const ColumnCardOptions = ({ mode }: Mode) => {
 									)}
 									onClick={(e) => {
 										e.preventDefault()
-										if (card == 'original') {
+										if (card === 'original') {
 											setCardStyle('card1')
 											context.setMediaOnly(false)
-										} else if (card == 'compact') {
+										} else if (card === 'compact') {
 											setCardStyle('card2')
 											context.setMediaOnly(false)
-										} else if (card == 'media') {
+										} else if (card === 'media') {
 											setCardStyle('card1')
 											context.setMediaOnly(true)
-										} else if (card == 'rows') {
+										} else if (card === 'rows') {
 											setCardStyle('row1')
 											context.setMediaOnly(false)
 											context.setColumnOverride(1)

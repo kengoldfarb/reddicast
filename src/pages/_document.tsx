@@ -1,5 +1,5 @@
-import Document, { Html, Head, Main, NextScript } from 'next/document'
 import PlausibleProvider from 'next-plausible'
+import Document, { Head, Html, Main, NextScript } from 'next/document'
 import React from 'react'
 
 class MyDocument extends Document {
@@ -15,12 +15,12 @@ class MyDocument extends Document {
 					<meta
 						name='description'
 						content='Browse Reddit better with Troddit. Grid views, single column mode, galleries, and a number of post styles. Login with Reddit to see your own subs, vote, and comment. Open source. '
-					></meta>
+					/>
 
 					<meta httpEquiv='Content-Type' content='text/html; charset=utf-8' />
 					<meta />
 					<link rel='manifest' href='/manifest.json' />
-					<link rel='apple-touch-icon' href='/icon-512.png'></link>
+					<link rel='apple-touch-icon' href='/icon-512.png' />
 					<meta name='theme-color' content='#384659' />
 
 					<meta name='application-name' content='troddit' />

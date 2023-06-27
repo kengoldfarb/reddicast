@@ -1,12 +1,12 @@
-import { getSession, useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
-import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai'
-import { ImSpinner2 } from 'react-icons/im'
-import { useSubsContext } from '../MySubs'
 import { localSubInfoCache } from '../MainContext'
+import { useSubsContext } from '../MySubs'
 import { loadSubredditInfo } from '../RedditAPI'
 import useRefresh from '../hooks/useRefresh'
+import { getSession, useSession } from 'next-auth/react'
+import { useEffect, useState } from 'react'
 import React from 'react'
+import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai'
+import { ImSpinner2 } from 'react-icons/im'
 
 const SubButton = ({ sub, miniMode = false, userMode = false }) => {
 	const [loadAPI, setloadAPI] = useState(true)
@@ -34,7 +34,7 @@ const SubButton = ({ sub, miniMode = false, userMode = false }) => {
 					subname = s.data.subreddit?.display_name
 				}
 				//console.log(sub, subname);
-				if (subname?.toUpperCase() == sub?.toUpperCase()) {
+				if (subname?.toUpperCase() === sub?.toUpperCase()) {
 					subbed = true
 					setSubbed(true)
 					setloadAPI(false)
@@ -49,7 +49,7 @@ const SubButton = ({ sub, miniMode = false, userMode = false }) => {
 		if (!loading && !session) {
 			let subbed = false
 			myLocalSubs.forEach((s) => {
-				if (s?.data?.name?.toUpperCase() == sub?.toUpperCase()) {
+				if (s?.data?.name?.toUpperCase() === sub?.toUpperCase()) {
 					subbed = true
 					setSubbed(true)
 					setloadAPI(false)
@@ -66,7 +66,7 @@ const SubButton = ({ sub, miniMode = false, userMode = false }) => {
 		//don't send subscribe request if invalid sub or session not established
 		if (sub2sub && !loading) {
 			setloadAPI(true)
-			let s = await subscribe(action, sub2sub, session)
+			const s = await subscribe(action, sub2sub, session)
 			if (s) {
 				//setSubbed((p) => !p);
 				invalidateKey(['feed', 'HOME'])
@@ -78,13 +78,11 @@ const SubButton = ({ sub, miniMode = false, userMode = false }) => {
 	return (
 		<div
 			title={subbed ? (userMode ? 'unfollow' : 'unsubscribe') : userMode ? 'follow' : 'subscribe'}
-			className={
-				'relative select-none flex-none ' +
-				(!miniMode
+			className={`relative select-none flex-none ${
+				!miniMode
 					? ' h-9 text-center flex justify-center items-center  border  focus:outline-none  bg-th-background2 border-th-border hover:border-th-borderHighlight hover:bg-th-highlight'
-					: ' hover:bg-th-highlight hover:ring-2 ring-th-accent flex items-center justify-center h-full') +
-				' rounded-md cursor-pointer  '
-			}
+					: ' hover:bg-th-highlight hover:ring-2 ring-th-accent flex items-center justify-center h-full'
+			} rounded-md cursor-pointer  `}
 			onClick={(e) => {
 				e.preventDefault()
 				e.stopPropagation()

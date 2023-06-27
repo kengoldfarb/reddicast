@@ -1,14 +1,14 @@
-import { useRouter } from 'next/router'
-import Image from 'next/legacy/image'
-import React, { useState, useEffect } from 'react'
 import { loadSubredditInfo } from '../RedditAPI'
 import FavoriteButton from './FavoriteButton'
+import Image from 'next/legacy/image'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
 
 const DropdownItem = ({ sub, isUser = false, showFavorite = true }) => {
 	const [loaded, setLoaded] = useState(false)
 	const [thumbURL, setThumbURL] = useState('')
 	const [isMulti, setisMulti] = useState(false)
-	const router = useRouter()
+	const _router = useRouter()
 	useEffect(() => {
 		sub?.data?.subreddits ? setisMulti(true) : setisMulti(false)
 		const findThumbnail = (sub) => {
@@ -25,11 +25,11 @@ const DropdownItem = ({ sub, isUser = false, showFavorite = true }) => {
 			}
 		}
 
-		const findSubInfo = async (sub) => {
-			let subinfo = await loadSubredditInfo(sub?.data?.display_name)
+		const _findSubInfo = async (sub) => {
+			const subinfo = await loadSubredditInfo(sub?.data?.display_name)
 			findThumbnail({ data: subinfo?.data })
 		}
-		if (sub?.kind == 't5' || sub?.kind == 't2' || sub?.data?.icon_url) {
+		if (sub?.kind === 't5' || sub?.kind === 't2' || sub?.data?.icon_url) {
 			findThumbnail(sub)
 		} else if (sub?.data?.display_name && !(sub?.data?.subreddits?.length > 0)) {
 			setThumbURL('')
@@ -59,15 +59,14 @@ const DropdownItem = ({ sub, isUser = false, showFavorite = true }) => {
 						width={sub.data?.icon_size?.[1] ?? 256}
 						unoptimized={true}
 						objectFit='cover'
-						className={(isMulti ? 'rounded' : 'rounded-full') + ' flex-none border '}
+						className={`${isMulti ? 'rounded' : 'rounded-full'} flex-none border `}
 					/>
 				) : (
 					loaded && (
 						<div
-							className={
-								(isMulti ? 'rounded bg-th-red' : 'rounded-full bg-th-accent border-2 ') +
-								' w-6 h-6 text-center text-white overflow-hidden flex items-center justify-center  text-lg'
-							}
+							className={`${
+								isMulti ? 'rounded bg-th-red' : 'rounded-full bg-th-accent border-2 '
+							} w-6 h-6 text-center text-white overflow-hidden flex items-center justify-center  text-lg`}
 						>
 							<span className={isMulti ? '' : '' + 'mb-0.5'}>{isUser ? 'u/' : isMulti ? 'f' : 'r/'}</span>
 						</div>

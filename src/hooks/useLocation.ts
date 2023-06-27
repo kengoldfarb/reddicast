@@ -1,9 +1,9 @@
+import { useMainContext } from '../MainContext'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { useMainContext } from '../MainContext'
 
-const useLocation = (params?) => {
+const useLocation = (_params?) => {
 	const [ready, setReady] = useState(false)
 	const [domain, setDomain] = useState<string>()
 	const { data: session, status } = useSession()
@@ -91,7 +91,7 @@ const useLocation = (params?) => {
 			//console.log("CHANGE NOTHING");
 		} else if (query?.frontsort) {
 			if (
-				query?.frontsort == '' ||
+				query?.frontsort === '' ||
 				query?.frontsort?.includes('best') ||
 				query?.frontsort?.includes('top') ||
 				query?.frontsort?.includes('hot') ||
@@ -103,12 +103,12 @@ const useLocation = (params?) => {
 				setRange((query?.t as string) ?? '')
 			}
 		} else if (query?.slug) {
-			if (router.pathname == '/u/[...slug]') {
+			if (router.pathname === '/u/[...slug]') {
 				if (query?.slug?.[1] === 'm' && query?.slug?.[2]) {
 					setMode('MULTI')
 					setUserMode(query.slug[2])
 					setSort(query?.slug?.[3] ?? 'hot')
-				} else if (query?.slug?.[0]?.toUpperCase() == session?.user?.name?.toUpperCase()) {
+				} else if (query?.slug?.[0]?.toUpperCase() === session?.user?.name?.toUpperCase()) {
 					setMode('SELF')
 					setUserMode(query?.slug?.[1] ?? 'overview')
 					setSort((query?.sort as string) ?? 'hot')
@@ -121,7 +121,7 @@ const useLocation = (params?) => {
 				setSearchQuery(query?.q as string)
 				setMode('FLAIR')
 				setSort((query?.sort as string) ?? 'new')
-			} else if (router.pathname == '/r/[...slug]') {
+			} else if (router.pathname === '/r/[...slug]') {
 				setMode('SUBREDDIT')
 				setSort(query?.slug?.[1] ?? 'hot')
 			}
@@ -130,7 +130,7 @@ const useLocation = (params?) => {
 			setRange((query?.t as string) ?? '')
 		} else {
 			//console.log(router);
-			if (router.pathname == '/search') {
+			if (router.pathname === '/search') {
 				setSearchQuery(query?.q as string)
 				setMode('SEARCH')
 			} else if (router.pathname === '/') {

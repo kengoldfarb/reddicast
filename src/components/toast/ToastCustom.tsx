@@ -1,9 +1,9 @@
-import { ImSpinner2 } from 'react-icons/im'
-import { AiOutlineCheck, AiOutlineClose, AiOutlineExclamation } from 'react-icons/ai'
 import { Transition } from '@headlessui/react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import type { Toast } from 'react-hot-toast'
+import { AiOutlineCheck, AiOutlineClose, AiOutlineExclamation } from 'react-icons/ai'
+import { ImSpinner2 } from 'react-icons/im'
 interface ToastCustomParams {
 	t: Toast
 	message: string
@@ -28,11 +28,9 @@ const ToastCustom: React.FC<ToastCustomParams> = ({
 	const toastdiv = (
 		<div
 			onClick={() => !action && toast.remove(t.id)}
-			className={
-				' shadow-2xl transition-all rounded-md select-none border   gap-4   border-th-border bg-th-background2 flex items-center justify-start ' +
-				(t.visible ? ' ' : '  ') +
-				(mode === 'new_posts' ? ' w-screen md:w-auto ' : 'p-2 py-3 w-96 md:w-[40rem] lg:w-[52rem] xl:w-[56rem]')
-			}
+			className={` shadow-2xl transition-all rounded-md select-none border   gap-4   border-th-border bg-th-background2 flex items-center justify-start ${
+				t.visible ? ' ' : '  '
+			}${mode === 'new_posts' ? ' w-screen md:w-auto ' : 'p-2 py-3 w-96 md:w-[40rem] lg:w-[52rem] xl:w-[56rem]'}`}
 		>
 			{mode !== 'new_posts' && (
 				<div className='flex justify-center w-10 md:w-14 '>
@@ -94,7 +92,7 @@ const ToastCustom: React.FC<ToastCustomParams> = ({
 							onClick={(e) => {
 								e.preventDefault()
 								e.stopPropagation()
-								action2 && action2()
+								action2?.()
 								toast.remove(t.id)
 							}}
 						>

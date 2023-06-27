@@ -18,13 +18,13 @@ const ResizeObserverComponent = ({ id, handleSizeChange }) => {
 
 	return (
 		<>
-			<div ref={observeElement} className='absolute w-full h-full pointer-events-none'></div>
+			<div ref={observeElement} className='absolute w-full h-full pointer-events-none' />
 			<div
 				className='absolute top-0 w-full pointer-events-none'
 				style={{
 					height: `${height}px`
 				}}
-			></div>
+			/>
 		</>
 	)
 }

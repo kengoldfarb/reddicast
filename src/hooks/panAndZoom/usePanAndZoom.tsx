@@ -1,6 +1,6 @@
-import { useRef, useReducer } from 'react'
+import { pan, startPan, types, zoom } from './actions'
 import reducer, { initialState } from './reducer'
-import { pan, startPan, zoom, types } from './actions'
+import { useReducer, useRef } from 'react'
 const usePanAndZoom = () => {
 	const [state, dispatch] = useReducer(reducer, initialState)
 	const containerRef = useRef<HTMLDivElement>(null)

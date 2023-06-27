@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
-import ParseBodyHTML from './ParseBodyHTML'
 import useParseBodyHTML from '../hooks/useParseBodyHTML'
+import ParseBodyHTML from './ParseBodyHTML'
 import { useTheme } from 'next-themes'
+import React, { useEffect, useRef, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { BsChevronCompactDown } from 'react-icons/bs'
 
@@ -37,7 +37,7 @@ const PostBody = ({
 	const [hiddenText, setHiddenText] = useState(false)
 	const [hideText, setHideText] = useState(() => !!limitHeight ?? false)
 	useEffect(() => {
-		let cRef = ref.current
+		const cRef = ref.current
 		const checkIsTextHidden = () => {
 			if ((ref?.current?.scrollHeight ?? 0) > (ref.current?.clientHeight ?? 0)) {
 				setHiddenText(true)
@@ -53,7 +53,7 @@ const PostBody = ({
 			checkCardHeight()
 		}
 		return () => {
-			cRef && cRef.removeEventListener('resize', checkIsTextHidden)
+			cRef?.removeEventListener('resize', checkIsTextHidden)
 		}
 	}, [component, mode, heightLimited])
 
@@ -63,25 +63,22 @@ const PostBody = ({
 				<div
 					ref={ref}
 					id='innerhtml'
-					onClick={(e) => {
+					onClick={(_e) => {
 						// if (post) {
 						//   e.stopPropagation();
 						// }
 					}} //alternate to single click fix
-					className={
-						' relative prose inline-block prose-a:py-0  prose-headings:font-normal prose-p:my-0 prose-h1:text-xl   ' +
-						' prose-strong:text-th-textStrong prose-headings:text-th-textHeading text-th-textBody  prose-a:break-all prose-pre:max-w-[90vw] prose-pre:md:max-w-lg prose-pre:lg:max-w-3xl  prose-pre:overflow-x-auto prose-table:max-w-[90vw] prose-table:md:max-w-lg prose-table:lg:max-w-full prose-table:overflow-x-auto break-words max-w-none prose-pre:ring-1 prose-pre:ring-th-border2 ' +
-						(withBG ? 'rounded-lg bg-th-highlight ring-1 ring-th-border2 ' : '') +
-						(resolvedTheme == 'light' ? ' ' : ' prose-invert  ') +
-						(mode === 'card'
+					className={` relative prose inline-block prose-a:py-0  prose-headings:font-normal prose-p:my-0 prose-h1:text-xl    prose-strong:text-th-textStrong prose-headings:text-th-textHeading text-th-textBody  prose-a:break-all prose-pre:max-w-[90vw] prose-pre:md:max-w-lg prose-pre:lg:max-w-3xl  prose-pre:overflow-x-auto prose-table:max-w-[90vw] prose-table:md:max-w-lg prose-table:lg:max-w-full prose-table:overflow-x-auto break-words max-w-none prose-pre:ring-1 prose-pre:ring-th-border2 ${
+						withBG ? 'rounded-lg bg-th-highlight ring-1 ring-th-border2 ' : ''
+					}${resolvedTheme === 'light' ? ' ' : ' prose-invert  '}${
+						mode === 'card'
 							? ' prose-sm max-w-none w-full px-2 pr-4 py-1 '
 							: mode === 'expando'
 							? ' prose-sm max-w-none w-full p-2'
 							: mode === 'post'
 							? ' w-full p-4 '
-							: '') +
-						(hideText && mode !== 'post' ? ' overflow-hidden ' : ` overflow-auto ${scrollStyle} pr-4 `)
-					}
+							: ''
+					}${hideText && mode !== 'post' ? ' overflow-hidden ' : ` overflow-auto ${scrollStyle} pr-4 `}`}
 					style={{
 						wordBreak: 'break-word',
 						maxHeight: `${limitHeight ? (mode === 'post' && !hideText ? '' : `${limitHeight}px`) : ''}`
@@ -93,7 +90,7 @@ const PostBody = ({
 								className={
 									'absolute bottom-0 w-full h-32 pointer-events-none bg-gradient-to-t from-th-highlight to-transparent'
 								}
-							></div>
+							/>
 							<button
 								className='absolute flex items-center justify-center w-full h-10 -translate-x-1/2 bottom-2 left-1/2 group'
 								onClick={(e) => {

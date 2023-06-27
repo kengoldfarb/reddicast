@@ -1,10 +1,10 @@
-import React, { Fragment, useRef, useState } from 'react'
-import { Menu, Transition } from '@headlessui/react'
-import { BsThreeDotsVertical } from 'react-icons/bs'
-import Link from 'next/link'
 import { useMainContext } from '../MainContext'
 import Toggles from './settings/Toggles'
+import { Menu, Transition } from '@headlessui/react'
 import { useWindowWidth } from '@react-hook/window-size/throttled'
+import Link from 'next/link'
+import React, { Fragment, useRef, useState } from 'react'
+import { BsThreeDotsVertical } from 'react-icons/bs'
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ')
@@ -87,10 +87,9 @@ const NavMenu = ({ hide = false }) => {
 					leaveTo='transform opacity-0 scale-95'
 				>
 					<Menu.Items
-						className={
-							'absolute right-0 w-40 mt-10 origin-top-right bg-th-background2 rounded-md shadow-lg focus:outline-none border border-th-border ring-1 ring-th-base ring-opacity-5 z-50  ' +
-							(hide && ' hidden')
-						}
+						className={`absolute right-0 w-40 mt-10 origin-top-right bg-th-background2 rounded-md shadow-lg focus:outline-none border border-th-border ring-1 ring-th-base ring-opacity-5 z-50  ${
+							hide && ' hidden'
+						}`}
 					>
 						<div className='py-1'>
 							<Menu.Item>
@@ -114,19 +113,16 @@ const NavMenu = ({ hide = false }) => {
 											</button>
 										</div>
 										<ul
-											className={
-												(active && !touched ? 'block ' : 'hidden ') +
-												(!touched ? ' group-hover:block group-focus:block ' : '') +
-												'absolute top-0 w-32 -left-32  bg-th-background2 rounded-md shadow-lg border border-th-border text-right'
-											}
+											className={`${active && !touched ? 'block ' : 'hidden '}${
+												!touched ? ' group-hover:block group-focus:block ' : ''
+											}absolute top-0 w-32 -left-32  bg-th-background2 rounded-md shadow-lg border border-th-border text-right`}
 										>
 											<li>
 												<div
-													className={
-														(context.columnOverride === 0 ? 'font-bold ' : '') +
-														' px-4 py-3 text-sm hover:bg-th-highlight   mt-1 cursor-pointer'
-													}
-													onClick={(e) => {
+													className={`${
+														context.columnOverride === 0 ? 'font-bold ' : ''
+													} px-4 py-3 text-sm hover:bg-th-highlight   mt-1 cursor-pointer`}
+													onClick={(_e) => {
 														setColumnCount(0)
 													}}
 												>
@@ -135,8 +131,8 @@ const NavMenu = ({ hide = false }) => {
 											</li>
 											<li>
 												<div
-													className={(context.columnOverride === 1 ? 'font-bold ' : '') + ` ${subOptionStyle}`}
-													onClick={(e) => {
+													className={`${context.columnOverride === 1 ? 'font-bold ' : ''} ${subOptionStyle}`}
+													onClick={(_e) => {
 														setColumnCount(1)
 													}}
 												>
@@ -145,8 +141,8 @@ const NavMenu = ({ hide = false }) => {
 											</li>
 											<li>
 												<div
-													className={(context.columnOverride === 2 ? 'font-bold ' : '') + ` ${subOptionStyle}`}
-													onClick={(e) => {
+													className={`${context.columnOverride === 2 ? 'font-bold ' : ''} ${subOptionStyle}`}
+													onClick={(_e) => {
 														setColumnCount(2)
 													}}
 												>
@@ -155,8 +151,8 @@ const NavMenu = ({ hide = false }) => {
 											</li>
 											<li>
 												<div
-													className={(context.columnOverride === 3 ? 'font-bold ' : '') + ` ${subOptionStyle}`}
-													onClick={(e) => {
+													className={`${context.columnOverride === 3 ? 'font-bold ' : ''} ${subOptionStyle}`}
+													onClick={(_e) => {
 														setColumnCount(3)
 													}}
 												>
@@ -165,8 +161,8 @@ const NavMenu = ({ hide = false }) => {
 											</li>
 											<li>
 												<div
-													className={(context.columnOverride === 4 ? 'font-bold ' : '') + ` ${subOptionStyle}`}
-													onClick={(e) => {
+													className={`${context.columnOverride === 4 ? 'font-bold ' : ''} ${subOptionStyle}`}
+													onClick={(_e) => {
 														setColumnCount(4)
 													}}
 												>
@@ -175,8 +171,8 @@ const NavMenu = ({ hide = false }) => {
 											</li>
 											<li>
 												<div
-													className={(context.columnOverride === 5 ? 'font-bold ' : '') + ` ${subOptionStyle}`}
-													onClick={(e) => {
+													className={`${context.columnOverride === 5 ? 'font-bold ' : ''} ${subOptionStyle}`}
+													onClick={(_e) => {
 														setColumnCount(5)
 													}}
 												>
@@ -185,8 +181,8 @@ const NavMenu = ({ hide = false }) => {
 											</li>
 											<li>
 												<div
-													className={(context.columnOverride === 7 ? 'font-bold ' : '') + ` ${subOptionStyle}`}
-													onClick={(e) => {
+													className={`${context.columnOverride === 7 ? 'font-bold ' : ''} ${subOptionStyle}`}
+													onClick={(_e) => {
 														setColumnCount(7)
 													}}
 												>
@@ -218,20 +214,18 @@ const NavMenu = ({ hide = false }) => {
 											</button>
 										</div>
 										<ul
-											className={
-												(active && !touched ? 'block ' : 'hidden ') +
-												(!touched ? ' group-hover:block group-focus:block ' : '') +
-												' absolute top-0 w-32 -left-32  bg-th-background2 rounded-md shadow-lg border border-th-border text-right'
-											}
+											className={`${active && !touched ? 'block ' : 'hidden '}${
+												!touched ? ' group-hover:block group-focus:block ' : ''
+											} absolute top-0 w-32 -left-32  bg-th-background2 rounded-md shadow-lg border border-th-border text-right`}
 										>
 											<li>
 												<div
-													className={
-														((context.cardStyle === 'card1' || context.cardStyle === 'default') && !context.mediaOnly
+													className={`${
+														(context.cardStyle === 'card1' || context.cardStyle === 'default') && !context.mediaOnly
 															? ' font-bold '
-															: '') + ` ${subOptionStyle} mt-1`
-													}
-													onClick={(e) => {
+															: ''
+													} ${subOptionStyle} mt-1`}
+													onClick={(_e) => {
 														setCardStyle('card1')
 														// if(context.columnOverride == 1 || context.columns == 1) {context.setColumnOverride(0);};
 
@@ -243,8 +237,8 @@ const NavMenu = ({ hide = false }) => {
 											</li>
 											<li>
 												<div
-													className={(context.cardStyle === 'card2' ? ' font-bold ' : '') + ` ${subOptionStyle}`}
-													onClick={(e) => {
+													className={`${context.cardStyle === 'card2' ? ' font-bold ' : ''} ${subOptionStyle}`}
+													onClick={(_e) => {
 														setCardStyle('card2')
 														//if(context.columnOverride == 1 || context.columns == 1) {context.setColumnOverride(0);};
 
@@ -256,11 +250,10 @@ const NavMenu = ({ hide = false }) => {
 											</li>
 											<li>
 												<div
-													className={
-														(context.cardStyle == 'card1' && context.mediaOnly ? ' font-bold ' : '') +
-														` ${subOptionStyle}`
-													}
-													onClick={(e) => {
+													className={`${
+														context.cardStyle === 'card1' && context.mediaOnly ? ' font-bold ' : ''
+													} ${subOptionStyle}`}
+													onClick={(_e) => {
 														setCardStyle('card1')
 														//if(context.columnOverride == 1 || context.columns == 1) {context.setColumnOverride(0);};
 														context.setMediaOnly(true)
@@ -271,8 +264,8 @@ const NavMenu = ({ hide = false }) => {
 											</li>
 											<li>
 												<div
-													className={(context.cardStyle == 'row1' ? ' font-bold ' : '') + ` ${subOptionStyle}`}
-													onClick={(e) => {
+													className={`${context.cardStyle === 'row1' ? ' font-bold ' : ''} ${subOptionStyle}`}
+													onClick={(_e) => {
 														setCardStyle('row1')
 														context.setMediaOnly(false)
 														context.setColumnOverride(1)
@@ -352,7 +345,7 @@ const NavMenu = ({ hide = false }) => {
 				</Transition>
 			</Menu>
 			<Menu as={'div'} className={'relative font-normal'}>
-				<Menu.Button aria-label='column count options' ref={columnMenuRef} className='hidden'></Menu.Button>
+				<Menu.Button aria-label='column count options' ref={columnMenuRef} className='hidden' />
 				<Transition
 					as={Fragment}
 					enter='transition ease-out duration-800'
@@ -364,18 +357,16 @@ const NavMenu = ({ hide = false }) => {
 				>
 					<Menu.Items
 						as='ul'
-						className={
-							'absolute right-[9.95rem] text-right top-[1.4rem] w-32 origin-top-right bg-th-background2 rounded-md shadow-lg focus:outline-none border border-th-border z-50  ' +
-							(hide && ' hidden')
-						}
+						className={`absolute right-[9.95rem] text-right top-[1.4rem] w-32 origin-top-right bg-th-background2 rounded-md shadow-lg focus:outline-none border border-th-border z-50  ${
+							hide && ' hidden'
+						}`}
 					>
 						<Menu.Item as={'li'}>
 							<div
-								className={
-									(context.columnOverride === 0 ? 'font-bold bg-th-highlight ' : '') +
-									' px-4 py-3 text-sm hover:bg-th-highlight   mt-1 cursor-pointer'
-								}
-								onClick={(e) => {
+								className={`${
+									context.columnOverride === 0 ? 'font-bold bg-th-highlight ' : ''
+								} px-4 py-3 text-sm hover:bg-th-highlight   mt-1 cursor-pointer`}
+								onClick={(_e) => {
 									setColumnCount(0)
 								}}
 							>
@@ -384,8 +375,8 @@ const NavMenu = ({ hide = false }) => {
 						</Menu.Item>
 						<Menu.Item as={'li'}>
 							<div
-								className={(context.columnOverride === 1 ? 'font-bold bg-th-highlight ' : '') + ` ${subOptionStyle}`}
-								onClick={(e) => {
+								className={`${context.columnOverride === 1 ? 'font-bold bg-th-highlight ' : ''} ${subOptionStyle}`}
+								onClick={(_e) => {
 									setColumnCount(1)
 								}}
 							>
@@ -394,8 +385,8 @@ const NavMenu = ({ hide = false }) => {
 						</Menu.Item>
 						<Menu.Item as={'li'}>
 							<div
-								className={(context.columnOverride === 2 ? 'font-bold bg-th-highlight ' : '') + ` ${subOptionStyle}`}
-								onClick={(e) => {
+								className={`${context.columnOverride === 2 ? 'font-bold bg-th-highlight ' : ''} ${subOptionStyle}`}
+								onClick={(_e) => {
 									setColumnCount(2)
 								}}
 							>
@@ -404,8 +395,8 @@ const NavMenu = ({ hide = false }) => {
 						</Menu.Item>
 						<Menu.Item as={'li'}>
 							<div
-								className={(context.columnOverride === 3 ? 'font-bold bg-th-highlight ' : '') + ` ${subOptionStyle}`}
-								onClick={(e) => {
+								className={`${context.columnOverride === 3 ? 'font-bold bg-th-highlight ' : ''} ${subOptionStyle}`}
+								onClick={(_e) => {
 									setColumnCount(3)
 								}}
 							>
@@ -414,8 +405,8 @@ const NavMenu = ({ hide = false }) => {
 						</Menu.Item>
 						<Menu.Item as={'li'}>
 							<div
-								className={(context.columnOverride === 4 ? 'font-bold bg-th-highlight ' : '') + ` ${subOptionStyle}`}
-								onClick={(e) => {
+								className={`${context.columnOverride === 4 ? 'font-bold bg-th-highlight ' : ''} ${subOptionStyle}`}
+								onClick={(_e) => {
 									setColumnCount(4)
 								}}
 							>
@@ -424,8 +415,8 @@ const NavMenu = ({ hide = false }) => {
 						</Menu.Item>
 						<Menu.Item as={'li'}>
 							<div
-								className={(context.columnOverride === 5 ? 'font-bold bg-th-highlight ' : '') + ` ${subOptionStyle}`}
-								onClick={(e) => {
+								className={`${context.columnOverride === 5 ? 'font-bold bg-th-highlight ' : ''} ${subOptionStyle}`}
+								onClick={(_e) => {
 									setColumnCount(5)
 								}}
 							>
@@ -434,8 +425,8 @@ const NavMenu = ({ hide = false }) => {
 						</Menu.Item>
 						<Menu.Item as={'li'}>
 							<div
-								className={(context.columnOverride === 7 ? 'font-bold bg-th-highlight ' : '') + ` ${subOptionStyle}`}
-								onClick={(e) => {
+								className={`${context.columnOverride === 7 ? 'font-bold bg-th-highlight ' : ''} ${subOptionStyle}`}
+								onClick={(_e) => {
 									setColumnCount(7)
 								}}
 							>
@@ -446,7 +437,7 @@ const NavMenu = ({ hide = false }) => {
 				</Transition>
 			</Menu>
 			<Menu as={'div'} className={'relative font-normal'}>
-				<Menu.Button aria-label='column count options' ref={cardStyleRef} className='hidden'></Menu.Button>
+				<Menu.Button aria-label='column count options' ref={cardStyleRef} className='hidden' />
 				<Transition
 					as={Fragment}
 					enter='transition ease-out duration-800'
@@ -458,19 +449,18 @@ const NavMenu = ({ hide = false }) => {
 				>
 					<Menu.Items
 						as='ul'
-						className={
-							'absolute right-[9.95rem] text-right top-[1.4rem] w-32 origin-top-right bg-th-background2 rounded-md shadow-lg focus:outline-none border border-th-border z-50  ' +
-							(hide && ' hidden')
-						}
+						className={`absolute right-[9.95rem] text-right top-[1.4rem] w-32 origin-top-right bg-th-background2 rounded-md shadow-lg focus:outline-none border border-th-border z-50  ${
+							hide && ' hidden'
+						}`}
 					>
 						<Menu.Item as={'li'}>
 							<div
-								className={
-									((context.cardStyle === 'card1' || context.cardStyle === 'default') && !context.mediaOnly
+								className={`${
+									(context.cardStyle === 'card1' || context.cardStyle === 'default') && !context.mediaOnly
 										? ' font-bold bg-th-highlight '
-										: '') + ` ${subOptionStyle} mt-1`
-								}
-								onClick={(e) => {
+										: ''
+								} ${subOptionStyle} mt-1`}
+								onClick={(_e) => {
 									setCardStyle('card1')
 									// if(context.columnOverride == 1 || context.columns == 1) {context.setColumnOverride(0);};
 
@@ -482,8 +472,8 @@ const NavMenu = ({ hide = false }) => {
 						</Menu.Item>
 						<Menu.Item as={'li'}>
 							<div
-								className={(context.cardStyle === 'card2' ? ' font-bold bg-th-highlight ' : '') + ` ${subOptionStyle}`}
-								onClick={(e) => {
+								className={`${context.cardStyle === 'card2' ? ' font-bold bg-th-highlight ' : ''} ${subOptionStyle}`}
+								onClick={(_e) => {
 									setCardStyle('card2')
 									//if(context.columnOverride == 1 || context.columns == 1) {context.setColumnOverride(0);};
 
@@ -495,11 +485,10 @@ const NavMenu = ({ hide = false }) => {
 						</Menu.Item>
 						<Menu.Item as={'li'}>
 							<div
-								className={
-									(context.cardStyle == 'card1' && context.mediaOnly ? ' font-bold bg-th-highlight ' : '') +
-									` ${subOptionStyle}`
-								}
-								onClick={(e) => {
+								className={`${
+									context.cardStyle === 'card1' && context.mediaOnly ? ' font-bold bg-th-highlight ' : ''
+								} ${subOptionStyle}`}
+								onClick={(_e) => {
 									setCardStyle('card1')
 									//if(context.columnOverride == 1 || context.columns == 1) {context.setColumnOverride(0);};
 									context.setMediaOnly(true)
@@ -510,8 +499,8 @@ const NavMenu = ({ hide = false }) => {
 						</Menu.Item>
 						<Menu.Item as={'li'}>
 							<div
-								className={(context.cardStyle == 'row1' ? ' font-bold bg-th-highlight ' : '') + ` ${subOptionStyle}`}
-								onClick={(e) => {
+								className={`${context.cardStyle === 'row1' ? ' font-bold bg-th-highlight ' : ''} ${subOptionStyle}`}
+								onClick={(_e) => {
 									setCardStyle('row1')
 									context.setMediaOnly(false)
 									context.setColumnOverride(1)

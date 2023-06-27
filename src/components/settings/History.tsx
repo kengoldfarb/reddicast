@@ -1,6 +1,6 @@
+import useHistory from '../../hooks/useHistory'
 import React, { useEffect, useState } from 'react'
 import { ImSpinner2 } from 'react-icons/im'
-import useHistory from '../../hooks/useHistory'
 
 const History = () => {
 	const { clearRead, clearSeen, getSeenCount, getReadCount } = useHistory()
@@ -9,7 +9,7 @@ const History = () => {
 	const [seenCount, setSeenCount] = useState<number>()
 
 	const setSeen = async () => {
-		let seen = await getSeenCount()
+		const seen = await getSeenCount()
 		if (seen >= 0) {
 			setSeenCount(seen)
 		} else {
@@ -17,7 +17,7 @@ const History = () => {
 		}
 	}
 	const setRead = async () => {
-		let read = await getReadCount()
+		const read = await getReadCount()
 		if (read >= 0) {
 			setReadCount(read)
 		} else {
@@ -81,14 +81,14 @@ const History = () => {
 					<button
 						aria-label='...loading'
 						disabled={true}
-						className={buttonStyle + ' flex items-center justify-center text-transparent select-none'}
+						className={`${buttonStyle} flex items-center justify-center text-transparent select-none`}
 					>
 						<span>.</span>
 						<ImSpinner2 className='text-th-text animate-spin' />
 						<span>.</span>
 					</button>
 				) : seenPrompt ? (
-					<div className={buttonStyle + ' flex flex-col items-center justify-between relative'}>
+					<div className={`${buttonStyle} flex flex-col items-center justify-between relative`}>
 						<label className='absolute -top-[14px] w-full text-xs text-center text-[8px]'>Are you sure? </label>
 						<div className='flex justify-center w-full gap-3'>
 							<button aria-label='yes' className='hover:underline' onClick={clearSeenAction}>
@@ -129,14 +129,14 @@ const History = () => {
 					<button
 						aria-label='...loading'
 						disabled={true}
-						className={buttonStyle + ' flex items-center justify-center text-transparent select-none'}
+						className={`${buttonStyle} flex items-center justify-center text-transparent select-none`}
 					>
 						<span>.</span>
 						<ImSpinner2 className='text-th-text animate-spin' />
 						<span>.</span>
 					</button>
 				) : readPrompt ? (
-					<div className={buttonStyle + ' flex flex-col items-center justify-between relative'}>
+					<div className={`${buttonStyle} flex flex-col items-center justify-between relative`}>
 						<label className='absolute -top-[14px] w-full text-xs text-center text-[8px]'>Are you sure? </label>
 						<div className='flex justify-center w-full gap-3'>
 							<button aria-label='yes' className='hover:underline' onClick={clearReadAction}>

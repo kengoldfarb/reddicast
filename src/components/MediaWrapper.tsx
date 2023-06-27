@@ -1,11 +1,11 @@
-import Media from './Media'
-import { VscEyeClosed, VscEye } from 'react-icons/vsc'
-import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
-import Awardings from './Awardings'
 import { secondsToTime } from '../../lib/utils'
+import Awardings from './Awardings'
+import Media from './Media'
 import PostTitle from './PostTitle'
 import TitleFlair from './TitleFlair'
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+import { VscEye, VscEyeClosed } from 'react-icons/vsc'
 const MediaWrapper = ({
 	hideNSFW,
 	post,
@@ -22,7 +22,7 @@ const MediaWrapper = ({
 	read = false,
 	card = false,
 	fill = false,
-	checkCardHeight = (h?: number) => {},
+	checkCardHeight = (_h?: number) => {},
 	hide = false,
 	fullRes = false,
 	uniformMediaMode = false,
@@ -69,7 +69,7 @@ const MediaWrapper = ({
 	const NSFWWrapper = (
 		<div className={hideNSFW && hideText ? 'relative overflow-hidden ' : ' '} onClick={toggleHide}>
 			<div
-				className={' ' + (hideNSFW && hideText ? ' blur-3xl' : '')}
+				className={` ${hideNSFW && hideText ? ' blur-3xl' : ''}`}
 				style={
 					mediaDimensions?.[1] > 0
 						? {
@@ -173,7 +173,7 @@ const MediaWrapper = ({
 							<span className='text-th-red'>SPOILER</span>
 						</div>
 					)}
-					<div className='mx-1'></div>
+					<div className='mx-1' />
 					{postData?.all_awardings?.length > 0 && (
 						<Awardings all_awardings={postData?.all_awardings} truncate={false} />
 					)}
@@ -200,16 +200,16 @@ const MediaWrapper = ({
 			<div
 				className={
 					(!mediaOnly || postMode ? 'flex flex-col overflow-hidden transition-colors  bg-th-post  ' : '') +
-					(cardStyle == 'card2' && !postMode ? ' ' : '') +
+					(cardStyle === 'card2' && !postMode ? ' ' : '') +
 					((cardStyle !== 'card2' && !mediaOnly) || postMode
 						? ' border hover:bg-th-postHover border-th-border2 hover:border-th-borderHighlight2 rounded'
 						: '')
 				}
 			>
-				{(cardStyle == 'card1' || cardStyle == 'default' || cardStyle == 'row1' || postMode) &&
+				{(cardStyle === 'card1' || cardStyle === 'default' || cardStyle === 'row1' || postMode) &&
 					(!mediaOnly || postMode) && <>{XPostData}</>}
 				{showCrossPostMedia && <div className='relative w-full'>{NSFWWrapper}</div>}
-				{cardStyle == 'card2' && !postMode && <>{XPostData}</>}
+				{cardStyle === 'card2' && !postMode && <>{XPostData}</>}
 			</div>
 		)
 

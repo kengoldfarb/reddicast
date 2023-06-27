@@ -1,27 +1,27 @@
-import { useMainContext } from '../../MainContext'
-import Link from 'next/link'
-import { BiComment } from 'react-icons/bi'
 import { numToString, secondsToTime } from '../../../lib/utils'
+import { useMainContext } from '../../MainContext'
 import Image from 'next/legacy/image'
+import Link from 'next/link'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { BiComment } from 'react-icons/bi'
 
-import { BiExit } from 'react-icons/bi'
-import { ImReddit } from 'react-icons/im'
-import { BsBoxArrowInUpRight, BsCardText } from 'react-icons/bs'
-import { AiOutlineLink } from 'react-icons/ai'
-import { CgArrowsExpandDownRight, CgArrowsExpandUpLeft } from 'react-icons/cg'
-import TitleFlair from '../TitleFlair'
-import Vote from '../Vote'
-import MediaWrapper from '../MediaWrapper'
+import { hideLink } from '../../RedditAPI'
 import Awardings from '../Awardings'
+import HideButton from '../HideButton'
+import MediaWrapper from '../MediaWrapper'
+import PostBody from '../PostBody'
+import PostOptButton from '../PostOptButton'
 import PostTitle from '../PostTitle'
 import SaveButton from '../SaveButton'
-import { hideLink } from '../../RedditAPI'
-import HideButton from '../HideButton'
-import PostOptButton from '../PostOptButton'
-import { GoRepoForked } from 'react-icons/go'
+import TitleFlair from '../TitleFlair'
+import Vote from '../Vote'
 import { useWindowSize } from '@react-hook/window-size'
-import PostBody from '../PostBody'
+import { AiOutlineLink } from 'react-icons/ai'
+import { BiExit } from 'react-icons/bi'
+import { BsBoxArrowInUpRight, BsCardText } from 'react-icons/bs'
+import { CgArrowsExpandDownRight, CgArrowsExpandUpLeft } from 'react-icons/cg'
+import { GoRepoForked } from 'react-icons/go'
+import { ImReddit } from 'react-icons/im'
 const Row1 = ({
 	post,
 	columns,
@@ -46,9 +46,9 @@ const Row1 = ({
 	const [minHeight, setMinHeight] = useState(() => initHeight ?? 0)
 	useEffect(() => {
 		if (expand === undefined) {
-			const cHeight = cardRef.current?.getBoundingClientRect()?.height ?? 0
+			const _cHeight = cardRef.current?.getBoundingClientRect()?.height ?? 0
 			const hHeight = headRef.current?.getBoundingClientRect()?.height ?? 0
-			const eHeight = expandoRef.current?.getBoundingClientRect()?.height ?? 0
+			const _eHeight = expandoRef.current?.getBoundingClientRect()?.height ?? 0
 			// console.log("H??", { initHeight, cHeight, hHeight, eHeight });
 
 			if (
@@ -77,13 +77,13 @@ const Row1 = ({
 		}
 	}, [expand, checkCardHeight])
 	const voteScore = useMemo(() => {
-		let x = post?.score ?? 0
+		const x = post?.score ?? 0
 		if (x < 1000) {
 			return x.toString() + (x === 1 ? ' pt' : ' pts')
 		} else {
-			let y = Math.floor(x / 1000)
-			let z = (x / 1000).toFixed(1)
-			return z.toString() + 'k pts'
+			const _y = Math.floor(x / 1000)
+			const z = (x / 1000).toFixed(1)
+			return `${z.toString()}k pts`
 		}
 	}, [post?.score])
 
@@ -92,23 +92,22 @@ const Row1 = ({
 			<div
 				ref={cardRef}
 				onClick={(e) => handleClick(e)}
-				className={
-					(postNum === 0 ? ' border-t rounded-t-md ' : ' ') +
-					'text-sm bg-th-post2 hover:bg-th-postHover group border-l border-r border-transparent hover:border-th-borderHighlight2   '
-				}
+				className={`${
+					postNum === 0 ? ' border-t rounded-t-md ' : ' '
+				}text-sm bg-th-post2 hover:bg-th-postHover group border-l border-r border-transparent hover:border-th-borderHighlight2   `}
 				style={minHeight ? { minHeight: `${minHeight}px` } : {}}
 			>
 				<div
 					ref={headRef}
-					className={
-						'flex flex-row-reverse items-start py-1 sm:flex-row gap-x-1 sm:gap-x-0 ' + (expand ? ' pb-0 ' : ' pb-2 ')
-					}
+					className={`flex flex-row-reverse items-start py-1 sm:flex-row gap-x-1 sm:gap-x-0 ${
+						expand ? ' pb-0 ' : ' pb-2 '
+					}`}
 				>
 					{/* Votes */}
 					<div
-						className={
-							(post?.link_flair_richtext?.length > 0 ? 'mt-2' : '') + ' flex flex-row items-center justify-center '
-						}
+						className={`${
+							post?.link_flair_richtext?.length > 0 ? 'mt-2' : ''
+						} flex flex-row items-center justify-center `}
 					>
 						<div className='flex flex-row items-center justify-center'>
 							<div className='flex-col items-center self-start justify-start flex-none hidden h-full pt-1 w-14 sm:flex'>
@@ -134,16 +133,14 @@ const Row1 = ({
 							className='mr-1 sm:mr-0'
 						>
 							<div
-								className={
-									'relative flex items-center justify-center flex-none w-24 h-16 mt-2 rounded-md overflow-hidden' +
-									(post?.thumbnail == 'self' ||
-									post?.thumbnail == 'default' ||
-									post?.thumbnail == 'nsfw' ||
-									post?.thumbnail == 'spoiler'
+								className={`relative flex items-center justify-center flex-none w-24 h-16 mt-2 rounded-md overflow-hidden${
+									post?.thumbnail === 'self' ||
+									post?.thumbnail === 'default' ||
+									post?.thumbnail === 'nsfw' ||
+									post?.thumbnail === 'spoiler'
 										? ' border rounded-md'
-										: ' border border-transparent ') +
-									(hideNSFW && ' overflow-hidden')
-								}
+										: ' border border-transparent '
+								}${hideNSFW && ' overflow-hidden'}`}
 							>
 								{post?.thumbnail !== 'self' &&
 								post?.thumbnail !== 'default' &&
@@ -159,10 +156,10 @@ const Row1 = ({
 											height={post?.thumbnail_height}
 											width={post?.thumbnail_width}
 											unoptimized={true}
-											className={'rounded-md ' + (hideNSFW ? ' blur' : '')}
-										></Image>
+											className={`rounded-md ${hideNSFW ? ' blur' : ''}`}
+										/>
 									</div>
-								) : post?.thumbnail == 'self' ? (
+								) : post?.thumbnail === 'self' ? (
 									<BsCardText className='w-6 h-6' />
 								) : (
 									<AiOutlineLink className='w-6 h-6' />
@@ -186,18 +183,15 @@ const Row1 = ({
 									)}
 									<Link href={post?.permalink} onClick={(e) => e.preventDefault()}>
 										<span
-											className={
-												' group-hover:underline font-normal text-base ' +
-												(post?.distinguished == 'moderator' || post?.stickied ? ' text-th-green ' : ' ') +
-												(read && context.dimRead ? ' opacity-50' : '') +
-												(newPost ? ' pr-2 ' : '')
-											}
+											className={` group-hover:underline font-normal text-base ${
+												post?.distinguished === 'moderator' || post?.stickied ? ' text-th-green ' : ' '
+											}${read && context.dimRead ? ' opacity-50' : ''}${newPost ? ' pr-2 ' : ''}`}
 											style={{
 												wordBreak: 'break-word'
 											}}
 										>{`${post?.title ?? ''}`}</span>
 									</Link>
-									{newPost && <span className='text-xs italic font-light text-th-textLight'>{`(new)`}</span>}
+									{newPost && <span className='text-xs italic font-light text-th-textLight'>{'(new)'}</span>}
 								</span>
 							</h1>
 						</div>
@@ -260,14 +254,14 @@ const Row1 = ({
 									<span className='text-th-red'>SPOILER</span>
 								</div>
 							)}
-							<div className='mx-0.5'></div>
+							<div className='mx-0.5' />
 							{post?.all_awardings?.length > 0 && (
 								<>
-									<div className='ml-0.5'></div>
+									<div className='ml-0.5' />
 									<Awardings all_awardings={post?.all_awardings} styles='mr-0.5 -mb-0.5' />
 								</>
 							)}
-							<div className='mx-0.5'></div>
+							<div className='mx-0.5' />
 
 							{post?.mediaInfo?.isLink ? (
 								<a
@@ -303,14 +297,13 @@ const Row1 = ({
 							<div className='flex flex-row flex-wrap items-center justify-start pb-1 space-x-1 text-xs select-none text-th-text'>
 								<button
 									aria-label='expand'
-									className={
-										'hidden sm:flex flex-row items-center h-6 px-1 space-x-1 border rounded-md border-th-border hover:border-th-borderHighlight opacity-60 ' +
-										(!hasMedia && !post?.selftext_html ? 'opacity-0 cursor-default' : '')
-									}
+									className={`hidden sm:flex flex-row items-center h-6 px-1 space-x-1 border rounded-md border-th-border hover:border-th-borderHighlight opacity-60 ${
+										!hasMedia && !post?.selftext_html ? 'opacity-0 cursor-default' : ''
+									}`}
 									onClick={(e) => {
 										e.preventDefault()
 										e.stopPropagation()
-										!(!hasMedia && !post?.selftext_html) && setexpand((s) => !!!s)
+										!(!hasMedia && !post?.selftext_html) && setexpand((s) => !s)
 									}}
 								>
 									{hasMedia || post?.selftext_html ? (
@@ -326,14 +319,13 @@ const Row1 = ({
 									)}
 								</button>
 								<span
-									className={
-										'sm:hidden text-th-textLight text-xs' +
-										(post?.likes === true || post?.likes === 1
+									className={`sm:hidden text-th-textLight text-xs${
+										post?.likes === true || post?.likes === 1
 											? ' text-th-upvote '
 											: post?.likes === false || post?.likes === -1
 											? ' text-th-downvote '
-											: '')
-									}
+											: ''
+									}`}
 								>
 									{voteScore}
 								</span>
@@ -391,7 +383,7 @@ const Row1 = ({
 
 				{/* Hidden Media */}
 				{expand && (
-					<div className={'block p-1 origin-top pb-2 ' + (hideNSFW ? ' overflow-hidden relative' : '')}>
+					<div className={`block p-1 origin-top pb-2 ${hideNSFW ? ' overflow-hidden relative' : ''}`}>
 						{post?.crosspost_parent_list?.[0] ? (
 							<div className='relative block'>
 								<MediaWrapper
@@ -436,7 +428,7 @@ const Row1 = ({
 						)}
 
 						{(post.crosspost_parent_list?.[0]?.selftext_html || post?.selftext_html) && (
-							<div className={'relative block mx-0' + (post?.mediaInfo?.hasMedia ? ' mt-2' : '')}>
+							<div className={`relative block mx-0${post?.mediaInfo?.hasMedia ? ' mt-2' : ''}`}>
 								<PostBody
 									mode='expando'
 									rawHTML={post.crosspost_parent_list?.[0]?.selftext_html ?? post?.selftext_html}

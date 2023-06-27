@@ -1,15 +1,15 @@
+import ParseBodyHTML from './ParseBodyHTML'
+import { Dialog, Transition } from '@headlessui/react'
+import { useRouter } from 'next/router'
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useEffect, useRef, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import { RiArrowGoBackLine } from 'react-icons/ri'
-import { useRouter } from 'next/router'
-import ParseBodyHTML from './ParseBodyHTML'
 import React from 'react'
+import { RiArrowGoBackLine } from 'react-icons/ri'
 
 const SubInfoModal = ({ toOpen, descriptionHTML, displayName }) => {
 	const [open, setOpen] = useState(false)
 	const cancelButtonRef = useRef(null)
-	const router = useRouter()
+	const _router = useRouter()
 
 	useEffect(() => {
 		toOpen > 0 && setOpen(true)
@@ -74,7 +74,7 @@ const SubInfoModal = ({ toOpen, descriptionHTML, displayName }) => {
 												onClick={(e) => {
 													const cellText = document.getSelection()
 													//console.log(cellText);
-													if (cellText?.anchorNode?.nodeName != '#text') e.stopPropagation()
+													if (cellText?.anchorNode?.nodeName !== '#text') e.stopPropagation()
 													if (cellText?.type === 'Range') e.stopPropagation()
 												}}
 												className='pb-2 pl-3 mr-1 md:pl-0'

@@ -1,7 +1,7 @@
+import axios from 'axios'
+import { getToken } from 'next-auth/jwt'
 /* eslint-disable import/no-anonymous-default-export */
 import { getSession } from 'next-auth/react'
-import { getToken } from 'next-auth/jwt'
-import axios from 'axios'
 
 export default async (req, res) => {
 	const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })

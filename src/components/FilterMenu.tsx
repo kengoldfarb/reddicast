@@ -1,10 +1,10 @@
-import React, { Fragment, useState, useEffect, useMemo } from 'react'
-import { FiFilter } from 'react-icons/fi'
-import { useMainContext } from '../MainContext'
-import FilterModal from './FilterModal'
-import useLocation from '../hooks/useLocation'
-import { useQueryClient } from '@tanstack/react-query'
 import { numToString } from '../../lib/utils'
+import { useMainContext } from '../MainContext'
+import useLocation from '../hooks/useLocation'
+import FilterModal from './FilterModal'
+import { useQueryClient } from '@tanstack/react-query'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import { FiFilter } from 'react-icons/fi'
 
 const FilterMenu = ({ hide = false }) => {
 	const context: any = useMainContext()
@@ -29,7 +29,7 @@ const FilterMenu = ({ hide = false }) => {
 
 	useEffect(() => {
 		if (active) {
-			let updateDeg = () => {
+			const updateDeg = () => {
 				setDeg((d) => (d += 4))
 			}
 
@@ -75,12 +75,11 @@ const FilterMenu = ({ hide = false }) => {
 				)}
 
 				<div
-					className={
-						'flex flex-row items-center justify-center w-full h-full  rounded-md  bg-th-background2 focus:outline-none' +
-						(active ? ' z-10 scale-90' : ' border border-transparent hover:border-th-border')
-					}
+					className={`flex flex-row items-center justify-center w-full h-full  rounded-md  bg-th-background2 focus:outline-none${
+						active ? ' z-10 scale-90' : ' border border-transparent hover:border-th-border'
+					}`}
 				>
-					<FiFilter className={'flex-none z-50 ' + (active ? ' w-6 h-6 ' : ' w-5 h-5 ')} />
+					<FiFilter className={`flex-none z-50 ${active ? ' w-6 h-6 ' : ' w-5 h-5 '}`} />
 				</div>
 				{active && (
 					<div
@@ -88,7 +87,7 @@ const FilterMenu = ({ hide = false }) => {
 						style={{
 							backgroundImage: `linear-gradient(${deg}deg, var(--accent), rgb(255, 255, 255))`
 						}}
-					></div>
+					/>
 				)}
 			</button>
 		</>

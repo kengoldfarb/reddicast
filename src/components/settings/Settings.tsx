@@ -1,20 +1,20 @@
 import { Tab } from '@headlessui/react'
 import React from 'react'
-import { useState, useRef, useEffect, createRef } from 'react'
+import { createRef, useEffect, useRef, useState } from 'react'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
-import { BiImages, BiComment, BiDetail, BiCog, BiPaint, BiHistory } from 'react-icons/bi'
+import FilterSubs from '../FilterSubs'
+import { BiCog, BiComment, BiDetail, BiHistory, BiImages, BiPaint } from 'react-icons/bi'
 import { BsColumnsGap } from 'react-icons/bs'
 import { FiFilter } from 'react-icons/fi'
-import FilterSubs from '../FilterSubs'
 
 import ToggleFilters from '../ToggleFilters'
 import CardStyleDemo from './CardStyleDemo'
 import ColumnCardOptions from './ColumnCardOptions'
+import DefaultSortSelector from './DefaultSortSelector'
 import FilterEntities from './FilterEntities'
 import History from './History'
 import IntInput from './IntInput'
-import DefaultSortSelector from './DefaultSortSelector'
 import ThemeSelector from './ThemeSelector'
 import Toggles from './Toggles'
 
@@ -160,7 +160,7 @@ const Settings = () => {
 		Filters: {
 			icon: <FiFilter className={icons} />,
 			settings: [
-				...['self', 'links', 'images', 'videos', 'portrait', 'landscape', 'read', 'seen'].map((f, i) => (
+				...['self', 'links', 'images', 'videos', 'portrait', 'landscape', 'read', 'seen'].map((f, _i) => (
 					<div key={f}>
 						<ToggleFilters filter={f} withSubtext={true} quickToggle={true} />
 					</div>
@@ -237,14 +237,13 @@ const Settings = () => {
 					' scrollbar-thin scrollbar-thumb-th-scrollbar scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track-rounded-full bg-th-post border-th-border2'
 				}
 			>
-				{Object.keys(categories).map((category, i) => (
+				{Object.keys(categories).map((category, _i) => (
 					<Tab key={category} className={' outline-none '}>
 						{({ selected }) => (
 							<div
-								className={
-									(selected ? ' font-bold opacity-100 bg-th-highlight ' : '') +
-									' cursor-pointer opacity-50 hover:opacity-80 select-none flex my-1 '
-								}
+								className={`${
+									selected ? ' font-bold opacity-100 bg-th-highlight ' : ''
+								} cursor-pointer opacity-50 hover:opacity-80 select-none flex my-1 `}
 								onClick={() => {
 									refs[category].current.scrollIntoView({
 										behavior: 'smooth',
@@ -252,7 +251,7 @@ const Settings = () => {
 									})
 								}}
 							>
-								<div className='w-1 h-12 mt-0 mr-2 bg-th-scrollbar '></div>
+								<div className='w-1 h-12 mt-0 mr-2 bg-th-scrollbar ' />
 
 								<div className='flex items-center justify-start py-2 pl-1'>
 									<span className=''>{categories[category]?.icon}</span>
@@ -269,7 +268,7 @@ const Settings = () => {
 					' scrollbar-thin scrollbar-thumb-th-scrollbar scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track-rounded-full bg-th-post border-th-border2'
 				}
 			>
-				{Object.keys(categories).map((category, i) => (
+				{Object.keys(categories).map((category, _i) => (
 					<div ref={refs[category]} key={category} className={' sm:px-5  py-2 pt-6 '}>
 						<h1 className='text-xl font-semibold '>{category}</h1>
 						{categories[category]?.settings?.map((setting) => (

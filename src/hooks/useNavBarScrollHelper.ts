@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
 import { useScroll } from './useScroll'
+import React, { useEffect } from 'react'
 
 const useNavBarScrollHelper = ({ allowHide, allowShow, autoHideNav, setHidden, timeSinceNav }) => {
 	const { scrollY, scrollDirection } = useScroll()

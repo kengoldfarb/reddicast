@@ -4,8 +4,8 @@ const ErrMessage = () => {
 	const [browser, setBrowser] = useState('')
 	useEffect(() => {
 		//https://developer.mozilla.org/en-US/docs/Web/API/Window/navigator
-		var sBrowser,
-			sUsrAg = navigator.userAgent
+		let sBrowser
+		const sUsrAg = navigator.userAgent
 
 		// The order matters here, and this may report false positives for unlisted browsers.
 
@@ -67,7 +67,7 @@ const ErrMessage = () => {
 					}
 				</p>
 			)}
-			<p className='text-xs text-th-textLight'></p>
+			<p className='text-xs text-th-textLight' />
 		</div>
 	)
 }

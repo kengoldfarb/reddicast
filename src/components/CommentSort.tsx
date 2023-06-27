@@ -1,13 +1,13 @@
-import { Fragment } from 'react'
+import { useMainContext } from '../MainContext'
 import { Menu, Transition } from '@headlessui/react'
+import { Fragment } from 'react'
+import { useEffect, useState } from 'react'
+import React from 'react'
 import { AiOutlineFire, AiOutlineRocket } from 'react-icons/ai'
+import { BsChevronDown, BsCircle } from 'react-icons/bs'
 import { GrNew } from 'react-icons/gr'
 import { IoMdTrendingUp } from 'react-icons/io'
 import { RiBarChart2Line } from 'react-icons/ri'
-import { BsCircle, BsChevronDown } from 'react-icons/bs'
-import { useState, useEffect } from 'react'
-import React from 'react'
-import { useMainContext } from '../MainContext'
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ')

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import Image from 'next/legacy/image'
 import { numToString } from '../../lib/utils'
 import { useMainContext } from '../MainContext'
+import Image from 'next/legacy/image'
+import React, { useEffect, useState } from 'react'
 
 const MAX_DISPLAY = 5
 
@@ -10,7 +10,7 @@ const Awardings = ({ all_awardings, truncate = true, styles = '' }) => {
 	const context: any = useMainContext()
 	useEffect(() => {
 		let r = 0
-		all_awardings?.forEach((a, i) => {
+		all_awardings?.forEach((a, _i) => {
 			r = r + a?.count
 		})
 		setRewardCount(r)
@@ -42,7 +42,7 @@ const Awardings = ({ all_awardings, truncate = true, styles = '' }) => {
 					})}
 				{rewardCount > 0 && (
 					<span className='text-xs font-semibold'>
-						{rewardCount} award{rewardCount == 1 ? '' : 's'}
+						{rewardCount} award{rewardCount === 1 ? '' : 's'}
 					</span>
 				)}
 			</>

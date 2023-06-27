@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import compareObjects from './compareObjects'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 
 export default class Item extends Component {
 	static propTypes = {
@@ -53,8 +53,8 @@ export default class Item extends Component {
 	render() {
 		const { isHighlighted, item, renderItem, renderItemData, ...restProps } = this.props
 
-		delete restProps.sectionIndex
-		delete restProps.itemIndex
+		restProps.sectionIndex = undefined
+		restProps.itemIndex = undefined
 
 		if (typeof restProps.onMouseEnter === 'function') {
 			restProps.onMouseEnter = this.onMouseEnter

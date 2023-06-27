@@ -1,17 +1,17 @@
-import { useRouter } from 'next/router'
-import React, { useState, Fragment, useEffect, useMemo } from 'react'
 import Image from 'next/legacy/image'
+import { useRouter } from 'next/router'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
 
-import { BsChevronDown } from 'react-icons/bs'
-import { AiOutlineHome, AiOutlineSearch } from 'react-icons/ai'
-import { CgLivePhoto, CgPlayListSearch } from 'react-icons/cg'
-import { BiRightTopArrowCircle } from 'react-icons/bi'
-import { HiOutlineMinus } from 'react-icons/hi'
-import DropdownItem from './DropdownItem'
+import { useMainContext } from '../MainContext'
 import { useSubsContext } from '../MySubs'
 import DropDownItems from './DropDownItems'
+import DropdownItem from './DropdownItem'
 import { Menu, Transition } from '@headlessui/react'
-import { useMainContext } from '../MainContext'
+import { AiOutlineHome, AiOutlineSearch } from 'react-icons/ai'
+import { BiRightTopArrowCircle } from 'react-icons/bi'
+import { BsChevronDown } from 'react-icons/bs'
+import { CgLivePhoto, CgPlayListSearch } from 'react-icons/cg'
+import { HiOutlineMinus } from 'react-icons/hi'
 
 const scrollStyle =
 	'scrollbar-thin scrollbar-thumb-th-scrollbar scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track-rounded-full'
@@ -31,7 +31,7 @@ const DropdownPane = ({ hide }) => {
 		let icon = ''
 		if (multi && myMultis) {
 			myMultis?.forEach((myMulti) => {
-				if (myMulti?.data?.name?.toUpperCase() == multi?.toUpperCase()) {
+				if (myMulti?.data?.name?.toUpperCase() === multi?.toUpperCase()) {
 					icon = myMulti?.data?.icon_url
 				}
 			})
@@ -51,10 +51,9 @@ const DropdownPane = ({ hide }) => {
 					<Menu.Button
 						aria-label='Open Nav Dropdown'
 						as='button'
-						className={
-							'flex flex-row items-center justify-between outline-none flex-none w-full h-full px-2 border border-transparent rounded-md hover:cursor-pointer rounded-2  hover:border-th-border ' +
-							(open ? ' border-th-border ' : '')
-						}
+						className={`flex flex-row items-center justify-between outline-none flex-none w-full h-full px-2 border border-transparent rounded-md hover:cursor-pointer rounded-2  hover:border-th-border ${
+							open ? ' border-th-border ' : ''
+						}`}
 						onClick={handleClick}
 					>
 						<div className='flex flex-row items-center'>
@@ -99,15 +98,15 @@ const DropdownPane = ({ hide }) => {
 								)
 								//
 							}
-							{(currLocation == 'HOME' ||
-								currLocation == 'POPULAR' ||
-								currLocation == 'ALL' ||
+							{(currLocation === 'HOME' ||
+								currLocation === 'POPULAR' ||
+								currLocation === 'ALL' ||
 								currLocation === 'SEARCH' ||
 								currLocation === 'SUBREDDITS') && (
 								<h1 className='ml-2 capitalize truncate'>{currLocation.toLowerCase()}</h1>
 							)}
 						</div>
-						<BsChevronDown className={(open ? '-rotate-180' : 'rotate-0') + ' transform transition duration-200'} />
+						<BsChevronDown className={`${open ? '-rotate-180' : 'rotate-0'} transform transition duration-200`} />
 					</Menu.Button>
 					{/* Dropdown */}
 					<Transition
@@ -121,17 +120,15 @@ const DropdownPane = ({ hide }) => {
 					>
 						<Menu.Items
 							as='div'
-							className={
-								' flex outline-none flex-col w-full border bg-th-background2 border-th-border ring-1 ring-th-base mt-1 rounded-md shadow-sm origin-top z-50' +
-								`${open && !hide ? ' block' : ' hidden'}`
-							}
+							className={` flex outline-none flex-col w-full border bg-th-background2 border-th-border ring-1 ring-th-base mt-1 rounded-md shadow-sm origin-top z-50${
+								open && !hide ? ' block' : ' hidden'
+							}`}
 						>
 							{/* scroll */}
 							<div
-								className={
-									`grid grid-cols-1 overflow-y-auto overscroll-contain transition-all ${scrollStyle}` +
-									(expand ? ' max-h-[90vh]' : '  max-h-[30rem] ')
-								}
+								className={`grid grid-cols-1 overflow-y-auto overscroll-contain transition-all ${scrollStyle}${
+									expand ? ' max-h-[90vh]' : '  max-h-[30rem] '
+								}`}
 							>
 								<DropDownItems show={open} />
 							</div>

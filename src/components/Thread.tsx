@@ -1,48 +1,48 @@
-import React, { useEffect, useState, useRef, useMemo, useLayoutEffect } from 'react'
 import Comments from './Comments'
-import Link from 'next/link'
 import { useWindowSize } from '@react-hook/window-size'
 import { useSession } from 'next-auth/react'
-import { BiDownvote, BiUpvote, BiExpand, BiCollapse } from 'react-icons/bi'
-import { HiOutlineDocumentDuplicate, HiOutlineSwitchHorizontal } from 'react-icons/hi'
+import Link from 'next/link'
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai'
+import { BiCollapse, BiDownvote, BiExpand, BiUpvote } from 'react-icons/bi'
 import { BiComment, BiExit } from 'react-icons/bi'
-import { RiArrowGoBackLine } from 'react-icons/ri'
-import { AiOutlineRight, AiOutlineLeft } from 'react-icons/ai'
+import { BsArchive, BsLock, BsReply, BsShieldX } from 'react-icons/bs'
+import { HiOutlineDocumentDuplicate, HiOutlineSwitchHorizontal } from 'react-icons/hi'
 import { ImReddit } from 'react-icons/im'
 import { IoMdRefresh } from 'react-icons/io'
-import { BsReply, BsArchive, BsShieldX, BsLock } from 'react-icons/bs'
+import { RiArrowGoBackLine } from 'react-icons/ri'
 // import { usePlausible } from "next-plausible";
 
-import { useKeyPress } from '../hooks/KeyPress'
 import { secondsToTime } from '../../lib/utils'
 import { findMediaInfo } from '../../lib/utils'
+import { useKeyPress } from '../hooks/KeyPress'
 
 import { localSeen, useMainContext } from '../MainContext'
 
-import TitleFlair from './TitleFlair'
-import CommentSort from './CommentSort'
-import CommentReply from './CommentReply'
-import Vote from './Vote'
-import MediaWrapper from './MediaWrapper'
+import { useRead } from '../hooks/useRead'
+import useSubreddit from '../hooks/useSubreddit'
+import useThread from '../hooks/useThread'
 import Awardings from './Awardings'
+import CommentReply from './CommentReply'
+import CommentSort from './CommentSort'
+import ErrMessage from './ErrMessage'
+import MediaWrapper from './MediaWrapper'
+import PostOptButton from './PostOptButton'
 import PostTitle from './PostTitle'
 import SaveButton from './SaveButton'
-import UserFlair from './UserFlair'
-import PostOptButton from './PostOptButton'
-import { GoRepoForked } from 'react-icons/go'
 import SubIcon from './SubIcon'
-import useThread from '../hooks/useThread'
-import useSubreddit from '../hooks/useSubreddit'
-import ErrMessage from './ErrMessage'
-import { useRead } from '../hooks/useRead'
+import TitleFlair from './TitleFlair'
+import UserFlair from './UserFlair'
+import Vote from './Vote'
+import { GoRepoForked } from 'react-icons/go'
 
-import toast from 'react-hot-toast'
-import ToastCustom from './toast/ToastCustom'
 import useDuplicates from '../hooks/useDuplicates'
+import PostBody from './PostBody'
 import MiniCard from './cards/MiniCard'
+import ToastCustom from './toast/ToastCustom'
+import toast from 'react-hot-toast'
 import { CgSpinnerTwo } from 'react-icons/cg'
 import { MdOutlineCompress, MdOutlineExpand } from 'react-icons/md'
-import PostBody from './PostBody'
 
 const SIDEBYSIDE_THRESHOLD = 1000
 
@@ -58,7 +58,7 @@ const Thread = ({
 	direct = false,
 	duplicates = false,
 	handleBackToThread = () => {},
-	goBack = (a, b) => {},
+	goBack = (_a, _b) => {},
 	setCurPost
 }) => {
 	const context: any = useMainContext()
@@ -92,7 +92,7 @@ const Thread = ({
 	//const [prevCount, setPrevCount] = useState<number>();
 	const [mediaInfo, setMediaInfo] = useState<any>()
 	const [usePortrait, setUsePortrait] = useState<boolean | undefined>(undefined)
-	const [imgFull, setimgFull] = useState(false)
+	const [imgFull, _setimgFull] = useState(false)
 	const [expandText, setExpandText] = useState(false)
 
 	const portraitDivRef = useRef<any>(null)
@@ -120,7 +120,7 @@ const Thread = ({
 
 	useEffect(() => {
 		if (thread?.data?.pages?.[0]?.comments?.length > 0) {
-			let comments = thread.data?.pages?.map((page) => page.comments)?.flat() ?? []
+			let comments = thread.data?.pages?.flatMap((page) => page.comments) ?? []
 			comments = comments?.filter((c, i) => c?.kind === 't1' || comments?.length - 1 === i)
 			setPostComments(comments)
 		} else if (thread?.data?.pages?.[0]) {
@@ -238,18 +238,18 @@ const Thread = ({
 						<BiDownvote className={' flex-none cursor-pointer w-7 h-7 hover:text-th-downvote hover:scale-110 '} />
 					</div>
 					<div className='flex flex-col flex-grow space-y-2 animate-pulse pt-1.5 md:pl-3 md:border-l border-th-border '>
-						<div className='w-1/4 h-4 rounded bg-th-border'></div>
-						<div className='w-full rounded bg-th-border'></div>
-						<div className='w-3/4 h-6 rounded bg-th-border'></div>
-						<div className='w-5/6 h-6 rounded bg-th-border place-self-center'></div>
-						<div className='w-5/6 h-6 rounded bg-th-border place-self-center'></div>
-						<div className='w-5/6 rounded h-96 bg-th-border place-self-center'></div>
+						<div className='w-1/4 h-4 rounded bg-th-border' />
+						<div className='w-full rounded bg-th-border' />
+						<div className='w-3/4 h-6 rounded bg-th-border' />
+						<div className='w-5/6 h-6 rounded bg-th-border place-self-center' />
+						<div className='w-5/6 h-6 rounded bg-th-border place-self-center' />
+						<div className='w-5/6 rounded h-96 bg-th-border place-self-center' />
 						<div className='flex flex-row items-center justify-between mt-2 space-x-2 select-none'>
 							{/* Vote buttons for mobiles */}
 							<div className='flex flex-row items-center self-center justify-start h-full py-1 space-x-2 md:hidden'>
 								<Vote likes={0} name={''} score={0} size={7} archived={false} />
 							</div>
-							<div className='my-6'></div>
+							<div className='my-6' />
 						</div>
 					</div>
 				</div>
@@ -264,18 +264,18 @@ const Thread = ({
 				<div className={'flex flex-row'}>
 					{/* Left column */}
 					<div className={'h-44 w-1 rounded-l-md  md:w-4 flex-none  cursor-pointer group animate-pulse'}>
-						<div className='flex-none w-0.5 min-h-full bg-th-commentRibbon hover:bg-th-commentRibbonHover'></div>
+						<div className='flex-none w-0.5 min-h-full bg-th-commentRibbon hover:bg-th-commentRibbonHover' />
 					</div>
 					{/* Comment Body */}
 					<div className={'flex-grow flex-col mt-3 pt-2 space-y-2 animate-pulse ml-2 mr-4'}>
 						{/* Author */}
-						<div className='flex flex-row justify-start w-2/5 h-4 pl-3 space-x-1 text-base rounded t md:pl-0 bg-th-border '></div>
+						<div className='flex flex-row justify-start w-2/5 h-4 pl-3 space-x-1 text-base rounded t md:pl-0 bg-th-border ' />
 						{/* Main Comment Body */}
-						<div className='w-full h-4 rounded-md bg-th-border '></div>
-						<div className='w-full h-4 rounded-md bg-th-border '></div>
-						<div className='w-full h-4 rounded-md bg-th-border '></div>
-						<div className='w-full h-4 rounded-md bg-th-border '></div>
-						<div className='w-full h-4 rounded-md bg-th-border '></div>
+						<div className='w-full h-4 rounded-md bg-th-border ' />
+						<div className='w-full h-4 rounded-md bg-th-border ' />
+						<div className='w-full h-4 rounded-md bg-th-border ' />
+						<div className='w-full h-4 rounded-md bg-th-border ' />
+						<div className='w-full h-4 rounded-md bg-th-border ' />
 					</div>
 				</div>
 			</div>
@@ -285,7 +285,7 @@ const Thread = ({
 
 	if (thread.isError) {
 		toast.custom(
-			(t) => (
+			(_t) => (
 				<button
 					onClick={(e) => {
 						e.preventDefault()
@@ -314,9 +314,8 @@ const Thread = ({
 						<div className='top-0.5 z-10 mr-3 sticky-box md:w-6/12'>
 							<div
 								ref={portraitDivRef}
-								className={
-									' border rounded-lg border-th-border2 backdrop-blur-md bg-th-background2 ' +
-									((post?.selftext_html || post.crosspost_parent_list?.[0]?.selftext_html) &&
+								className={` border rounded-lg border-th-border2 backdrop-blur-md bg-th-background2 ${
+									(post?.selftext_html || post.crosspost_parent_list?.[0]?.selftext_html) &&
 									!(
 										mediaInfo?.isVideo ||
 										mediaInfo?.isIframe ||
@@ -325,8 +324,8 @@ const Thread = ({
 										mediaInfo?.isDual
 									)
 										? 'flex scrollbar-thin flex-col overflow-y-auto scrollbar-thumb-th-scrollbar scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track '
-										: 'flex items-center justify-center overflow-hidden')
-								}
+										: 'flex items-center justify-center overflow-hidden'
+								}`}
 								style={{
 									height: `${Math.ceil(pHeight ?? 0)}px`
 								}}
@@ -371,15 +370,15 @@ const Thread = ({
 
 				{/* Main Card */}
 				<div
-					className={
-						(direct
+					className={`${
+						direct
 							? `${usePortrait ? 'md:w-4/12' : ' w-full md:w-10/12 lg:w-3/4 '}`
 							: !context?.postWideUI && !usePortrait && windowWidth > 768
 							? ' max-w-3xl w-[768px]'
 							: !usePortrait
 							? ' w-full md:w-10/12 lg:w-3/4 '
-							: ' md:w-4/12 ') + ' z-10  md:flex md:flex-col md:items-center md:justify-start '
-					}
+							: ' md:w-4/12 '
+					} z-10  md:flex md:flex-col md:items-center md:justify-start `}
 				>
 					{/* Content container */}
 					<div
@@ -470,7 +469,7 @@ const Thread = ({
 														<span className='text-th-red'>SPOILER</span>
 													</div>
 												)}
-												<div className='mx-1'></div>
+												<div className='mx-1' />
 												{post?.all_awardings?.length > 0 && (
 													<Awardings all_awardings={post?.all_awardings} truncate={false} styles={'mr-0.5 '} />
 												)}
@@ -534,7 +533,7 @@ const Thread = ({
 											mediaInfo?.isGallery ||
 											mediaInfo?.isTweet ||
 											mediaInfo?.isDual) ? (
-											<div className={(usePortrait ? ' ' : ' mt-3 ') + 'flex items-center md:ml-3'}>
+											<div className={`${usePortrait ? ' ' : ' mt-3 '}flex items-center md:ml-3`}>
 												<PostBody
 													rawHTML={post.selftext_html}
 													mode='post'
@@ -544,7 +543,7 @@ const Thread = ({
 										) : (
 											(post?.selftext_html || post.crosspost_parent_list?.[0]?.selftext_html) &&
 											!usePortrait && (
-												<div className={(usePortrait ? ' ' : ' mt-3 ') + 'flex items-center md:ml-3'}>
+												<div className={`${usePortrait ? ' ' : ' mt-3 '}flex items-center md:ml-3`}>
 													<PostBody
 														rawHTML={post.crosspost_parent_list?.[0]?.selftext_html ?? post?.selftext_html}
 														mode='post'
@@ -579,8 +578,7 @@ const Thread = ({
 													<>
 														<button
 															aria-label='switch comments location'
-															autoFocus={true}
-															onClick={(e) => {
+															onClick={(_e) => {
 																setUsePortrait((p) => !p)
 															}}
 															className='flex flex-row items-center p-2 space-x-1 border rounded-md border-th-border hover:border-th-borderHighlight '
@@ -593,7 +591,6 @@ const Thread = ({
 													<button
 														title='full window mode (f)'
 														aria-label='expand media'
-														autoFocus={windowWidth < SIDEBYSIDE_THRESHOLD}
 														onClick={() => setMediaMode(true)}
 														//onClick={(e) => setimgFull((p) => !p)}
 														className='flex flex-row items-center p-2 border rounded-md border-th-border hover:border-th-borderHighlight'
@@ -632,12 +629,11 @@ const Thread = ({
 																? setopenReply((r) => !r)
 																: !session && context.toggleLoginModal()
 														}}
-														className={
-															'flex flex-row items-center p-2 space-x-1 border rounded-md border-th-border  ' +
-															(post?.archived === true || post?.locked === true
+														className={`flex flex-row items-center p-2 space-x-1 border rounded-md border-th-border  ${
+															post?.archived === true || post?.locked === true
 																? ' opacity-50'
-																: ' hover:border-th-borderHighlight ')
-														}
+																: ' hover:border-th-borderHighlight '
+														}`}
 													>
 														{/* <BsReply
                               className={
@@ -647,7 +643,7 @@ const Thread = ({
                             /> */}
 														<BiComment className='flex-none w-5 h-5 ' />
 
-														<span className={'hidden ' + (!usePortrait && ' md:block pl-0.5')}>Reply</span>
+														<span className={`hidden ${!usePortrait && ' md:block pl-0.5'}`}>Reply</span>
 													</button>
 												</div>
 												<div>
@@ -663,9 +659,9 @@ const Thread = ({
 															}
 															try {
 																await navigator.share(shareData)
-															} catch (err) {
+															} catch (_err) {
 																navigator.clipboard.writeText(shareLink)
-																toast.custom((t) => <ToastCustom t={t} message={`Link Copied`} mode={'success'} />, {
+																toast.custom((t) => <ToastCustom t={t} message={'Link Copied'} mode={'success'} />, {
 																	position: 'bottom-center',
 																	duration: 1000,
 																	id: 'thread_share'
@@ -678,10 +674,10 @@ const Thread = ({
 														}
 													>
 														<BsReply
-															className={'flex-none w-5 h-5 scale-x-[-1] pb-0.5 ' + (!usePortrait && ' md:mr-1')}
+															className={`flex-none w-5 h-5 scale-x-[-1] pb-0.5 ${!usePortrait && ' md:mr-1'}`}
 														/>
 
-														<span className={'hidden ' + (!usePortrait && ' md:block pl-0.5')}>Share</span>
+														<span className={`hidden ${!usePortrait && ' md:block pl-0.5'}`}>Share</span>
 													</button>
 												</div>
 												<div>
@@ -699,14 +695,14 @@ const Thread = ({
 													rel='noreferrer'
 												>
 													<div className='flex-row items-center hidden p-2 space-x-1 border rounded-md md:flex border-th-border hover:border-th-borderHighlight '>
-														<BiExit className={'flex-none w-5 h-5 ' + (!usePortrait && ' md:mr-2')} />
-														<span className={'hidden ' + (!usePortrait && ' md:block ')}>Source</span>
+														<BiExit className={`flex-none w-5 h-5 ${!usePortrait && ' md:mr-2'}`} />
+														<span className={`hidden ${!usePortrait && ' md:block '}`}>Source</span>
 													</div>
 												</a>
 												<a href={`https://www.reddit.com${post?.permalink ?? ''}`} target='_blank' rel='noreferrer'>
 													<div className='flex flex-row items-center p-2 space-x-1 border rounded-md border-th-border hover:border-th-borderHighlight '>
-														<ImReddit className={'flex-none w-5 h-5 ' + (!usePortrait && ' md:mr-2')} />
-														<span className={'hidden ' + (!usePortrait && ' md:block ')}>Original</span>
+														<ImReddit className={`flex-none w-5 h-5 ${!usePortrait && ' md:mr-2'}`} />
+														<span className={`hidden ${!usePortrait && ' md:block '}`}>Original</span>
 													</div>
 												</a>
 												<div className='relative z-50 mx-1'>
@@ -722,16 +718,15 @@ const Thread = ({
 						{/* post reply */}
 						{openReply && (
 							<div
-								className={
-									(openReply ? 'block ' : 'hidden ') +
-									'backdrop-blur-md  border rounded-lg border-th-border2 p-2 mb-3 bg-th-background2'
-								}
+								className={`${
+									openReply ? 'block ' : 'hidden '
+								}backdrop-blur-md  border rounded-lg border-th-border2 p-2 mb-3 bg-th-background2`}
 							>
 								<CommentReply
 									parent={post?.name}
 									getResponse={updateMyReplies}
 									postName={post?.name}
-									onCancel={(e) => {
+									onCancel={(_e) => {
 										setopenReply(false)
 									}}
 								/>
@@ -783,7 +778,7 @@ const Thread = ({
 									top: '-3.5rem',
 									left: 0
 								}}
-							></div>
+							/>
 							{showDuplicates ? (
 								<div className='p-4'>
 									<div className='flex items-center justify-between w-full'>
@@ -805,7 +800,7 @@ const Thread = ({
 														: !duplicateQuery.isLoading
 														? '??'
 														: ''
-												} Other Discussion${totalDuplicates == 1 ? '' : 's'}`}
+												} Other Discussion${totalDuplicates === 1 ? '' : 's'}`}
 											</h2>
 										</div>
 										{post.permalink && (
@@ -834,7 +829,7 @@ const Thread = ({
 									{!flatPosts && duplicateQuery.isLoading && (
 										<>
 											{[...new Array(5)].map((i) => (
-												<div key={i} className='w-full h-20 my-2 rounded-lg bg-th-post animate-pulse'></div>
+												<div key={i} className='w-full h-20 my-2 rounded-lg bg-th-post animate-pulse' />
 											))}
 										</>
 									)}
@@ -846,12 +841,11 @@ const Thread = ({
 													duplicateQuery.fetchNextPage()
 												}}
 												disabled={duplicateQuery.isFetchingNextPage}
-												className={
-													'flex flex-row items-center justify-center w-full gap-1 p-4 text-sm border rounded-md border-th-border  bg-th-post  ' +
-													(duplicateQuery.isFetchingNextPage
+												className={`flex flex-row items-center justify-center w-full gap-1 p-4 text-sm border rounded-md border-th-border  bg-th-post  ${
+													duplicateQuery.isFetchingNextPage
 														? ''
-														: ' hover:border-th-borderHighlight hover:bg-th-postHover ')
-												}
+														: ' hover:border-th-borderHighlight hover:bg-th-postHover '
+												}`}
 											>
 												Load More
 												{duplicateQuery.isFetchingNextPage && (
@@ -862,7 +856,7 @@ const Thread = ({
 											</button>
 										</>
 									)}
-									<div className='py-10'></div>
+									<div className='py-10' />
 								</div>
 							) : (
 								<>
@@ -871,7 +865,7 @@ const Thread = ({
 											<BiComment className='flex-none w-6 h-6 ' />
 											<div className='flex flex-row items-baseline mb-1 space-x-1'>
 												<span className=''>{`${post?.num_comments ?? '??'}`}</span>
-												<span className='hidden md:block'>{`comment${post?.num_comments == 1 ? '' : 's'}`}</span>
+												<span className='hidden md:block'>{`comment${post?.num_comments === 1 ? '' : 's'}`}</span>
 												{typeof origCommentCount === 'number' && post?.num_comments > origCommentCount && (
 													<h2 className='text-xs italic font-medium'>{`(${
 														post?.num_comments - origCommentCount
@@ -890,7 +884,7 @@ const Thread = ({
 													thread.refetch()
 												}}
 											>
-												<IoMdRefresh className={(thread.isFetching ? 'animate-spin' : ' ') + ' w-5 h-5 flex-none'} />
+												<IoMdRefresh className={`${thread.isFetching ? 'animate-spin' : ' '} w-5 h-5 flex-none`} />
 											</button>
 											{!commentMode && (
 												<div className='z-10 flex-none mb-1 h-9'>
@@ -903,7 +897,7 @@ const Thread = ({
 									{!commentsReady && (
 										// Comment Loader
 										<>
-											{[...Array(parseInt(post?.num_comments) < 5 ? parseInt(post?.num_comments) : 5)].map((u, i) => (
+											{[...Array(parseInt(post?.num_comments) < 5 ? parseInt(post?.num_comments) : 5)].map((_u, i) => (
 												<div key={i}>{commentPlaceHolder}</div>
 											))}{' '}
 										</>
@@ -962,13 +956,13 @@ const Thread = ({
 												/>
 											)}
 										</div>
-										<div className='py-5'></div>
+										<div className='py-5' />
 									</div>
 								</>
 							)}
 						</div>
-						<div onClick={() => goBack(false, true)} className='my-10 sm:my-0'></div>
-						<div onClick={() => goBack(false, true)} className='flex-grow'></div>
+						<div onClick={() => goBack(false, true)} className='my-10 sm:my-0' />
+						<div onClick={() => goBack(false, true)} className='flex-grow' />
 					</div>
 				</div>
 			</div>

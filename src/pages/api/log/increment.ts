@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { ROUTES_TYPES } from '../../../../types/logs'
 import { createClient } from '@supabase/supabase-js'
+import { NextRequest, NextResponse } from 'next/server'
 const LOG_REQUESTS = JSON.parse(process?.env?.NEXT_PUBLIC_ENABLE_API_LOG ?? 'false')
 const SUPABASE_URL = process.env.SUPABASE_URL
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -23,7 +23,7 @@ const handler = async (request: NextRequest) => {
 			throw new Error('Missing Supabase Credentials')
 		}
 		const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
-		let { data, error } = await supabase.rpc('increment_log', {
+		const { data, error } = await supabase.rpc('increment_log', {
 			c_date: new Date(),
 			is_oauth: body?.is_oauth ?? false,
 			route_type: route_type

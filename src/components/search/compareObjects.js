@@ -11,14 +11,15 @@ export default function compareObjects(objA, objB, keys = []) {
 	}
 
 	const keysMap = {}
-	let i, len
+	let i
+	let len
 
 	for (i = 0, len = keys.length; i < len; i++) {
 		keysMap[keys[i]] = true
 	}
 
 	for (i = 0, len = aKeys.length; i < len; i++) {
-		let key = aKeys[i]
+		const key = aKeys[i]
 		const aValue = objA[key]
 		const bValue = objB[key]
 

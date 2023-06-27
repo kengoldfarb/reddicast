@@ -1,7 +1,7 @@
-import React from 'react'
-import { useQueryClient, useIsFetching } from '@tanstack/react-query'
 import { useMainContext } from '../MainContext'
 import useLocation from './useLocation'
+import { useIsFetching, useQueryClient } from '@tanstack/react-query'
+import React from 'react'
 
 const useRefresh = () => {
 	const queryClient = useQueryClient()

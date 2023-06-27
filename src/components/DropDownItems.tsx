@@ -1,3 +1,6 @@
+import { useSubsContext } from '../MySubs'
+import DropdownItem from './DropdownItem'
+import DropdownSubCard from './DropdownSubCard'
 import { Menu, Transition } from '@headlessui/react'
 import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
@@ -6,14 +9,11 @@ import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { AiOutlineHome } from 'react-icons/ai'
 import { BiRightTopArrowCircle } from 'react-icons/bi'
 import { BsChevronDown, BsList } from 'react-icons/bs'
-import { IoMdRefresh } from 'react-icons/io'
 import { CgLivePhoto, CgPlayListSearch } from 'react-icons/cg'
-import { useSubsContext } from '../MySubs'
-import DropdownItem from './DropdownItem'
-import DropdownSubCard from './DropdownSubCard'
+import { IoMdRefresh } from 'react-icons/io'
 
 const MyLink = (props) => {
-	let { href, children, ...rest } = props
+	const { href, children, ...rest } = props
 	return (
 		<Link href={href} {...rest}>
 			{children}
@@ -43,7 +43,7 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 	const { data: session, status } = useSession()
 	const [filter, setFilter] = useState('')
 	const filterRef = useRef<HTMLInputElement>(null)
-	const [expand, setExpand] = useState(false)
+	const [_expand, _setExpand] = useState(false)
 	const [expandFavorites, setExpandFavorites] = useState(true)
 	const [expandMultis, setExpandMultis] = useState(true)
 	const [expandSubs, setExpandSubs] = useState(true)
@@ -60,8 +60,8 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 	}, [show, filterRef?.current])
 
 	useEffect(() => {
-		let subs = [] as any[]
-		let follows = [] as any[]
+		const subs = [] as any[]
+		const follows = [] as any[]
 		//console.log(myLocalSubs);
 		if (myLocalSubs?.length > 0) {
 			myLocalSubs.forEach((s) => {
@@ -77,7 +77,7 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 	}, [myLocalSubs])
 
 	const constructMultiLink = (multi) => {
-		let subs = [] as any[]
+		const subs = [] as any[]
 		multi?.data?.subreddits?.forEach((s: any) => subs.push(s?.name))
 		return `/r/${subs.join('+')}?m=${multi?.data?.name}`
 	}
@@ -121,10 +121,9 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 					{({ active }) => (
 						<MyLink href='/'>
 							<div
-								className={
-									(active ? 'bg-th-highlight ' : ' ') +
-									' flex flex-row items-center py-1.5 space-x-2  pl-4 cursor-pointer'
-								}
+								className={`${
+									active ? 'bg-th-highlight ' : ' '
+								} flex flex-row items-center py-1.5 space-x-2  pl-4 cursor-pointer`}
 							>
 								<AiOutlineHome className='w-6 h-6' />
 								<h1 className=''>Home</h1>
@@ -136,10 +135,9 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 					{({ active }) => (
 						<MyLink href='/r/popular'>
 							<div
-								className={
-									(active ? 'bg-th-highlight ' : ' ') +
-									' flex flex-row items-center py-1.5 h-9 space-x-2  pl-4 cursor-pointer'
-								}
+								className={`${
+									active ? 'bg-th-highlight ' : ' '
+								} flex flex-row items-center py-1.5 h-9 space-x-2  pl-4 cursor-pointer`}
 							>
 								<BiRightTopArrowCircle className='w-6 h-6' />
 								<h1>Popular</h1>
@@ -151,10 +149,9 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 					{({ active }) => (
 						<MyLink href='/r/all'>
 							<div
-								className={
-									(active ? 'bg-th-highlight ' : ' ') +
-									' flex flex-row items-center py-1.5 h-9 space-x-2  pl-4 cursor-pointer'
-								}
+								className={`${
+									active ? 'bg-th-highlight ' : ' '
+								} flex flex-row items-center py-1.5 h-9 space-x-2  pl-4 cursor-pointer`}
 							>
 								<CgLivePhoto className='w-6 h-6' />
 								<h1>All</h1>
@@ -166,10 +163,9 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 					{({ active }) => (
 						<MyLink href='/subreddits'>
 							<div
-								className={
-									(active ? 'bg-th-highlight ' : ' ') +
-									' flex flex-row items-center py-1.5 h-9 space-x-2  pl-4 cursor-pointer'
-								}
+								className={`${
+									active ? 'bg-th-highlight ' : ' '
+								} flex flex-row items-center py-1.5 h-9 space-x-2  pl-4 cursor-pointer`}
 							>
 								<CgPlayListSearch className='w-7 h-7 -mr-0.5' />
 								<h1 className='mb-1'>Subreddits</h1>
@@ -196,19 +192,18 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 				<>
 					<div
 						onClick={() => setExpandFavorites((e) => !e)}
-						className={
-							'px-2 py-0.5 items-center text-xs tracking-widest hover:bg-th-highlight  hover:cursor-pointer hover:font-semibold flex flex-row justify-between' +
-							(expandFavorites ? ' ' : ' mb-2')
-						}
+						className={`px-2 py-0.5 items-center text-xs tracking-widest hover:bg-th-highlight  hover:cursor-pointer hover:font-semibold flex flex-row justify-between${
+							expandFavorites ? ' ' : ' mb-2'
+						}`}
 					>
 						<p>favorites</p>
 						{!hideExtra && (
 							<BsChevronDown
-								className={(expandFavorites ? '-rotate-180 ' : 'rotate-0 ') + 'transform transition duration-200'}
+								className={`${expandFavorites ? '-rotate-180 ' : 'rotate-0 '}transform transition duration-200`}
 							/>
 						)}
 					</div>
-					<div className={' ' + (expandFavorites ? ' max-h-full' : ' max-h-0 overflow-hidden')}>
+					<div className={` ${expandFavorites ? ' max-h-full' : ' max-h-0 overflow-hidden'}`}>
 						<div className={'py-2'}>
 							{favoriteSubs
 								? favoriteSubs.map((sub, i) => {
@@ -228,18 +223,16 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 												{({ active }) => (
 													<MyLink href={sub?.data?.subreddit?.url?.replace('/user/', '/u/') ?? sub?.data?.url}>
 														<div
-															className={
-																(active ? 'bg-th-highlight' : ' ') +
-																' px-4 py-2 group ' +
-																(filter !== '' &&
+															className={`${active ? 'bg-th-highlight' : ' '} px-4 py-2 group ${
+																filter !== '' &&
 																!(
 																	sub.data?.display_name_prefixed?.toUpperCase().includes(filter.toUpperCase()) ||
 																	sub.data?.display_name?.toUpperCase().includes(filter.toUpperCase()) ||
 																	sub.data?.subreddit?.display_name?.toUpperCase().includes(filter.toUpperCase())
 																)
 																	? ' hidden'
-																	: '')
-															}
+																	: ''
+															}`}
 														>
 															<DropdownItem
 																sub={{
@@ -266,19 +259,18 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 						<>
 							<div
 								onClick={() => setExpandMultis((m) => !m)}
-								className={
-									'px-2 py-0.5 flex justify-between items-center text-xs tracking-widest hover:font-semibold hover:cursor-pointer hover:bg-th-highlight' +
-									(expandMultis ? ' ' : ' mb-2')
-								}
+								className={`px-2 py-0.5 flex justify-between items-center text-xs tracking-widest hover:font-semibold hover:cursor-pointer hover:bg-th-highlight${
+									expandMultis ? ' ' : ' mb-2'
+								}`}
 							>
 								<p>feeds</p>
 								{!hideExtra && (
 									<BsChevronDown
-										className={(expandMultis ? '-rotate-180 ' : 'rotate-0 ') + 'transform transition duration-200'}
+										className={`${expandMultis ? '-rotate-180 ' : 'rotate-0 '}transform transition duration-200`}
 									/>
 								)}
 							</div>
-							<div className={' ' + (expandMultis ? ' max-h-full' : ' max-h-0 overflow-hidden')}>
+							<div className={` ${expandMultis ? ' max-h-full' : ' max-h-0 overflow-hidden'}`}>
 								<div className='py-2'>
 									{myLocalMultis
 										? myLocalMultis.map((multi, i) => {
@@ -297,17 +289,15 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 														{({ active }) => (
 															<MyLink href={constructMultiLink(multi)}>
 																<div
-																	className={
-																		(active ? 'bg-th-highlight' : ' ') +
-																		' px-4 py-2 ' +
-																		(filter !== '' &&
+																	className={`${active ? 'bg-th-highlight' : ' '} px-4 py-2 ${
+																		filter !== '' &&
 																		!(
 																			multi.data?.display_name_prefixed?.toUpperCase().includes(filter.toUpperCase()) ||
 																			multi.data?.display_name?.toUpperCase().includes(filter.toUpperCase())
 																		)
 																			? ' hidden'
-																			: ' ')
-																	}
+																			: ' '
+																	}`}
 																>
 																	<DropdownItem sub={multi} />
 																</div>
@@ -325,19 +315,18 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 						<>
 							<div
 								onClick={() => setExpandSubs((m) => !m)}
-								className={
-									'px-2 py-0.5 flex justify-between items-center text-xs tracking-widest hover:font-semibold hover:cursor-pointer hover:bg-th-highlight' +
-									(expandSubs ? ' ' : ' mb-2')
-								}
+								className={`px-2 py-0.5 flex justify-between items-center text-xs tracking-widest hover:font-semibold hover:cursor-pointer hover:bg-th-highlight${
+									expandSubs ? ' ' : ' mb-2'
+								}`}
 							>
 								<p>subs</p>
 								{!hideExtra && (
 									<BsChevronDown
-										className={(expandSubs ? '-rotate-180 ' : 'rotate-0 ') + 'transform transition duration-200'}
+										className={`${expandSubs ? '-rotate-180 ' : 'rotate-0 '}transform transition duration-200`}
 									/>
 								)}
 							</div>
-							<div className={' ' + (expandSubs ? ' max-h-full' : ' max-h-0 overflow-hidden')}>
+							<div className={` ${expandSubs ? ' max-h-full' : ' max-h-0 overflow-hidden'}`}>
 								<div className='py-2'>
 									{myLocalSubsFiltered
 										? myLocalSubsFiltered.map((sub: any, i) => {
@@ -356,17 +345,15 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 														{({ active }) => (
 															<MyLink href={sub?.data?.url}>
 																<div
-																	className={
-																		(active ? 'bg-th-highlight' : ' ') +
-																		' px-4 py-2 group ' +
-																		(filter !== '' &&
+																	className={`${active ? 'bg-th-highlight' : ' '} px-4 py-2 group ${
+																		filter !== '' &&
 																		!(
 																			sub.data?.display_name_prefixed?.toUpperCase().includes(filter.toUpperCase()) ||
 																			sub.data?.display_name?.toUpperCase().includes(filter.toUpperCase())
 																		)
 																			? ' hidden '
-																			: '')
-																	}
+																			: ''
+																	}`}
 																>
 																	<DropdownItem sub={sub} />
 																</div>
@@ -382,21 +369,18 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 								<>
 									<div
 										onClick={() => setExpandFollowing((m) => !m)}
-										className={
-											'px-2 py-0.5 flex justify-between items-center text-xs tracking-widest hover:font-semibold hover:cursor-pointer hover:bg-th-highlight' +
-											(expandFollowing ? ' ' : ' mb-2')
-										}
+										className={`px-2 py-0.5 flex justify-between items-center text-xs tracking-widest hover:font-semibold hover:cursor-pointer hover:bg-th-highlight${
+											expandFollowing ? ' ' : ' mb-2'
+										}`}
 									>
 										<p>follows</p>
 										{!hideExtra && (
 											<BsChevronDown
-												className={
-													(expandFollowing ? '-rotate-180 ' : 'rotate-0 ') + 'transform transition duration-200'
-												}
+												className={`${expandFollowing ? '-rotate-180 ' : 'rotate-0 '}transform transition duration-200`}
 											/>
 										)}
 									</div>
-									<div className={' ' + (expandFollowing ? ' max-h-full' : ' max-h-0 overflow-hidden')}>
+									<div className={` ${expandFollowing ? ' max-h-full' : ' max-h-0 overflow-hidden'}`}>
 										<div className='py-2'>
 											{myLocalFollows
 												? myLocalFollows.map((sub: any, i) => {
@@ -415,10 +399,8 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 																{({ active }) => (
 																	<MyLink href={sub?.data?.url?.replace('/user/', '/u/')}>
 																		<div
-																			className={
-																				(active ? 'bg-th-highlight' : ' ') +
-																				' px-4 py-2 group ' +
-																				(filter !== '' &&
+																			className={`${active ? 'bg-th-highlight' : ' '} px-4 py-2 group ${
+																				filter !== '' &&
 																				!(
 																					sub.data?.display_name_prefixed
 																						?.toUpperCase()
@@ -426,8 +408,8 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 																					sub.data?.display_name?.toUpperCase().includes(filter.toUpperCase())
 																				)
 																					? ' hidden'
-																					: '')
-																			}
+																					: ''
+																			}`}
 																		>
 																			<DropdownItem sub={sub} isUser={true} />
 																		</div>
@@ -445,10 +427,9 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 					) : (
 						<button
 							aria-label='sign in'
-							className={
-								'p-2 m-2  border rounded-md  border-th-border hover:border-th-borderHighlight ' +
-								(hideExtra ? ' w-full ' : '')
-							}
+							className={`p-2 m-2  border rounded-md  border-th-border hover:border-th-borderHighlight ${
+								hideExtra ? ' w-full ' : ''
+							}`}
 							onClick={() => signIn('reddit')}
 						>
 							<span className='text-th-accent '>Login</span> to see your subs
@@ -463,26 +444,25 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 					{/* onClick={() => {setloadedMultis(m => !m);setloadedSubs(s => !s)}} */}
 					<div
 						onClick={() => setExpandMultis((m) => !m)}
-						className={
-							'px-2 py-0.5 flex justify-between items-center text-xs tracking-widest hover:font-semibold hover:cursor-pointer hover:bg-th-highlight' +
-							(expandMultis ? ' ' : ' mb-2')
-						}
+						className={`px-2 py-0.5 flex justify-between items-center text-xs tracking-widest hover:font-semibold hover:cursor-pointer hover:bg-th-highlight${
+							expandMultis ? ' ' : ' mb-2'
+						}`}
 					>
 						<p>feeds</p>
 						{!hideExtra && (
 							<BsChevronDown
-								className={(expandMultis ? '-rotate-180 ' : 'rotate-0 ') + 'transform transition duration-200'}
+								className={`${expandMultis ? '-rotate-180 ' : 'rotate-0 '}transform transition duration-200`}
 							/>
 						)}
 					</div>
-					<div className={' ' + (expandMultis ? ' max-h-full' : ' max-h-0 overflow-hidden')}>
+					<div className={` ${expandMultis ? ' max-h-full' : ' max-h-0 overflow-hidden'}`}>
 						{!loadedMultis ? (
 							// Loading pane
 							<>
 								<div className='py-2'>
 									<div className='px-4 py-1 '>
 										{/* Repeated rows */}
-										{[...Array(3)].map((u, i) => (
+										{[...Array(3)].map((_u, i) => (
 											<div key={i} className='py-1'>
 												<div className='flex flex-row items-center text-sm text-center animate-pulse '>
 													{/* Image */}
@@ -490,7 +470,7 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 														<div className='w-6 h-6 text-center text-white bg-red-400 rounded '>{'m'}</div>
 													</div>
 													{/* Text */}
-													<div className='w-full h-6 ml-2 rounded bg-th-highlight '></div>
+													<div className='w-full h-6 ml-2 rounded bg-th-highlight ' />
 												</div>
 											</div>
 										))}
@@ -513,14 +493,12 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 														{({ active }) => (
 															<MyLink href={constructMultiLink(multi)}>
 																<div
-																	className={
-																		(active ? 'bg-th-highlight' : ' ') +
-																		' px-4 py-2' +
-																		(filter !== '' &&
+																	className={`${active ? 'bg-th-highlight' : ' '} px-4 py-2${
+																		filter !== '' &&
 																		!multi.data.display_name.toUpperCase().includes(filter.toUpperCase())
 																			? ' hidden'
-																			: '')
-																	}
+																			: ''
+																	}`}
 																>
 																	<DropdownItem sub={multi} />
 																</div>
@@ -538,25 +516,24 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 					{/* Subs */}
 					<div
 						onClick={() => setExpandSubs((e) => !e)}
-						className={
-							'px-2 py-0.5 items-center text-xs tracking-widest hover:bg-th-highlight  hover:cursor-pointer hover:font-semibold flex flex-row justify-between' +
-							(expandSubs ? ' ' : ' mb-2')
-						}
+						className={`px-2 py-0.5 items-center text-xs tracking-widest hover:bg-th-highlight  hover:cursor-pointer hover:font-semibold flex flex-row justify-between${
+							expandSubs ? ' ' : ' mb-2'
+						}`}
 					>
 						<p>subs</p>
 						{!hideExtra && (
 							<BsChevronDown
-								className={(expandSubs ? '-rotate-180 ' : 'rotate-0 ') + 'transform transition duration-200'}
+								className={`${expandSubs ? '-rotate-180 ' : 'rotate-0 '}transform transition duration-200`}
 							/>
 						)}
 					</div>
-					<div className={' ' + (expandSubs ? ' max-h-full' : ' max-h-0 overflow-hidden')}>
+					<div className={` ${expandSubs ? ' max-h-full' : ' max-h-0 overflow-hidden'}`}>
 						{!loadedSubs ? (
 							<>
 								<div className='py-2'>
 									<div className='px-4 py-1 '>
 										{/* Repeated rows */}
-										{[...Array(5)].map((u, i) => (
+										{[...Array(5)].map((_u, i) => (
 											<div key={i} className='py-1'>
 												<div className='flex flex-row items-center text-sm text-center animate-pulse '>
 													{/* Image */}
@@ -564,7 +541,7 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 														<div className='w-6 h-6 text-center text-white bg-blue-700 rounded-full '>{'r/'}</div>
 													</div>
 													{/* Text */}
-													<div className='w-full h-6 ml-2 rounded bg-th-highlight '></div>
+													<div className='w-full h-6 ml-2 rounded bg-th-highlight ' />
 												</div>
 											</div>
 										))}
@@ -590,17 +567,15 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 													{({ active }) => (
 														<MyLink href={sub?.data?.url}>
 															<div
-																className={
-																	(active ? 'bg-th-highlight' : ' ') +
-																	' px-4 py-2 group ' +
-																	(filter !== '' &&
+																className={`${active ? 'bg-th-highlight' : ' '} px-4 py-2 group ${
+																	filter !== '' &&
 																	!(
 																		sub.data?.display_name_prefixed?.toUpperCase().includes(filter.toUpperCase()) ||
 																		sub.data?.display_name?.toUpperCase().includes(filter.toUpperCase())
 																	)
 																		? ' hidden'
-																		: '')
-																}
+																		: ''
+																}`}
 															>
 																<DropdownItem sub={sub} />
 															</div>
@@ -619,19 +594,18 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 						<>
 							<div
 								onClick={() => setExpandFollowing((e) => !e)}
-								className={
-									'px-2 py-0.5 items-center text-xs tracking-widest hover:bg-th-highlight  hover:cursor-pointer hover:font-semibold flex flex-row justify-between' +
-									(expandFollowing ? ' ' : ' mb-2')
-								}
+								className={`px-2 py-0.5 items-center text-xs tracking-widest hover:bg-th-highlight  hover:cursor-pointer hover:font-semibold flex flex-row justify-between${
+									expandFollowing ? ' ' : ' mb-2'
+								}`}
 							>
 								<p>follows</p>
 								{!hideExtra && (
 									<BsChevronDown
-										className={(expandFollowing ? '-rotate-180 ' : 'rotate-0 ') + 'transform transition duration-200'}
+										className={`${expandFollowing ? '-rotate-180 ' : 'rotate-0 '}transform transition duration-200`}
 									/>
 								)}
 							</div>
-							<div className={' ' + (expandFollowing ? ' max-h-full' : ' max-h-0 overflow-hidden')}>
+							<div className={` ${expandFollowing ? ' max-h-full' : ' max-h-0 overflow-hidden'}`}>
 								<div className={'py-2'}>
 									{myFollowing
 										? myFollowing.map((user, i) => {
@@ -646,13 +620,11 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 														{({ active }) => (
 															<MyLink href={`/u/${user?.data?.name}`}>
 																<div
-																	className={
-																		(active ? 'bg-th-highlight' : ' ') +
-																		' px-4 py-2 group ' +
-																		(filter !== '' && !user.data?.name?.toUpperCase().includes(filter.toUpperCase())
+																	className={`${active ? 'bg-th-highlight' : ' '} px-4 py-2 group ${
+																		filter !== '' && !user.data?.name?.toUpperCase().includes(filter.toUpperCase())
 																			? ' hidden '
-																			: '')
-																	}
+																			: ''
+																	}`}
 																>
 																	<DropdownItem
 																		sub={{
@@ -685,7 +657,7 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 					className='flex pl-2 w-full text-xs py-0.5 mb-1 text-th-textLight hover:text-th-text'
 				>
 					<span>refresh</span>
-					<IoMdRefresh className={'w-4 h-4 ' + (loadingSubs ? 'animate-spin' : '')} />
+					<IoMdRefresh className={`w-4 h-4 ${loadingSubs ? 'animate-spin' : ''}`} />
 				</button>
 			)}
 			{session && error && (

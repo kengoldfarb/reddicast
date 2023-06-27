@@ -4,14 +4,14 @@
  *    const { scrollX, scrollY, scrollDirection } = useScroll();
  */
 
-import { useState, useEffect } from 'react'
 import { debounce } from '../../lib/utils'
+import { useEffect, useState } from 'react'
 
 export function useScroll() {
 	// storing this to get the scroll direction
 	const [lastScrollTop, setLastScrollTop] = useState(0)
 	// the offset of the document.body
-	const [bodyOffset, setBodyOffset] = useState<DOMRect>()
+	const [_bodyOffset, setBodyOffset] = useState<DOMRect>()
 	// the vertical direction
 	const [scrollY, setScrollY] = useState<number>()
 	// the horizontal direction
@@ -20,8 +20,8 @@ export function useScroll() {
 	const [scrollDirection, setScrollDirection] = useState<'down' | 'up' | undefined>()
 
 	const listener = debounce(
-		(e) => {
-			let bodyOffset = document.body.getBoundingClientRect()
+		(_e) => {
+			const bodyOffset = document.body.getBoundingClientRect()
 			//setBodyOffset(document.body.getBoundingClientRect());
 			setScrollY(-(bodyOffset?.top ?? 0))
 			setScrollX(bodyOffset?.left)

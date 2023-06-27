@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react'
 
-import { useRouter } from 'next/router'
 import { useMainContext } from '../MainContext'
-import LoginModal from './LoginModal'
-import { ErrorBoundary } from 'react-error-boundary'
 import useFeed from '../hooks/useFeed'
-import useRefresh from '../hooks/useRefresh'
-import { IoMdRefresh } from 'react-icons/io'
-import ErrMessage from './ErrMessage'
 import useLocation from '../hooks/useLocation'
-import toast from 'react-hot-toast'
-import ToastCustom from './toast/ToastCustom'
+import useRefresh from '../hooks/useRefresh'
+import ErrMessage from './ErrMessage'
 import FeedMasonry from './FeedMasonry'
+import LoginModal from './LoginModal'
+import ToastCustom from './toast/ToastCustom'
+import { useRouter } from 'next/router'
+import { ErrorBoundary } from 'react-error-boundary'
+import toast from 'react-hot-toast'
+import { IoMdRefresh } from 'react-icons/io'
 
 const Feed = ({ initialData = {} as any }) => {
 	const { mode, subreddits } = useLocation()
@@ -49,7 +49,7 @@ const Feed = ({ initialData = {} as any }) => {
 		)
 	} else if (feed.error) {
 		toast.custom(
-			(t) => (
+			(_t) => (
 				<button
 					onClick={(e) => {
 						e.preventDefault()
@@ -74,15 +74,15 @@ const Feed = ({ initialData = {} as any }) => {
 			<LoginModal />
 			<div className='flex flex-col items-center flex-none w-screen pt-1'>
 				<div
-					className={
-						'w-[98%] mx-auto ' +
-						(context.columnOverride === 1 && context.cardStyle !== 'row1' && !context.wideUI
+					className={`w-[98%] mx-auto ${
+						context.columnOverride === 1 && context.cardStyle !== 'row1' && !context.wideUI
 							? ' max-w-2xl '
-							: ' md:w-11/12 ') +
-						(context.cardStyle === 'row1'
+							: ' md:w-11/12 '
+					}${
+						context.cardStyle === 'row1'
 							? ' bg-th-post2 border-th-border2 rounded-t-md rounded-b-md border shadow-2xl min-h-screen '
-							: ' ')
-					}
+							: ' '
+					}`}
 				>
 					<ErrorBoundary
 						FallbackComponent={ErrorFallback}
@@ -106,11 +106,11 @@ const Feed = ({ initialData = {} as any }) => {
 				className={'hidden md:block fixed bottom-0 left-0'}
 			>
 				<IoMdRefresh
-					className={
-						(feed.isFetching && !feed.isFetchingNextPage
+					className={`${
+						feed.isFetching && !feed.isFetchingNextPage
 							? 'animate-spin '
-							: ' hover:scale-110 opacity-20 hover:opacity-100 ') + ' w-6 h-6 '
-					}
+							: ' hover:scale-110 opacity-20 hover:opacity-100 '
+					} w-6 h-6 `}
 				/>
 			</button>
 		</>

@@ -8,7 +8,7 @@ const useGlobalState = (globalKey: string[], cacheTime = Infinity) => {
 		createGlobalState()
 		queryClient.setQueryData(globalKey, (prev: undefined | Map<any, any>) => {
 			if (prev === undefined) {
-				let m = new Map()
+				const m = new Map()
 				m.set(key, value)
 				return m
 			}

@@ -1,7 +1,3 @@
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/router'
-import React, { useState, useEffect } from 'react'
-import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query'
 import { filterPosts } from '../../lib/utils'
 import { useMainContext } from '../MainContext'
 import {
@@ -13,6 +9,10 @@ import {
 	loadUserSelf
 } from '../RedditAPI'
 import useLocation from './useLocation'
+import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
 
 interface Params {
 	initialPosts?: any
@@ -20,7 +20,7 @@ interface Params {
 
 const useFeed = (params?: Params) => {
 	const { data: session, status } = useSession()
-	const sessloading = status === 'loading'
+	const _sessloading = status === 'loading'
 	const context: any = useMainContext()
 
 	const { key, ready, mode, sort, range, subreddits, userMode, searchQuery, domain } = useLocation(params)
@@ -160,18 +160,18 @@ const useFeed = (params?: Params) => {
 			mode === 'HOME' ||
 			feedParams.subreddits?.split(' ')?.join('+')?.split(',')?.join('+')?.split('%20')?.join('+')?.split('+')?.length >
 				1 ||
-			feedParams.subreddits?.toUpperCase() == 'ALL' ||
-			feedParams.subreddits?.toUpperCase() == 'POPULAR'
+			feedParams.subreddits?.toUpperCase() === 'ALL' ||
+			feedParams.subreddits?.toUpperCase() === 'POPULAR'
 
 		const { filtered, filtercount } = await manageData(data, feedParams.filters, feedParams.prevPosts, filterSubs)
 
-		let returnData = {
+		const returnData = {
 			filtered,
 			after: data.after,
 			count: fetchParams?.pageParam === undefined ? 0 : feedParams.count + data?.children?.length,
 			prevPosts: {
 				...feedParams.prevPosts,
-				...filtered.reduce((obj, post, index) => {
+				...filtered.reduce((obj, post, _index) => {
 					obj[post?.data?.name] = 1
 					return obj
 				}, {})
@@ -185,7 +185,7 @@ const useFeed = (params?: Params) => {
 	}
 
 	const feed = useInfiniteQuery(key, fetchFeed, {
-		enabled: ready && key?.[0] == 'feed' && !!domain,
+		enabled: ready && key?.[0] === 'feed' && !!domain,
 		refetchOnWindowFocus: context?.refreshOnFocus ?? true ? true : false,
 		refetchOnMount: false,
 		staleTime: 0,

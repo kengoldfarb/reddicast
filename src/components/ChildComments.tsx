@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
-import { useSession } from 'next-auth/react'
-import { useMainContext } from '../MainContext'
-import CommentReply from './CommentReply'
 import { secondsToTime } from '../../lib/utils'
-import Link from 'next/link'
-import Vote from './Vote'
-import Awardings from './Awardings'
-import SaveButton from './SaveButton'
-import ParseBodyHTML from './ParseBodyHTML'
-import UserFlair from './UserFlair'
-import Image from 'next/legacy/image'
-import { BsArrowRightShort } from 'react-icons/bs'
+import { useMainContext } from '../MainContext'
 import useMutate from '../hooks/useMutate'
+import Awardings from './Awardings'
+import CommentReply from './CommentReply'
+import ParseBodyHTML from './ParseBodyHTML'
+import SaveButton from './SaveButton'
+import UserFlair from './UserFlair'
+import Vote from './Vote'
 import { useWindowSize } from '@react-hook/window-size'
+import { useSession } from 'next-auth/react'
+import Image from 'next/legacy/image'
+import Link from 'next/link'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { BsArrowRightShort } from 'react-icons/bs'
 const ChildComments = ({
 	comment,
 	readTime,
@@ -31,7 +31,7 @@ const ChildComments = ({
 	const [editTime, setEditTime] = useState(() => comment?.data?.edited)
 	const parentRef = useRef<HTMLDivElement | any>(null)
 	const [hovered, setHovered] = useState(false)
-	const [moreLoaded, setMoreLoaded] = useState(false)
+	const [_moreLoaded, setMoreLoaded] = useState(false)
 	const [loadingComments, setLoadingComments] = useState(false)
 	const [hideChildren, setHideChildren] = useState((comment?.data?.collapsed ?? false) && context.autoCollapseComments)
 
@@ -64,7 +64,7 @@ const ChildComments = ({
 		try {
 			navigator.clipboard.writeText(url)
 			setCopied(true)
-		} catch (err) {
+		} catch (_err) {
 			window.location.href = url
 		}
 	}
@@ -148,7 +148,7 @@ const ChildComments = ({
 	}, [childcomments, hideChildren])
 
 	const loadChildComments = async (children, link_id) => {
-		let newComments = await loadCommentsMutation.mutateAsync({
+		const newComments = await loadCommentsMutation.mutateAsync({
 			parentName: comment?.data?.name,
 			children: children,
 			link_id: link_id,
@@ -162,7 +162,7 @@ const ChildComments = ({
 		setLoadingComments(false)
 	}
 
-	const [windowWidth, windowHeight] = useWindowSize()
+	const [windowWidth, _windowHeight] = useWindowSize()
 	const [showOpts, setShowOpts] = useState(false)
 
 	const [isNew, setIsNew] = useState(false)
@@ -183,26 +183,24 @@ const ChildComments = ({
 		if (x < 1000) {
 			return x.toString() + (x === 1 ? ' pt' : ' pts')
 		} else {
-			let y = Math.floor(x / 1000)
-			let z = (x / 1000).toFixed(1)
-			return z.toString() + 'k pts'
+			const _y = Math.floor(x / 1000)
+			const z = (x / 1000).toFixed(1)
+			return `${z.toString()}k pts`
 		}
 	}, [comment?.data?.score, comment?.data?.created_utc, scoreHideMins])
 
 	return (
 		<div
 			ref={parentRef}
-			className={
-				`${depth !== 0 ? ' ' : ''}` +
-				(depth == 0
+			className={`${depth !== 0 ? ' ' : ''}${
+				depth === 0
 					? ' bg-th-backgroundComment border-r '
 					: depth % 2 === 0
 					? ' bg-th-backgroundComment '
-					: 'bg-th-backgroundCommentAlternate ') +
-				(hide ? ' hidden ' : '') +
-				(isNew ? ' bg-th-highlight ' : ' ') +
-				' border-t border-l border-l-transparent  border-b border-th-border2 rounded-md'
-			}
+					: 'bg-th-backgroundCommentAlternate '
+			}${hide ? ' hidden ' : ''}${
+				isNew ? ' bg-th-highlight ' : ' '
+			} border-t border-l border-l-transparent  border-b border-th-border2 rounded-md`}
 			onMouseEnter={() => setHovered(true)}
 			onMouseLeave={() => setHovered(false)}
 		>
@@ -224,25 +222,23 @@ const ChildComments = ({
 						toggleHidden()
 						executeScroll()
 					}}
-					className={'min-h-full w-1  flex-none  cursor-pointer group' + (portraitMode ? ' w-2.5 ' : ' md:w-2  lg:w-4')}
+					className={`min-h-full w-1  flex-none  cursor-pointer group${portraitMode ? ' w-2.5 ' : ' md:w-2  lg:w-4'}`}
 				>
 					<div
-						className={
-							'flex-none w-0.5  min-h-full  rounded-l-md bg-th-commentRibbon hover:bg-th-commentRibbonHover group-hover:bg-commentRibbonHover' +
-							(hovered ? ' bg-th-commentRibbonHover ' : ' ')
-						}
-					></div>
+						className={`flex-none w-0.5  min-h-full  rounded-l-md bg-th-commentRibbon hover:bg-th-commentRibbonHover group-hover:bg-commentRibbonHover${
+							hovered ? ' bg-th-commentRibbonHover ' : ' '
+						}`}
+					/>
 				</div>
 				{/* Comment Body */}
 				<div
-					className={
-						'flex-grow mt-3 max-w-full   ' +
-						(hideChildren && !context.collapseChildrenOnly && !portraitMode
+					className={`flex-grow mt-3 max-w-full   ${
+						hideChildren && !context.collapseChildrenOnly && !portraitMode
 							? ' md:pl-0 mb-3 '
 							: hideChildren && !context.collapseChildrenOnly
 							? ' mb-3 '
-							: ' ')
-					}
+							: ' '
+					}`}
 					onClick={(e) => {
 						e.stopPropagation()
 						if (!context.ribbonCollapseOnly) {
@@ -274,7 +270,7 @@ const ChildComments = ({
 												alt={''}
 												unoptimized={true}
 												className={'w-8 h-8'}
-											></Image>
+											/>
 										</div>
 									) : (
 										context.showUserIcons && (
@@ -283,7 +279,7 @@ const ChildComments = ({
 											</div>
 										)
 									)}
-									<h1 className={'group-hover:underline' + (!context.showUserIcons ? ' -ml-1 md:ml-2' : '')}>
+									<h1 className={`group-hover:underline${!context.showUserIcons ? ' -ml-1 md:ml-2' : ''}`}>
 										{comment?.data?.author ?? ''}
 										{comment?.data?.author_flair_text?.length > 0 && context.showUserFlairs && (
 											<span className='ml-2 mr-0.5 text-xs'>
@@ -299,12 +295,12 @@ const ChildComments = ({
 									<p className='px-0.5 font-medium text-th-accent '>{'OP'}</p>
 								</>
 							)}
-							{comment?.data?.distinguished == 'moderator' && (
+							{comment?.data?.distinguished === 'moderator' && (
 								<>
 									<p className='px-0.5 font-medium text-th-green '>{'MOD'}</p>
 								</>
 							)}
-							{comment?.data?.distinguished == 'admin' && (
+							{comment?.data?.distinguished === 'admin' && (
 								<>
 									<p className='px-0.5 font-medium text-th-red '>{'ADMIN'}</p>
 								</>
@@ -324,7 +320,7 @@ const ChildComments = ({
 
 							{comment?.data?.all_awardings?.length > 0 && (
 								<>
-									<div className='ml-0.5'></div>
+									<div className='ml-0.5' />
 									<Awardings
 										all_awardings={comment?.data?.all_awardings}
 										truncate={false}
@@ -347,14 +343,13 @@ const ChildComments = ({
 							{(hideChildren || windowWidth <= 640) && (
 								<>
 									<span
-										className={
-											'text-xs ' +
-											(comment?.data?.likes === true || comment?.data?.likes === 1
+										className={`text-xs ${
+											comment?.data?.likes === true || comment?.data?.likes === 1
 												? ' text-th-upvote '
 												: comment?.data?.likes === false || comment?.data?.likes === -1
 												? ' text-th-downvote '
-												: '')
-										}
+												: ''
+										}`}
 									>
 										{voteScore}
 									</span>
@@ -368,7 +363,7 @@ const ChildComments = ({
 					</div>
 
 					{/* Main Comment Body */}
-					<div className={(hideChildren && !context.collapseChildrenOnly ? ' hidden ' : ' ') + ' '}>
+					<div className={`${hideChildren && !context.collapseChildrenOnly ? ' hidden ' : ' '} `}>
 						<div className=''>
 							{/* Comment Text */}
 							{comment?.data?.author && comment.data.author === session?.user?.name && editReply ? (
@@ -407,18 +402,16 @@ const ChildComments = ({
 
 							{/* Bottom Row */}
 							<div
-								className={
-									(portraitMode ? ' ml-1 ' : ' ml-2 ') +
-									' flex-row flex items-center justify-start flex-none flex-wrap gap-2  text-th-textLight '
-								}
+								className={`${
+									portraitMode ? ' ml-1 ' : ' ml-2 '
+								} flex-row flex items-center justify-start flex-none flex-wrap gap-2  text-th-textLight `}
 							>
 								{comment?.data?.author !== '[deleted]' ? (
 									<>
 										<div
-											className={
-												(!portraitMode && ' ') + //ml-1.5 md:ml-0
-												' flex flex-row items-center justify-center sm:p-0.5 md:p-0 gap-2 border border-transparent rounded-full   '
-											}
+											className={`${
+												!portraitMode && ' '
+											} flex flex-row items-center justify-center sm:p-0.5 md:p-0 gap-2 border border-transparent rounded-full   `}
 										>
 											{(windowWidth > 640 || showOpts) && (
 												<div className='flex flex-row items-center gap-1 text-sm'>
@@ -454,16 +447,15 @@ const ChildComments = ({
 										<button
 											aria-label='reply'
 											disabled={comment?.data?.archived || locked || comment?.data?.author === '[deleted]'}
-											className={
-												'text-sm ' +
-												((hideChildren && !context.collapseChildrenOnly) ||
+											className={`text-sm ${
+												(hideChildren && !context.collapseChildrenOnly) ||
 												//comment?.myreply ||
 												comment?.data?.archived ||
 												locked ||
 												comment?.data?.author === '[deleted]'
 													? 'hidden'
-													: 'block hover:underline')
-											}
+													: 'block hover:underline'
+											}`}
 											onClick={(e) => {
 												e.preventDefault()
 												e.stopPropagation()
@@ -514,7 +506,7 @@ const ChildComments = ({
 															e.stopPropagation()
 															setTryDelete(true)
 														}}
-														className={'block mr-2 text-sm ' + (deleted ? ' font-semibold ' : ' hover:underline')}
+														className={`block mr-2 text-sm ${deleted ? ' font-semibold ' : ' hover:underline'}`}
 													>
 														{deleted ? 'Deleted' : 'Delete'}
 													</button>
@@ -543,7 +535,7 @@ const ChildComments = ({
 										</button>
 									</>
 								) : (
-									<div className='py-2.5'></div>
+									<div className='py-2.5' />
 								)}
 
 								{hideChildren && context.collapseChildrenOnly && childcomments?.length > 0 && (
@@ -552,9 +544,7 @@ const ChildComments = ({
 							</div>
 
 							{/* Comment Reply */}
-							{hideChildren && context.collapseChildrenOnly && childcomments?.length > 0 && (
-								<div className='py-1'></div>
-							)}
+							{hideChildren && context.collapseChildrenOnly && childcomments?.length > 0 && <div className='py-1' />}
 							{openReply && (
 								<div className={openReply ? 'block mr-2 ml-4 md:ml-0' : 'hidden'} onClick={(e) => e.stopPropagation()}>
 									<CommentReply
@@ -574,10 +564,9 @@ const ChildComments = ({
 							<div
 								onMouseEnter={() => setHovered(false)}
 								onMouseLeave={() => setHovered(true)}
-								className={
-									'min-w-full py-2' +
-									(hideChildren && context.collapseChildrenOnly && childcomments?.length > 0 ? ' hidden ' : '')
-								}
+								className={`min-w-full py-2${
+									hideChildren && context.collapseChildrenOnly && childcomments?.length > 0 ? ' hidden ' : ''
+								}`}
 							>
 								{childcomments && (
 									<>
@@ -594,7 +583,7 @@ const ChildComments = ({
 														readTime={readTime}
 													/>
 												)}
-												{childcomment.kind == 'more' && (
+												{childcomment.kind === 'more' && (
 													<div className={hideChildren ? 'hidden' : ' flex '}>
 														{true && (
 															<>
@@ -604,11 +593,9 @@ const ChildComments = ({
 																		disabled={loadingComments}
 																		onMouseEnter={() => setHovered(true)}
 																		onMouseLeave={() => setHovered(false)}
-																		className={
-																			(portraitMode ? '' : '') +
-																			(loadingComments ? ' animate-pulse ' : '') +
-																			' pt-2  w-full text-left hover:font-semibold ml-3 md:pl-0 select-none outline-none text-sm'
-																		}
+																		className={`${portraitMode ? '' : ''}${
+																			loadingComments ? ' animate-pulse ' : ''
+																		} pt-2  w-full text-left hover:font-semibold ml-3 md:pl-0 select-none outline-none text-sm`}
 																		onClick={(e) => {
 																			e.preventDefault()
 																			e.stopPropagation()

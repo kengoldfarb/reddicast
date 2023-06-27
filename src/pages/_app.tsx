@@ -1,44 +1,50 @@
 import '../../styles/globals.css'
-import { SessionProvider } from 'next-auth/react'
-import { ThemeProvider } from 'next-themes'
 import { MainProvider, localSeen } from '../MainContext'
 import { MySubsProvider } from '../MySubs'
 import { MyCollectionsProvider } from '../components/collections/CollectionContext'
+import log, { LogLevel } from '@kengoldfarb/log'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import Script from 'next/script'
-import Head from 'next/head'
 import { Analytics } from '@vercel/analytics/react'
+import { SessionProvider } from 'next-auth/react'
+import { ThemeProvider } from 'next-themes'
+import Head from 'next/head'
+import Script from 'next/script'
 
-import toast, { Toaster } from 'react-hot-toast'
-import NavBar from '../components/NavBar'
-import React, { useEffect, useRef } from 'react'
-import packageInfo from '../../package.json'
 import { checkVersion } from '../../lib/utils'
+import packageInfo from '../../package.json'
+import NavBar from '../components/NavBar'
 import ToastCustom from '../components/toast/ToastCustom'
 import { usePlausible } from 'next-plausible'
+import React, { useEffect, useRef } from 'react'
+import toast, { Toaster } from 'react-hot-toast'
 
 const VERSION = packageInfo.version
 const queryClient = new QueryClient()
 function MyApp({ Component, pageProps }) {
-	const plausible = usePlausible()
+	const _plausible = usePlausible()
 	useEffect(() => {
 		const curVersion = VERSION
 		const prevVersion = localStorage.getItem('trodditVersion')
 		if (prevVersion) {
-			let compare = checkVersion(curVersion, prevVersion)
+			const compare = checkVersion(curVersion, prevVersion)
 			if (compare === 1) {
-				const toastId = toast.custom(
-					(t) => <ToastCustom t={t} message={`Troddit updated! Click to see changelog`} mode={'version'} />,
+				const _toastId = toast.custom(
+					(t) => <ToastCustom t={t} message={'Troddit updated! Click to see changelog'} mode={'version'} />,
 					{ position: 'bottom-center', duration: 8000 }
 				)
 			}
 		}
 		localStorage.setItem('trodditVersion', curVersion)
 	}, [])
+	useEffect(() => {
+		log.setOptions({
+			level: (process.env.NEXT_PUBLIC_LOG_LEVEL as LogLevel) ?? LogLevel.Warn
+		})
+	}, [])
 	return (
 		<>
-			<Script defer data-domain={'troddit.com'} src='/js/script.js'></Script>
+			<Script defer data-domain={'troddit.com'} src='/js/script.js' />
 
 			<Head>
 				<meta

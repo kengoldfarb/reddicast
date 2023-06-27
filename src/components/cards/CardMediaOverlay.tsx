@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
 import Media from '../Media'
-import { useWindowSize } from '@react-hook/window-size/throttled'
 import SubIcon from '../SubIcon'
 import TitleFlair from '../TitleFlair'
+import { useWindowSize } from '@react-hook/window-size/throttled'
+import React, { useEffect, useState } from 'react'
 
 const CardMediaOverlay = ({ post, voteScore, setShowCardMediaOverlay }) => {
 	const [windowWidth, windowHeight] = useWindowSize()
@@ -12,7 +12,7 @@ const CardMediaOverlay = ({ post, voteScore, setShowCardMediaOverlay }) => {
 	)
 
 	const [color, setColor] = useState<string>()
-	const [mounted, setMounted] = useState(false)
+	const [_mounted, setMounted] = useState(false)
 	useEffect(() => {
 		let baseColor = window.getComputedStyle(document.documentElement).getPropertyValue('--base').trim()
 		if (baseColor === '#000') {
@@ -41,12 +41,12 @@ const CardMediaOverlay = ({ post, voteScore, setShowCardMediaOverlay }) => {
 			document.body.style.width = `${width}px`
 		} else {
 			document.documentElement.style.setProperty('--overflow', 'hidden visible')
-			document.body.style.width = `auto`
+			document.body.style.width = 'auto'
 		}
 
 		return () => {
 			document.documentElement.style.setProperty('--overflow', 'hidden visible')
-			document.body.style.width = `auto`
+			document.body.style.width = 'auto'
 		}
 	}, [])
 
@@ -100,14 +100,13 @@ const CardMediaOverlay = ({ post, voteScore, setShowCardMediaOverlay }) => {
 						<span className=''>{`r/${post.subreddit}`}</span>
 					</div>
 					<span
-						className={
-							' text-white text-xs font-light flex items-center gap-0.5 pr-0.5 ' +
-							(post?.likes === true || post?.likes === 1
+						className={` text-white text-xs font-light flex items-center gap-0.5 pr-0.5 ${
+							post?.likes === true || post?.likes === 1
 								? ' text-th-upvote '
 								: post?.likes === false || post?.likes === -1
 								? ' text-th-downvote '
-								: '')
-						}
+								: ''
+						}`}
 					>
 						<span>{voteScore}</span>
 						<span className='flex-none w-3 h-3 mb-0.5 opacity-60'>{VoteFilledUp}</span>
@@ -120,7 +119,7 @@ const CardMediaOverlay = ({ post, voteScore, setShowCardMediaOverlay }) => {
 
 const VoteFilledUp = (
 	<svg stroke='currentColor' fill='currentColor' strokeWidth='0' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
-		<path d='M12.781,2.375C12.4,1.9,11.6,1.9,11.219,2.375l-8,10c-0.24,0.301-0.286,0.712-0.12,1.059C3.266,13.779,3.615,14,4,14h2h2 v3v4c0,0.553,0.447,1,1,1h6c0.553,0,1-0.447,1-1v-5v-2h2h2c0.385,0,0.734-0.221,0.901-0.566c0.166-0.347,0.12-0.758-0.12-1.059 L12.781,2.375z'></path>
+		<path d='M12.781,2.375C12.4,1.9,11.6,1.9,11.219,2.375l-8,10c-0.24,0.301-0.286,0.712-0.12,1.059C3.266,13.779,3.615,14,4,14h2h2 v3v4c0,0.553,0.447,1,1,1h6c0.553,0,1-0.447,1-1v-5v-2h2h2c0.385,0,0.734-0.221,0.901-0.566c0.166-0.347,0.12-0.758-0.12-1.059 L12.781,2.375z' />
 	</svg>
 )
 

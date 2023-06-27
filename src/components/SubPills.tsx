@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { MdOutlineClear } from 'react-icons/md'
 import { BsChevronDown } from 'react-icons/bs'
+import { MdOutlineClear } from 'react-icons/md'
 
 const SubPills = ({ subArray, currMulti, multiSub, goToMulti, goToMultiSub, removeSub }) => {
 	const pillsRef: any = useRef()
@@ -9,7 +9,7 @@ const SubPills = ({ subArray, currMulti, multiSub, goToMulti, goToMultiSub, remo
 		const el = pillsRef.current
 		if (el && !expand) {
 			const onWheel = (e) => {
-				if (e.deltaY == 0) return
+				if (e.deltaY === 0) return
 				e.preventDefault()
 				el.scrollTo({
 					left: el.scrollLeft + e.deltaY * 2,
@@ -29,10 +29,9 @@ const SubPills = ({ subArray, currMulti, multiSub, goToMulti, goToMultiSub, remo
 		>
 			<a href={`${subArray.join('+')}${currMulti ? `?m=${currMulti}` : ''}`}>
 				<div
-					className={
-						'items-center flex h-9 px-4 py-1.5 text-center ring-th-accent border rounded-md select-none border-th-border bg-th-post hover:bg-th-postHover hover:ring-2 hover:border-transparent ' +
-						(multiSub === '' ? '  ring-2 border-transparent ' : '')
-					}
+					className={`items-center flex h-9 px-4 py-1.5 text-center ring-th-accent border rounded-md select-none border-th-border bg-th-post hover:bg-th-postHover hover:ring-2 hover:border-transparent ${
+						multiSub === '' ? '  ring-2 border-transparent ' : ''
+					}`}
 				>
 					{`${currMulti ? `${currMulti}` : 'Feed'} (${subArray.length})`}
 				</div>
@@ -53,10 +52,9 @@ const SubPills = ({ subArray, currMulti, multiSub, goToMulti, goToMultiSub, remo
 	const Pills = (
 		<div
 			ref={pillsRef}
-			className={
-				'flex gap-2  items-center    capitalize scrollbar-none' +
-				(expand ? ' flex-wrap justify-start  ' : ' p-1 ml-auto overflow-x-scroll')
-			}
+			className={`flex gap-2  items-center    capitalize scrollbar-none${
+				expand ? ' flex-wrap justify-start  ' : ' p-1 ml-auto overflow-x-scroll'
+			}`}
 		>
 			{subArray.map((s) => (
 				<div
@@ -68,10 +66,9 @@ const SubPills = ({ subArray, currMulti, multiSub, goToMulti, goToMultiSub, remo
 					<a href={`${s}?m=${currMulti}`}>
 						<div
 							title={`show only posts from r/${s}`}
-							className={
-								'flex h-9 items-center px-3 py-1 space-x-2 border rounded-full select-none border-th-border bg-th-post hover:bg-th-postHover hover:ring-2 hover:border-transparent ring-th-accent  ' +
-								(s.toUpperCase() === multiSub.toUpperCase() && '  ring-2  ')
-							}
+							className={`flex h-9 items-center px-3 py-1 space-x-2 border rounded-full select-none border-th-border bg-th-post hover:bg-th-postHover hover:ring-2 hover:border-transparent ring-th-accent  ${
+								s.toUpperCase() === multiSub.toUpperCase() && '  ring-2  '
+							}`}
 						>
 							<h1 className=''>{s}</h1>
 							<button

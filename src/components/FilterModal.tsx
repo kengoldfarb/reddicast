@@ -1,12 +1,12 @@
+import { useMainContext } from '../MainContext'
+import useRefresh from '../hooks/useRefresh'
+import ToggleFilters from './ToggleFilters'
+import FilterEntities from './settings/FilterEntities'
+import { Dialog, Transition } from '@headlessui/react'
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useEffect, useRef, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import { RiArrowGoBackLine } from 'react-icons/ri'
-import ToggleFilters from './ToggleFilters'
-import { useMainContext } from '../MainContext'
-import FilterEntities from './settings/FilterEntities'
-import useRefresh from '../hooks/useRefresh'
 import React from 'react'
+import { RiArrowGoBackLine } from 'react-icons/ri'
 
 const filters = ['self', 'links', 'images', 'videos', 'portrait', 'landscape']
 
@@ -16,7 +16,7 @@ const FilterModal = ({ toOpen }) => {
 	const { invalidateKey } = useRefresh()
 	const [open, setOpen] = useState(false)
 	const cancelButtonRef = useRef(null)
-	const [input, setInput] = useState('')
+	const [_input, setInput] = useState('')
 	useEffect(() => {
 		toOpen > 0 && setOpen(true)
 		return () => {

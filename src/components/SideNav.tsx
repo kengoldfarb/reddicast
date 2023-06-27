@@ -1,20 +1,20 @@
-import Search from './Search'
-import { RiArrowGoBackLine } from 'react-icons/ri'
-import { useSession, signIn, signOut } from 'next-auth/react'
-import { useEffect, useRef, useState } from 'react'
 import DropDownItems from './DropDownItems'
-import { Menu } from '@headlessui/react'
 import LoginProfile from './LoginProfile'
+import Search from './Search'
+import { Menu } from '@headlessui/react'
+import { signIn, signOut, useSession } from 'next-auth/react'
+import { useEffect, useRef, useState } from 'react'
 import React from 'react'
+import { RiArrowGoBackLine } from 'react-icons/ri'
 
 const scrollStyle =
 	'scrollbar-thin scrollbar-thumb-th-scrollbar scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track-rounded-full'
 
 const SideNav = ({ visible, toggle }) => {
 	const { data: session, status } = useSession()
-	const [vis, setVis] = useState(false)
-	const [touchStart, setTouchStart] = useState([0])
-	const [touchEnd, setTouchEnd] = useState([0])
+	const [vis, _setVis] = useState(false)
+	const [_touchStart, _setTouchStart] = useState([0])
+	const [_touchEnd, _setTouchEnd] = useState([0])
 	const buttonRef = useRef<HTMLDivElement>(null)
 	// const handleTouchStart = (e) => {
 	//   touchStart[0] = e.targetTouches[0].clientX;
@@ -38,12 +38,12 @@ const SideNav = ({ visible, toggle }) => {
 			document.body.style.width = `${width}px`
 		} else {
 			document.documentElement.style.setProperty('--overflow', 'hidden visible')
-			document.body.style.width = `auto`
+			document.body.style.width = 'auto'
 		}
 
 		return () => {
 			document.documentElement.style.setProperty('--overflow', 'hidden visible')
-			document.body.style.width = `auto`
+			document.body.style.width = 'auto'
 		}
 	}, [visible])
 
@@ -58,10 +58,9 @@ const SideNav = ({ visible, toggle }) => {
 		// onTouchEnd={(e) => handleTouchEnd(e)}
 		>
 			<div
-				className={
-					'absolute h-screen inset-y-0 left-0  space-y-6 z-[99] transition duration-200 ease-in-out transform -translate-x-full sidebar py-7' +
-					`${visible ? 'relative translate-x-0 w-screen' : ''}`
-				}
+				className={`absolute h-screen inset-y-0 left-0  space-y-6 z-[99] transition duration-200 ease-in-out transform -translate-x-full sidebar py-7${
+					visible ? 'relative translate-x-0 w-screen' : ''
+				}`}
 			>
 				<div className='flex flex-row flex-none h-screen overscroll-y-contain'>
 					<nav className='flex flex-col justify-between flex-grow w-5/6 px-2 pt-4 overflow-hidden border-r rounded-r-lg bg-th-background2 border-th-border '>
@@ -81,7 +80,7 @@ const SideNav = ({ visible, toggle }) => {
 							<Menu as='div' className={`h-full px-2 overflow-x-hidden overflow-y-auto outline-none ${scrollStyle}`}>
 								{({ open }) => (
 									<>
-										<Menu.Button aria-label='open subs' as='div' className={'hidden'} ref={buttonRef}></Menu.Button>
+										<Menu.Button aria-label='open subs' as='div' className={'hidden'} ref={buttonRef} />
 										{open ? (
 											<>
 												<Menu.Items as='div' static className='pb-10 outline-none' onClick={() => toggle()}>
@@ -107,7 +106,7 @@ const SideNav = ({ visible, toggle }) => {
 							e.stopPropagation()
 							toggle()
 						}}
-					></div>
+					/>
 				</div>
 			</div>
 		</div>

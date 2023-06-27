@@ -1,9 +1,9 @@
+import { fixCommentFormat } from '../../lib/utils'
+import { deleteLink, editUserText, hideLink, loadMoreComments, postComment, postVote, saveLink } from '../RedditAPI'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import React from 'react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { fixCommentFormat } from '../../lib/utils'
-import { deleteLink, editUserText, hideLink, loadMoreComments, postComment, postVote, saveLink } from '../RedditAPI'
 
 const useMutate = () => {
 	const queryClient = useQueryClient()
@@ -25,7 +25,7 @@ const useMutate = () => {
 		queryClient.setQueriesData(['feed'], (oldData: any) => {
 			let newData = oldData
 			if (newData) {
-				let newPages = oldData?.pages?.map((page) => {
+				const newPages = oldData?.pages?.map((page) => {
 					return {
 						...page,
 						filtered: page?.filtered?.map((post) => {
@@ -60,8 +60,8 @@ const useMutate = () => {
 		onSuccess: (data: any, variables) => {
 			if (data.id.substring(0, 3) === 't3_') {
 				if (session?.user?.name) {
-					data.vote == 1 && queryClient.invalidateQueries(['feed', 'SELF', session.user.name, 'upvoted'])
-					data.vote == -1 && queryClient.invalidateQueries(['feed', 'SELF', session.user.name, 'downvoted'])
+					data.vote === 1 && queryClient.invalidateQueries(['feed', 'SELF', session.user.name, 'upvoted'])
+					data.vote === -1 && queryClient.invalidateQueries(['feed', 'SELF', session.user.name, 'downvoted'])
 				} else {
 					queryClient.invalidateQueries(['feed'])
 				}
@@ -81,7 +81,7 @@ const useMutate = () => {
 						return comment
 					}
 
-					let newpages = prevData?.pages?.map((page) => {
+					const newpages = prevData?.pages?.map((page) => {
 						return {
 							...page,
 							comments: page.comments?.map((comment) => iterComments(comment, commentId, key, value))
@@ -105,7 +105,7 @@ const useMutate = () => {
 					: queryClient.invalidateQueries(['thread'])
 			}
 		},
-		onError: (err, update, context: any) => {
+		onError: (_err, update, context: any) => {
 			if (update.id.substring(0, 3) === 't3_') {
 				queryClient.setQueriesData(['feed'], context.previousData)
 			}
@@ -130,7 +130,7 @@ const useMutate = () => {
 				queryClient.invalidateQueries(['feed', 'SELF', session.user.name, 'saved'])
 			}
 		},
-		onError: (err, update, context: any) => {
+		onError: (_err, update, context: any) => {
 			if (update.id.substring(0, 3) === 't3_') {
 				queryClient.setQueriesData(['feed'], context.previousData)
 			}
@@ -144,12 +144,12 @@ const useMutate = () => {
 				value: update.isHidden ? false : true
 			})
 		},
-		onSuccess: (data: any) => {
+		onSuccess: (_data: any) => {
 			if (session?.user?.name && router.asPath !== `/u/${session.user.name}/hidden`) {
 				queryClient.invalidateQueries(['feed', 'SELF', session.user.name, 'hidden'])
 			}
 		},
-		onError: (err, update, context: any) => {
+		onError: (_err, _update, context: any) => {
 			queryClient.setQueriesData(['feed'], context.previousData)
 		}
 	})
@@ -164,7 +164,7 @@ const useMutate = () => {
 				// const pCommentsData = queryClient.getQueriesData(["thread",data?.parent_id?.substring?.(3)]);
 				// let newCommentsData = pCommentsData.map(pComments => )
 				queryClient.setQueriesData(['thread', data?.parent_id?.substring?.(3)], (pCommentsData: any) => {
-					let newCommentsData = pCommentsData?.pages?.map((page: any) => {
+					const newCommentsData = pCommentsData?.pages?.map((page: any) => {
 						return {
 							...page,
 							comments: [{ kind: 't1', data: data }, ...page.comments]
@@ -208,7 +208,7 @@ const useMutate = () => {
 					}
 
 					let found = false
-					let newCommentsData = pCommentsData?.pages?.map((page: any) => {
+					const newCommentsData = pCommentsData?.pages?.map((page: any) => {
 						return {
 							...page,
 							comments: page.comments.map((comment: any) => {
@@ -278,7 +278,7 @@ const useMutate = () => {
 		if (found) {
 			return [comment, found]
 		}
-		if (comment?.data?.name && comment?.data?.name == name) {
+		if (comment?.data?.name && comment?.data?.name === name) {
 			propertyArray.forEach(({ property, value }) => {
 				if (updateChildren) {
 					comment['data']['replies']['data']['children'] = [
@@ -293,7 +293,7 @@ const useMutate = () => {
 		}
 		if (comment.kind === 't1' && comment?.data?.replies?.data?.children?.length > 0) {
 			for (let i = 0; i < comment.data.replies.data.children.length; i++) {
-				let [c, f] = editNestedCommentProperty(
+				const [c, f] = editNestedCommentProperty(
 					name,
 					comment.data.replies.data.children[i],
 					propertyArray,
@@ -313,12 +313,12 @@ const useMutate = () => {
 		updateChildren = false
 	) => {
 		let found = false
-		let newCommentsData = pCommentsData?.pages?.map((page: any) => {
+		const newCommentsData = pCommentsData?.pages?.map((page: any) => {
 			return {
 				...page,
 				comments: page.comments.map((comment: any) => {
 					if (found) return comment
-					let [c, f] = editNestedCommentProperty(name, comment, propertyArray, found, updateChildren)
+					const [c, f] = editNestedCommentProperty(name, comment, propertyArray, found, updateChildren)
 					found = f
 					return c
 				})
@@ -351,9 +351,9 @@ const useMutate = () => {
 			})
 		}
 
-		let childrenstring = children.join()
+		const childrenstring = children.join()
 		const data = await loadMoreComments(childrenstring, link_id, permalink, session ? true : false, token)
-		let morecomments = data?.data
+		const morecomments = data?.data
 		let formatted
 		if (morecomments?.[0]?.data?.replies?.data?.children) {
 			const filtered = filterExisting(morecomments?.[0]?.data?.replies?.data?.children, childcomments)

@@ -1,12 +1,12 @@
+import { useTheme } from 'next-themes'
+import React, { useEffect, useState } from 'react'
 // import {Switch} from '@headlessui/react'
 import Switch from 'react-switch'
-import { useTheme } from 'next-themes'
-import React, { useState, useEffect } from 'react'
 
 import { BiComment, BiDetail, BiMoon, BiSun } from 'react-icons/bi'
-import { CgArrowsShrinkH, CgArrowsMergeAltH } from 'react-icons/cg'
+import { BsCheck, BsPlay, BsStop, BsVolumeMute, BsVolumeUp, BsX } from 'react-icons/bs'
+import { CgArrowsMergeAltH, CgArrowsShrinkH } from 'react-icons/cg'
 import { VscEye, VscEyeClosed } from 'react-icons/vsc'
-import { BsX, BsCheck, BsPlay, BsStop, BsVolumeMute, BsVolumeUp } from 'react-icons/bs'
 
 import { useMainContext } from '../../MainContext'
 import ThemeSelector from './ThemeSelector'
@@ -70,9 +70,9 @@ const Toggles = ({ setting, label, externalStyles, withSubtext = false, subtext 
 	const [title, setTitle] = useState('')
 	const [switchSubtext, setSwitchSubtext] = useState(subtext)
 	const disabled =
-		(setting == 'postWideUI' && context.syncWideUI == true) ||
-		(setting == 'collapseChildrenOnly' && context.defaultCollapseChildren === true) ||
-		(setting == 'theme' && resolvedTheme !== 'dark' && resolvedTheme !== 'light')
+		(setting === 'postWideUI' && context.syncWideUI === true) ||
+		(setting === 'collapseChildrenOnly' && context.defaultCollapseChildren === true) ||
+		(setting === 'theme' && resolvedTheme !== 'dark' && resolvedTheme !== 'light')
 	const [isChecked, setIsChecked] = useState(false)
 
 	useEffect(() => {
@@ -83,16 +83,18 @@ const Toggles = ({ setting, label, externalStyles, withSubtext = false, subtext 
 		setUpdateTheme((t) => t + 1)
 	}, [resolvedTheme])
 	useEffect(() => {
-		let toggleColor = window.getComputedStyle(document.documentElement).getPropertyValue('--toggleColor').trim()
-		let toggleHandleColor = window
+		const toggleColor = window.getComputedStyle(document.documentElement).getPropertyValue('--toggleColor').trim()
+		const toggleHandleColor = window
 			.getComputedStyle(document.documentElement)
 			.getPropertyValue('--toggleHandleColor')
 			.trim()
 
-		setOnHandleColor(() => (setting == 'nsfw' ? (resolvedTheme === 'dark' ? '#991B1B' : '#EF4444') : toggleHandleColor))
-		setOffHandleColor(() => (setting == 'theme' ? '#F59E0B' : setting == 'nsfw' ? '#4ADE80' : toggleHandleColor))
+		setOnHandleColor(() =>
+			setting === 'nsfw' ? (resolvedTheme === 'dark' ? '#991B1B' : '#EF4444') : toggleHandleColor
+		)
+		setOffHandleColor(() => (setting === 'theme' ? '#F59E0B' : setting === 'nsfw' ? '#4ADE80' : toggleHandleColor))
 		setOnColor(() => toggleColor)
-		setOffColor(() => (setting == 'theme' ? '#EA580C' : setting == 'nsfw' ? '#059669' : toggleColor))
+		setOffColor(() => (setting === 'theme' ? '#EA580C' : setting === 'nsfw' ? '#059669' : toggleColor))
 	}, [updateTheme])
 
 	useEffect(() => {
@@ -424,11 +426,9 @@ const Toggles = ({ setting, label, externalStyles, withSubtext = false, subtext 
 
 	return (
 		<label
-			className={
-				'flex flex-row items-center justify-between ' +
-				externalStyles +
-				(disabled ? ' opacity-50 pointer-events-none' : ' ')
-			}
+			className={`flex flex-row items-center justify-between ${externalStyles}${
+				disabled ? ' opacity-50 pointer-events-none' : ' '
+			}`}
 			title={title}
 			onClick={(e) => e.stopPropagation()}
 		>
@@ -446,10 +446,9 @@ const Toggles = ({ setting, label, externalStyles, withSubtext = false, subtext 
 				checkedIcon={<div className='flex items-center justify-center h-full text-lg'>{checkedIcon}</div>}
 				uncheckedIcon={
 					<div
-						className={
-							'flex items-center justify-center h-full text-lg' +
-							(setting == 'theme' || setting == 'nsfw' ? ' text-white ' : '')
-						}
+						className={`flex items-center justify-center h-full text-lg${
+							setting === 'theme' || setting === 'nsfw' ? ' text-white ' : ''
+						}`}
 					>
 						{uncheckedIcon}
 					</div>

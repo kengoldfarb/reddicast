@@ -1,6 +1,6 @@
-import React, { useEffect, RefObject, useState } from 'react'
 import Hls from 'hls.js'
 import type { HlsConfig, ManifestParsedData } from 'hls.js'
+import React, { RefObject, useEffect, useState } from 'react'
 
 export interface HlsPlayerProps extends React.VideoHTMLAttributes<HTMLVideoElement> {
 	hlsConfig?: Partial<HlsConfig>
@@ -76,18 +76,18 @@ function HlsPlayer({
 			newHls.on(Hls.Events.MEDIA_ATTACHED, () => {
 				newHls.loadSource(src)
 
-				newHls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+				newHls.on(Hls.Events.MANIFEST_PARSED, (_event, data) => {
 					!data?.audio ? triggerHasAudio(false) : triggerHasAudio(true)
 					if (quality) {
 						newHls.currentLevel = selectLevel(data.levels.length - 1, quality)
 					}
 					if (autoPlay) {
-						playerRef?.current?.play().catch((e) => {
+						playerRef?.current?.play().catch((_e) => {
 							//workaround unmuted autoplay security issue
 							triggerMute()
 							if (playerRef.current) {
 								playerRef.current.muted = true
-								playerRef.current.play().catch((e2) => {
+								playerRef.current.play().catch((_e2) => {
 									// console.log(
 									//   "Unable to autoplay prior to user interaction with the dom.",
 									//   e2
@@ -99,7 +99,7 @@ function HlsPlayer({
 				})
 			})
 
-			newHls.on(Hls.Events.ERROR, function (event, data) {
+			newHls.on(Hls.Events.ERROR, function (_event, data) {
 				if (data.fatal) {
 					switch (data.type) {
 						case Hls.ErrorTypes.NETWORK_ERROR:

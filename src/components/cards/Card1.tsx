@@ -1,24 +1,24 @@
-import { useMainContext } from '../../MainContext'
-import React, { useState, useEffect, useRef, useMemo } from 'react'
-import Link from 'next/link'
 import { numToString, secondsToTime } from '../../../lib/utils'
-import { GoRepoForked } from 'react-icons/go'
+import { useMainContext } from '../../MainContext'
+import Awardings from '../Awardings'
+import MediaWrapper from '../MediaWrapper'
+import PostBody from '../PostBody'
+import PostOptButton from '../PostOptButton'
+import PostTitle from '../PostTitle'
+import SubIcon from '../SubIcon'
 import TitleFlair from '../TitleFlair'
 import Vote from '../Vote'
-import MediaWrapper from '../MediaWrapper'
-import Awardings from '../Awardings'
-import PostTitle from '../PostTitle'
-import PostOptButton from '../PostOptButton'
-import SubIcon from '../SubIcon'
-import { useWindowWidth } from '@react-hook/window-size'
-import { BiPlay } from 'react-icons/bi'
-import CardMediaOverlay from './CardMediaOverlay'
 import ExternalLink from '../ui/ExternalLink'
-import PostBody from '../PostBody'
+import CardMediaOverlay from './CardMediaOverlay'
+import { useWindowWidth } from '@react-hook/window-size'
+import Link from 'next/link'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { BiPlay } from 'react-icons/bi'
+import { GoRepoForked } from 'react-icons/go'
 
 const VoteFilledUp = (
 	<svg stroke='currentColor' fill='currentColor' strokeWidth='0' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
-		<path d='M12.781,2.375C12.4,1.9,11.6,1.9,11.219,2.375l-8,10c-0.24,0.301-0.286,0.712-0.12,1.059C3.266,13.779,3.615,14,4,14h2h2 v3v4c0,0.553,0.447,1,1,1h6c0.553,0,1-0.447,1-1v-5v-2h2h2c0.385,0,0.734-0.221,0.901-0.566c0.166-0.347,0.12-0.758-0.12-1.059 L12.781,2.375z'></path>
+		<path d='M12.781,2.375C12.4,1.9,11.6,1.9,11.219,2.375l-8,10c-0.24,0.301-0.286,0.712-0.12,1.059C3.266,13.779,3.615,14,4,14h2h2 v3v4c0,0.553,0.447,1,1,1h6c0.553,0,1-0.447,1-1v-5v-2h2h2c0.385,0,0.734-0.221,0.901-0.566c0.166-0.347,0.12-0.758-0.12-1.059 L12.781,2.375z' />
 	</svg>
 )
 const MSTOLONGPRESS = 500
@@ -50,13 +50,13 @@ const Card1 = ({
 	const windowWidth = useWindowWidth()
 	const [mounted, setMounted] = useState(false)
 	const voteScore = useMemo(() => {
-		let x = post?.score ?? 0
+		const x = post?.score ?? 0
 		if (x < 1000) {
 			return x.toString() // + (x === 1 ? " pt" : " pts");
 		} else {
-			let y = Math.floor(x / 1000)
-			let z = (x / 1000).toFixed(1)
-			return z.toString() + 'k'
+			const _y = Math.floor(x / 1000)
+			const z = (x / 1000).toFixed(1)
+			return `${z.toString()}k`
 		}
 	}, [post?.score])
 	useEffect(() => {
@@ -65,7 +65,7 @@ const Card1 = ({
 
 	useEffect(() => {
 		if (context.mediaOnly && hasMedia && infoBox.current) {
-			let h = infoBox.current.clientHeight
+			const h = infoBox.current.clientHeight
 			if (h > 0) {
 				setMediaInfoHeight(h)
 			}
@@ -74,12 +74,12 @@ const Card1 = ({
 
 	const handleMouseOut = (e, box, ignore) => {
 		const sideout = () => {
-			let elemBounding = box?.current?.getBoundingClientRect()
-			let topDist = Math.abs(elemBounding.top - e.clientY)
-			let botDist = Math.abs(elemBounding.bottom - e.clientY)
-			let leftDist = Math.abs(elemBounding.left - e.clientX)
-			let rightDist = Math.abs(elemBounding.right - e.clientX)
-			let min = Math.min(topDist, botDist, leftDist, rightDist)
+			const elemBounding = box?.current?.getBoundingClientRect()
+			const topDist = Math.abs(elemBounding.top - e.clientY)
+			const botDist = Math.abs(elemBounding.bottom - e.clientY)
+			const leftDist = Math.abs(elemBounding.left - e.clientX)
+			const rightDist = Math.abs(elemBounding.right - e.clientX)
+			const min = Math.min(topDist, botDist, leftDist, rightDist)
 			//console.log(elemBounding);
 			switch (min) {
 				case topDist:
@@ -96,7 +96,7 @@ const Card1 = ({
 					break
 			}
 		}
-		let side = sideout()
+		const side = sideout()
 		if (side !== ignore) {
 			setHovered(false)
 		}
@@ -146,13 +146,9 @@ const Card1 = ({
 				<CardMediaOverlay post={post} voteScore={voteScore} setShowCardMediaOverlay={setShowCardMediaOverlay} />
 			)}
 			<div
-				className={
-					'relative ' +
-					(context.mediaOnly && hasMedia && (hovered ? ' z-20 ' : ' z-0')) +
-					(context.mediaOnly && hasMedia
-						? ' hover:scale-101 group hover:transition-transform transition-transform '
-						: '')
-				}
+				className={`relative ${context.mediaOnly && hasMedia && (hovered ? ' z-20 ' : ' z-0')}${
+					context.mediaOnly && hasMedia ? ' hover:scale-101 group hover:transition-transform transition-transform ' : ''
+				}`}
 				onClick={(e) => {
 					setHovered(false)
 					setShowCardMediaOverlay(false)
@@ -160,28 +156,26 @@ const Card1 = ({
 				}}
 			>
 				<div
-					className={
-						(uniformMediaMode && !hasMedia ? ' aspect-[9/16] flex flex-col justify-between overflow-y-auto ' : '') +
-						(!context.mediaOnly || !hasMedia ? 'px-3 pt-3 pb-2 bg-th-post hover:bg-th-postHover  ' : '  ') +
-						(columns > 2 && context.mediaOnly && windowWidth < 640 ? '' : ' rounded-lg ') +
-						(context.mediaOnly && hasMedia
+					className={`${
+						uniformMediaMode && !hasMedia ? ' aspect-[9/16] flex flex-col justify-between overflow-y-auto ' : ''
+					}${!context.mediaOnly || !hasMedia ? 'px-3 pt-3 pb-2 bg-th-post hover:bg-th-postHover  ' : '  '}${
+						columns > 2 && context.mediaOnly && windowWidth < 640 ? '' : ' rounded-lg '
+					}${
+						context.mediaOnly && hasMedia
 							? ` ring-transparent overflow-hidden ${hovered ? 'bg-th-post ' : ' '}  `
-							: ' hover:ring-th-borderHighlight2 ring-th-border2  hover:shadow-2xl  shadow-md bg-th-post hover:bg-th-postHover ') +
-						(context.mediaOnly && hasMedia && hovered
-							? '  ring-b-transparent rounded-b-none ring-th-border2   '
-							: ' ') +
-						' text-sm transition-colors ring-1 hover:cursor-pointer  '
-					}
+							: ' hover:ring-th-borderHighlight2 ring-th-border2  hover:shadow-2xl  shadow-md bg-th-post hover:bg-th-postHover '
+					}${
+						context.mediaOnly && hasMedia && hovered ? '  ring-b-transparent rounded-b-none ring-th-border2   ' : ' '
+					} text-sm transition-colors ring-1 hover:cursor-pointer  `}
 				>
 					{/* <div className=""> */}
 					{(!context?.mediaOnly || !hasMedia) && (
 						<div>
 							<div className='flex flex-row items-center py-1 text-xs truncate select-auto text-th-textLight '>
 								<div
-									className={
-										'flex flex-row flex-wrap items-center text-xs truncate select-auto gap-x-1 ' +
-										(linkMode ? ' w-2/3 pr-2' : ' ')
-									}
+									className={`flex flex-row flex-wrap items-center text-xs truncate select-auto gap-x-1 ${
+										linkMode ? ' w-2/3 pr-2' : ' '
+									}`}
 								>
 									<Link legacyBehavior href={`/r/${post?.subreddit}`}>
 										<a
@@ -248,7 +242,7 @@ const Card1 = ({
 									)}
 									{post?.all_awardings?.length > 0 && (
 										<>
-											<div className={"before:content-['•']"}></div>
+											<div className={"before:content-['•']"} />
 
 											<Awardings all_awardings={post?.all_awardings} truncate={false} styles={'mt-0.5 '} />
 										</>
@@ -256,9 +250,9 @@ const Card1 = ({
 								</div>
 								{!(columns > 1 && windowWidth / columns < 200) && mounted && (
 									<div
-										className={
-											'flex flex-row flex-none  mt-1 mb-auto ml-auto hover:underline ' + (linkMode ? ' hidden ' : ' ')
-										}
+										className={`flex flex-row flex-none  mt-1 mb-auto ml-auto hover:underline ${
+											linkMode ? ' hidden ' : ' '
+										}`}
 									>
 										<a
 											title='open source'
@@ -273,12 +267,11 @@ const Card1 = ({
 								)}
 							</div>
 
-							<div className={' ' + (linkMode ? ' flex gap-2 pt-2 ' : ' py-2 ')}>
+							<div className={` ${linkMode ? ' flex gap-2 pt-2 ' : ' py-2 '}`}>
 								<span
-									className={
-										'  text-lg font-semibold  leading-none cursor-pointer pb-2 flex flex-row flex-wrap gap-2' +
-										(linkMode ? ' w-2/3 flex-col-reverse items-start justify-end ' : ' items-center ')
-									}
+									className={`  text-lg font-semibold  leading-none cursor-pointer pb-2 flex flex-row flex-wrap gap-2${
+										linkMode ? ' w-2/3 flex-col-reverse items-start justify-end ' : ' items-center '
+									}`}
 								>
 									<Link href={post?.permalink} onClick={(e) => e.preventDefault()}>
 										<PostTitle post={post} read={read && context.dimRead} newPost={newPost} />
@@ -355,7 +348,7 @@ const Card1 = ({
 					{context.mediaOnly && hasMedia ? (
 						<div
 							ref={mediaBox}
-							className={(!context.mediaOnly ? 'pt-1 pb-1.5' : '') + ' relative  '}
+							className={`${!context.mediaOnly ? 'pt-1 pb-1.5' : ''} relative  `}
 							onMouseEnter={() => setHovered(true)}
 							onMouseLeave={(e) => {
 								handleMouseOut(e, mediaBox, 'bot')
@@ -413,12 +406,11 @@ const Card1 = ({
 												onMouseEnter={() => setHovered(true)}
 												onTouchStart={() => setHovered(true)}
 												onTouchEnd={() => setHovered(false)}
-												className={
-													'absolute bottom-0 z-20 flex flex-col justify-between w-full min-h-full ' +
-													(hovered && windowWidth < 640
+												className={`absolute bottom-0 z-20 flex flex-col justify-between w-full min-h-full ${
+													hovered && windowWidth < 640
 														? 'bg-gradient-to-b from-black/90 via-transparent to-black/90'
-														: 'bg-gradient-to-t from-black/40')
-												}
+														: 'bg-gradient-to-t from-black/40'
+												}`}
 											>
 												{post?.mediaInfo?.isVideo && mounted && (!hovered || windowWidth > 640) && (
 													<div className='absolute top-0 left-0 text-th-accent'>
@@ -444,14 +436,13 @@ const Card1 = ({
 												<div className='flex justify-between w-full mt-auto pb-0.5 gap-0.5'>
 													<span className='text-xs font-light truncate md:pl-1'>u/{post.author}</span>
 													<span
-														className={
-															' text-white text-xs font-light flex items-center gap-0.5 pr-0.5 ' +
-															(post?.likes === true || post?.likes === 1
+														className={` text-white text-xs font-light flex items-center gap-0.5 pr-0.5 ${
+															post?.likes === true || post?.likes === 1
 																? ' text-th-upvote '
 																: post?.likes === false || post?.likes === -1
 																? ' text-th-downvote '
-																: '')
-														}
+																: ''
+														}`}
 													>
 														<span>{voteScore}</span>
 														<span className='flex-none w-3 h-3 mb-0.5 opacity-60'>{VoteFilledUp}</span>
@@ -478,14 +469,13 @@ const Card1 = ({
 														u/{post.author} • r/{post.subreddit}
 													</span>
 													<span
-														className={
-															' text-white text-xs font-light flex items-center gap-0.5 pr-0.5 ' +
-															(post?.likes === true || post?.likes === 1
+														className={` text-white text-xs font-light flex items-center gap-0.5 pr-0.5 ${
+															post?.likes === true || post?.likes === 1
 																? ' text-th-upvote '
 																: post?.likes === false || post?.likes === -1
 																? ' text-th-downvote '
-																: '')
-														}
+																: ''
+														}`}
 													>
 														<span>{voteScore}</span>
 														<span className='flex-none w-3 h-3 mb-0.5 opacity-60'>{VoteFilledUp}</span>
@@ -615,20 +605,17 @@ const Card1 = ({
 					>
 						<div
 							ref={infoBox}
-							className={
-								(hovered ? '' : ' hidden ') +
-								' absolute w-full mr-1 px-2 pb-1  -mt-8 rounded-b-lg border-t-0 -z-10 drop-shadow-xl bg-th-post border-th-border2 border-t-transparent border shadow-2xl'
-							}
+							className={`${
+								hovered ? '' : ' hidden '
+							} absolute w-full mr-1 px-2 pb-1  -mt-8 rounded-b-lg border-t-0 -z-10 drop-shadow-xl bg-th-post border-th-border2 border-t-transparent border shadow-2xl`}
 						>
-							<div className='bg-transparent pt-9'></div>
+							<div className='bg-transparent pt-9' />
 							<span className=''>
 								<a href={post?.permalink} onClick={(e) => e.preventDefault()}>
 									<span
-										className={
-											' hover:underline font-light text-xs md:font-semibold md:text-base mr-2 ' +
-											(post?.distinguished == 'moderator' || post?.stickied ? ' text-th-green ' : ' ') +
-											(read && context.dimRead ? ' opacity-50 ' : '')
-										}
+										className={` hover:underline font-light text-xs md:font-semibold md:text-base mr-2 ${
+											post?.distinguished === 'moderator' || post?.stickied ? ' text-th-green ' : ' '
+										}${read && context.dimRead ? ' opacity-50 ' : ''}`}
 									>{`${post?.title ?? ''}`}</span>
 								</a>
 								{(post?.link_flair_text?.length > 0 || post?.link_flair_richtext?.length > 0) && (
@@ -693,7 +680,7 @@ const Card1 = ({
 											<span className='text-th-red'>SPOILER</span>
 										</div>
 									)}
-									<div className='mx-0.5'></div>
+									<div className='mx-0.5' />
 									{post?.all_awardings?.length > 0 && <Awardings all_awardings={post?.all_awardings} />}
 								</div>
 								<div className='flex flex-row ml-auto'>

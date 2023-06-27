@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
 import { useMainContext } from '../MainContext'
+import { useEffect, useState } from 'react'
 
 export const useKeyPress = (targetKey) => {
 	const context: any = useMainContext()

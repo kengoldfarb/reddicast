@@ -1,27 +1,27 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { UseInfiniteQueryResult } from '@tanstack/react-query'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { localSeen, useMainContext } from '../MainContext'
+import { useWindowSize } from '@react-hook/window-size'
 import {
 	MasonryScroller,
 	useContainerPosition,
+	useInfiniteLoader,
 	usePositioner,
 	useResizeObserver,
-	useInfiniteLoader,
 	useScrollToIndex
 } from 'masonic'
-import { useWindowSize } from '@react-hook/window-size'
-import { localSeen, useMainContext } from '../MainContext'
 
-import PostModal from './PostModal'
-import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/react'
-import { InView } from 'react-intersection-observer'
-import Post from './Post'
 import { findGreatestsImages } from '../../lib/utils'
 import useFeedPosts from '../hooks/useFeedPosts'
-import useHeightMap from '../hooks/useHeightMap'
 import useGlobalState from '../hooks/useGlobalState'
+import useHeightMap from '../hooks/useHeightMap'
+import Post from './Post'
+import PostModal from './PostModal'
 import Spinner from './ui/Spinner'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
+import { InView } from 'react-intersection-observer'
 
 interface MyMasonicProps {
 	initItems: any[]
@@ -92,7 +92,7 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
 
 	const resizeObserver = useResizeObserver(positioner)
 	const maybeLoadMore = useInfiniteLoader(
-		async (startIndex, stopIndex, currentItems) => {
+		async (_startIndex, stopIndex, currentItems) => {
 			if (
 				context?.infiniteLoading &&
 				!feed.isFetching &&
@@ -108,7 +108,7 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
 		}
 	)
 
-	const [lastRoute, setLastRoute] = useState('')
+	const [_lastRoute, _setLastRoute] = useState('')
 	const [selectedPost, setSelectedPost] = useState<any>()
 	const openPost = (post, postNum, nav, lastRoute) => {
 		context.setPauseAll(true)
@@ -154,7 +154,7 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
 
 	const { getGlobalData, setGlobalData } = useGlobalState(curKey?.length > 1 ? ['lastScrollTop', curKey] : [''])
 
-	const postClick = (a, b) => {
+	const postClick = (a, _b) => {
 		setGlobalData('lastClicked', a)
 		setGlobalData('lastScroll', undefined)
 	}
@@ -277,12 +277,11 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
 					{({ inView, ref }) => (
 						<div
 							ref={ref}
-							className={
-								'relative ' +
-								(scrolledTo
+							className={`relative ${
+								scrolledTo
 									? `${context.cardStyle !== 'row1' ? ' ring rounded-lg' : ' ring-1 '} ring-th-accent z-10 `
-									: '')
-							}
+									: ''
+							}`}
 							style={
 								uniformMediaMode
 									? {
@@ -397,12 +396,11 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
 								onClick={() => {
 									feed.fetchNextPage()
 								}}
-								className={
-									(feed.isLoading || feed.isFetchingNextPage
+								className={`${
+									feed.isLoading || feed.isFetchingNextPage
 										? ' animate-pulse '
-										: ' cursor-pointer hover:bg-th-postHover hover:border-th-borderHighlight shadow-2xl  ') +
-									'flex items-center justify-center px-4 py-2 border rounded-md  h-9 border-th-border bg-th-post '
-								}
+										: ' cursor-pointer hover:bg-th-postHover hover:border-th-borderHighlight shadow-2xl  '
+								}flex items-center justify-center px-4 py-2 border rounded-md  h-9 border-th-border bg-th-post `}
 							>
 								<span>Load Page {(feed?.data?.pages?.length ?? 1) + 1}</span>
 							</button>

@@ -1,10 +1,10 @@
 import { useMainContext } from '../../MainContext'
 import ParseBodyHTML from '../ParseBodyHTML'
 
-import { BiComment } from 'react-icons/bi'
-import Link from 'next/link'
 import { secondsToTime } from '../../../lib/utils'
+import Link from 'next/link'
 import React from 'react'
+import { BiComment } from 'react-icons/bi'
 
 const CommentCard = ({ data, postNum, handleClick }) => {
 	const context: any = useMainContext()
@@ -14,22 +14,20 @@ const CommentCard = ({ data, postNum, handleClick }) => {
 			onClick={(e) => handleClick(e)}
 			className={
 				context.cardStyle === 'row1'
-					? `${
-							(postNum === 0 ? ' border-t rounded-t-md ' : ' ') +
-							'flex flex-row items-start py-4 pr-4 text-sm bg-th-post2 hover:bg-th-postHover group  border-l border-r border-transparent hover:border-th-borderHighlight2 '
-					  }`
-					: `${
-							(context.cardStyle === 'row1' ? '  ' : ' rounded-lg ') +
-							' text-sm shadow-md bg-th-post hover:bg-th-postHover ring-th-border2 hover:ring-th-border2  hover:shadow-2xl transition-colors ring-1  group hover:cursor-pointer p-3'
-					  }`
+					? `${`${
+							postNum === 0 ? ' border-t rounded-t-md ' : ' '
+					  }flex flex-row items-start py-4 pr-4 text-sm bg-th-post2 hover:bg-th-postHover group  border-l border-r border-transparent hover:border-th-borderHighlight2 `}`
+					: `${`${
+							context.cardStyle === 'row1' ? '  ' : ' rounded-lg '
+					  } text-sm shadow-md bg-th-post hover:bg-th-postHover ring-th-border2 hover:ring-th-border2  hover:shadow-2xl transition-colors ring-1  group hover:cursor-pointer p-3`}`
 			}
 		>
 			<div className='flex flex-col'>
 				<div className='flex flex-row justify-start'>
 					<div
-						className={
-							'flex flex-row justify-center flex-none mt-1  ' + (context.cardStyle === 'row1' ? ' w-14 ' : 'w-10 -ml-1')
-						}
+						className={`flex flex-row justify-center flex-none mt-1  ${
+							context.cardStyle === 'row1' ? ' w-14 ' : 'w-10 -ml-1'
+						}`}
 					>
 						<BiComment className='flex-none w-6 h-6' />
 					</div>
@@ -66,9 +64,9 @@ const CommentCard = ({ data, postNum, handleClick }) => {
 						</div>
 					</div>
 				</div>
-				<div className='py-2'></div>
+				<div className='py-2' />
 				<div className='flex flex-row items-start justify-start'>
-					<div className={'flex-none ' + (context.cardStyle === 'row1' ? ' w-14 ' : 'w-10')}></div>
+					<div className={`flex-none ${context.cardStyle === 'row1' ? ' w-14 ' : 'w-10'}`} />
 					<div className='flex items-start justify-start pl-2 overflow-y-auto border-l select-text border-th-border overscroll-auto max-h-40 scrollbar-thin scrollbar-thumb-th-scrollbar scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track-rounded-full'>
 						<ParseBodyHTML html={data?.body_html} small={true} card={true} comment={true} />
 					</div>

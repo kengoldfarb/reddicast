@@ -1,9 +1,9 @@
-import { useTheme } from 'next-themes'
-import ReactSwitch from 'react-switch'
-import { BsX, BsCheck } from 'react-icons/bs'
 import { useMainContext } from '../MainContext'
-import React, { useEffect, useState } from 'react'
 import useRefresh from '../hooks/useRefresh'
+import { useTheme } from 'next-themes'
+import React, { useEffect, useState } from 'react'
+import { BsCheck, BsX } from 'react-icons/bs'
+import ReactSwitch from 'react-switch'
 const ToggleFilters = ({ filter, withSubtext = false, quickToggle = false }) => {
 	const context: any = useMainContext()
 	const { invalidateKey } = useRefresh()
@@ -99,8 +99,8 @@ const ToggleFilters = ({ filter, withSubtext = false, quickToggle = false }) => 
 		setUpdateTheme((t) => t + 1)
 	}, [resolvedTheme])
 	useEffect(() => {
-		let toggleColor = window.getComputedStyle(document.documentElement).getPropertyValue('--toggleColor').trim()
-		let toggleHandleColor = window
+		const toggleColor = window.getComputedStyle(document.documentElement).getPropertyValue('--toggleColor').trim()
+		const toggleHandleColor = window
 			.getComputedStyle(document.documentElement)
 			.getPropertyValue('--toggleHandleColor')
 			.trim()
@@ -126,13 +126,13 @@ const ToggleFilters = ({ filter, withSubtext = false, quickToggle = false }) => 
 						context.toggleFilter(filter)
 					}}
 					checked={checked}
-					checkedHandleIcon={<div></div>}
+					checkedHandleIcon={<div />}
 					checkedIcon={
 						<div className='flex items-center justify-center h-full text-lg '>
 							<BsCheck />
 						</div>
 					}
-					uncheckedHandleIcon={<div></div>}
+					uncheckedHandleIcon={<div />}
 					uncheckedIcon={
 						<div className='flex items-center justify-center h-full text-lg '>
 							<BsX />

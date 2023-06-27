@@ -1,7 +1,4 @@
-import localForage from 'localforage'
-import React, { useState, useEffect, useContext } from 'react'
-import { getSession, useSession } from 'next-auth/react'
-import { useMainContext, localSubInfoCache } from './MainContext'
+import { localSubInfoCache, useMainContext } from './MainContext'
 import {
 	addToMulti,
 	createMulti,
@@ -15,7 +12,10 @@ import {
 	loadSubredditInfo,
 	subToSub
 } from './RedditAPI'
+import localForage from 'localforage'
+import { getSession, useSession } from 'next-auth/react'
 import { useRouter } from 'next/dist/client/router'
+import React, { useContext, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
 import ToastCustom from './components/toast/ToastCustom'
@@ -85,7 +85,7 @@ export const MySubsProvider = ({ children }) => {
 	useEffect(() => {
 		const loadMultis = async () => {
 			let local_localMultis: [] = await localForage.getItem('myLocalMultis')
-			if (local_localMultis == undefined) {
+			if (local_localMultis === undefined) {
 				local_localMultis = JSON.parse(localStorage.getItem('localMultis'))
 			} else {
 				localStorage.removeItem('localMultis')
@@ -134,7 +134,7 @@ export const MySubsProvider = ({ children }) => {
 		const toastId = toast.custom((t) => <ToastCustom t={t} message={`Deleting ${multi}`} mode={'loading'} />, {
 			position: 'bottom-center'
 		})
-		let afterdelete = myLocalMultis.filter((m) => m?.data?.name?.toUpperCase() !== multi.toUpperCase())
+		const afterdelete = myLocalMultis.filter((m) => m?.data?.name?.toUpperCase() !== multi.toUpperCase())
 		setMyLocalMultis(afterdelete)
 
 		//update localstroage if no more multis
@@ -147,15 +147,15 @@ export const MySubsProvider = ({ children }) => {
 			duration: 1500
 		})
 	}
-	const addToLocalMulti = (multi: String, sub) => {
+	const addToLocalMulti = (multi: string, sub) => {
 		const toastId = toast.custom((t) => <ToastCustom t={t} message={`Adding ${sub} to ${multi}`} mode={'loading'} />, {
 			position: 'bottom-center'
 		})
-		let localMultisCopy = myLocalMultis
+		const localMultisCopy = myLocalMultis
 		let found = false
 		localMultisCopy.forEach((m, i) => {
 			if (m?.data?.name?.toUpperCase() === multi.toUpperCase()) {
-				m?.data?.subreddits?.forEach((s, j) => {
+				m?.data?.subreddits?.forEach((s, _j) => {
 					if (s?.name?.toUpperCase() === sub.toUpperCase()) found = true
 				})
 				if (!found) {
@@ -170,18 +170,18 @@ export const MySubsProvider = ({ children }) => {
 			duration: 1500
 		})
 	}
-	const addAllToLocalMulti = (multi, subs: [String]) => {
+	const addAllToLocalMulti = (multi, subs: [string]) => {
 		setMyLocalMultis((multis) => {
 			const toastId = toast.custom(
 				(t) => <ToastCustom t={t} message={`Adding ${subs.length} subs to ${multi}`} mode={'loading'} />,
 				{ position: 'bottom-center' }
 			)
-			let localMultisCopy = multis
+			const localMultisCopy = multis
 			subs.forEach((sub) => {
 				let found = false
 				localMultisCopy.forEach((m, i) => {
 					if (m?.data?.name?.toUpperCase() === multi.toUpperCase()) {
-						m?.data?.subreddits?.forEach((s, j) => {
+						m?.data?.subreddits?.forEach((s, _j) => {
 							if (s?.name?.toUpperCase() === sub.toUpperCase()) found = true
 						})
 						if (!found) {
@@ -203,13 +203,13 @@ export const MySubsProvider = ({ children }) => {
 			(t) => <ToastCustom t={t} message={`Removing ${sub} from ${multi}`} mode={'loading'} />,
 			{ position: 'bottom-center' }
 		)
-		let localMultisCopy = myLocalMultis
+		const localMultisCopy = myLocalMultis
 		let multi_index = -1
 		localMultisCopy.forEach((m, i) => {
 			//console.log(m?.data?.name?.toUpperCase());
 			if (m?.data?.name?.toUpperCase() === multi.toUpperCase()) {
 				multi_index = i
-				let subreddits = m.data?.subreddits?.filter((s) => s?.name?.toUpperCase() !== sub.toUpperCase())
+				const subreddits = m.data?.subreddits?.filter((s) => s?.name?.toUpperCase() !== sub.toUpperCase())
 				//console.log(multi_index, subreddits);
 				localMultisCopy[multi_index].data.subreddits = subreddits
 			}
@@ -232,19 +232,19 @@ export const MySubsProvider = ({ children }) => {
 				})
 			}
 		} else {
-			toast.custom((t) => <ToastCustom t={t} message={`Something went wrong`} mode={'error'} />, {
+			toast.custom((t) => <ToastCustom t={t} message={'Something went wrong'} mode={'error'} />, {
 				id: toastId,
 				duration: 1500
 			})
 		}
 	}
 
-	const removeAllFromLocalMulti = (multi: String, subs: [String]) => {
+	const removeAllFromLocalMulti = (multi: string, subs: [string]) => {
 		const toastId = toast.custom(
 			(t) => <ToastCustom t={t} message={`Removing ${subs.length} subs from ${multi}`} mode={'loading'} />,
 			{ position: 'bottom-center' }
 		)
-		let localMultisCopy = myLocalMultis
+		const localMultisCopy = myLocalMultis
 		let deleted = false
 		subs.forEach((sub) => {
 			let multi_index = -1
@@ -252,7 +252,7 @@ export const MySubsProvider = ({ children }) => {
 				//console.log(m?.data?.name?.toUpperCase());
 				if (m?.data?.name?.toUpperCase() === multi.toUpperCase()) {
 					multi_index = i
-					let subreddits = m.data?.subreddits?.filter((s) => s?.name?.toUpperCase() !== sub.toUpperCase())
+					const subreddits = m.data?.subreddits?.filter((s) => s?.name?.toUpperCase() !== sub.toUpperCase())
 					//console.log(multi_index, subreddits);
 					localMultisCopy[multi_index].data.subreddits = subreddits
 				}
@@ -290,7 +290,7 @@ export const MySubsProvider = ({ children }) => {
 			if (m?.data?.name?.toUpperCase() === multiname.toUpperCase()) found = true
 		})
 		if (!found) {
-			let res = await createMulti(multiname, username, subreddits)
+			const res = await createMulti(multiname, username, subreddits)
 			if (res?.ok) {
 				loadAllMultis()
 				toast.custom((t) => <ToastCustom t={t} message={`Created ${multiname}`} mode={'success'} />, {
@@ -317,7 +317,7 @@ export const MySubsProvider = ({ children }) => {
 			(t) => <ToastCustom t={t} message={`Adding ${subname} to ${multi}`} mode={'loading'} />,
 			{ position: 'bottom-center' }
 		)
-		let res = await addToMulti(multi, username, subname)
+		const res = await addToMulti(multi, username, subname)
 		//console.log(res);
 		if (res?.ok) {
 			loadAllMultis()
@@ -337,7 +337,7 @@ export const MySubsProvider = ({ children }) => {
 			(t) => <ToastCustom t={t} message={`Removing ${subname} from ${multi}`} mode={'loading'} />,
 			{ position: 'bottom-center' }
 		)
-		let res = await deleteFromMulti(multi, username, subname)
+		const res = await deleteFromMulti(multi, username, subname)
 		//console.log(res);
 		if (res?.ok) {
 			loadAllMultis()
@@ -356,7 +356,7 @@ export const MySubsProvider = ({ children }) => {
 		const toastId = toast.custom((t) => <ToastCustom t={t} message={`Deleting ${multi}`} mode={'loading'} />, {
 			position: 'bottom-center'
 		})
-		let res = await deleteMulti(multi, username)
+		const res = await deleteMulti(multi, username)
 		//console.log(res);
 		if (res?.ok) {
 			loadAllMultis()
@@ -373,12 +373,12 @@ export const MySubsProvider = ({ children }) => {
 	}
 
 	const checkSubCache = async (sub_displayName, isUser) => {
-		let cached = await localSubInfoCache.getItem(((isUser ? 'U_' : '') + sub_displayName)?.toUpperCase())
+		const cached = await localSubInfoCache.getItem(((isUser ? 'U_' : '') + sub_displayName)?.toUpperCase())
 		return cached
 	}
 
 	const trimSubInfo = (subInfo) => {
-		let subInfoLess = {
+		const subInfoLess = {
 			data: {
 				banner_background_color: subInfo?.banner_background_color,
 				banner_background_image: subInfo?.banner_background_image,
@@ -404,8 +404,8 @@ export const MySubsProvider = ({ children }) => {
 		return subInfoLess
 	}
 	const trimUserInfo = (userInfo) => {
-		let subInfo = userInfo?.subreddit
-		let userInfoLess = {
+		const subInfo = userInfo?.subreddit
+		const userInfoLess = {
 			data: {
 				...userInfo,
 				subreddit: {
@@ -442,10 +442,10 @@ export const MySubsProvider = ({ children }) => {
 	}
 
 	const addToSubCache = (data) => {
-		let subInfo = data?.data?.subreddit ?? data?.data
+		const subInfo = data?.data?.subreddit ?? data?.data
 		//using display name as this is the only info we have immediately..
-		let sub = subInfo?.display_name?.toUpperCase()
-		let subInfoLess = trimSubInfo(subInfo)
+		const sub = subInfo?.display_name?.toUpperCase()
+		const subInfoLess = trimSubInfo(subInfo)
 
 		localSubInfoCache.setItem(sub, subInfoLess)
 
@@ -466,17 +466,17 @@ export const MySubsProvider = ({ children }) => {
 			get: (searchParams, prop) => searchParams.get(prop as string)
 		})
 		const lmulti = router?.query?.m ?? params?.['m']
-		lmulti ? setMulti(lmulti) : currSubs?.length > 1 ? setMulti(`Feed`) : setMulti('')
+		lmulti ? setMulti(lmulti) : currSubs?.length > 1 ? setMulti('Feed') : setMulti('')
 	}, [router?.query, currSubs])
 
 	useEffect(() => {
 		let asynccheck = true
 		const loadCurrSubInfo = async (sub, isUser = false) => {
-			let cachedInfo = await checkSubCache(sub, isUser)
+			const cachedInfo = await checkSubCache(sub, isUser)
 			if (cachedInfo) {
 				asynccheck && setCurrSubInfo(cachedInfo)
 			}
-			let info = await loadSubredditInfo(sub, isUser)
+			const info = await loadSubredditInfo(sub, isUser)
 			if (info) {
 				addToSubCache(info)
 				asynccheck && setCurrSubInfo(info)
@@ -486,17 +486,17 @@ export const MySubsProvider = ({ children }) => {
 		}
 
 		if (router?.pathname === '/r/[...slug]' && router?.query?.slug?.[0]) {
-			let loc = router?.query?.slug?.[0].split(' ').join('+').split('%20').join('+').split('+')
+			const loc = router?.query?.slug?.[0].split(' ').join('+').split('%20').join('+').split('+')
 			setCurrSubs(
 				loc.sort((a, b) => {
-					let aUpper = a.toUpperCase()
-					let bUpper = b.toUpperCase()
+					const aUpper = a.toUpperCase()
+					const bUpper = b.toUpperCase()
 					if (aUpper < bUpper) return -1
 					if (aUpper > bUpper) return 1
 					return 0
 				})
 			)
-			let curr = loc[0].toString()?.toUpperCase()
+			const curr = loc[0].toString()?.toUpperCase()
 			if (router?.query?.m) {
 				setCurrLocation(router?.query?.m?.[0]?.toString())
 			} else {
@@ -555,7 +555,7 @@ export const MySubsProvider = ({ children }) => {
 	}, [context.localSubs, context.localFavoriteSubs])
 
 	useEffect(() => {
-		if (session && mySubs.length == 0) {
+		if (session && mySubs.length === 0) {
 			loadAllFast()
 		} else if (!session && !loading) {
 			loadLocalSubs()
@@ -571,7 +571,7 @@ export const MySubsProvider = ({ children }) => {
 	const loadLocalSubs = () => {
 		let localsubs = []
 		context.localSubs.forEach((s) => {
-			let sub = {
+			const sub = {
 				data: {
 					name: s,
 					display_name: s,
@@ -600,7 +600,7 @@ export const MySubsProvider = ({ children }) => {
 		await Promise.all([
 			...users.map(async (user) => {
 				const info = await loadSubInfo(user?.data?.subreddit?.display_name)
-				info?.kind == 't5'
+				info?.kind === 't5'
 					? follows.push({
 							...user,
 							data: { ...user.data, subreddit: info.data }
@@ -627,13 +627,13 @@ export const MySubsProvider = ({ children }) => {
 			setLoadingSubs(true)
 			const multis = getMyMultis()
 			const all = getAllMyFollows()
-			let loadedMultis = await multis
+			const loadedMultis = await multis
 			setMyMultis(loadedMultis)
 			setloadedMultis(true)
-			let { subs, users } = await all
-			let username = session?.user?.name
+			const { subs, users } = await all
+			const username = session?.user?.name
 			if (username) {
-				let pData = (await localForage.getItem('subSync'))?.[username]
+				const pData = (await localForage.getItem('subSync'))?.[username]
 				localForage.setItem('subSync', {
 					[`${username}`]: {
 						...pData,
@@ -661,12 +661,12 @@ export const MySubsProvider = ({ children }) => {
 	const loadAllFast = async () => {
 		setLoadingSubs(true)
 		if (session?.user?.name) {
-			let username = session.user.name
-			let d = await localForage.getItem('subSync')
-			let subs = d?.[username]?.subs
-			let follows = d?.[username]?.follows
-			let multis = d?.[username]?.multis
-			let lastUpdate = d?.[username]?.lastUpdate
+			const username = session.user.name
+			const d = await localForage.getItem('subSync')
+			const subs = d?.[username]?.subs
+			const follows = d?.[username]?.follows
+			const multis = d?.[username]?.multis
+			const lastUpdate = d?.[username]?.lastUpdate
 			//console.log("subs?", subs);
 			//console.log("follows", follows);
 			//console.log("multis?", multis);
@@ -705,12 +705,12 @@ export const MySubsProvider = ({ children }) => {
 		}
 	}
 
-	const loadAllSubs = async (loggedIn: boolean | any = false) => {
+	const _loadAllSubs = async (loggedIn: boolean | any = false) => {
 		if (session || loggedIn) {
 			try {
 				//console.log('loadallsubs')
 				setloadedSubs(false)
-				let data = await getAllMyFollows()
+				const data = await getAllMyFollows()
 				setMySubs(data.subs)
 				await loadUserSubInfos(data.users)
 				//setMyFollowing(data.users);
@@ -727,7 +727,7 @@ export const MySubsProvider = ({ children }) => {
 		}
 	}
 
-	const [error, seterror] = useState(false)
+	const [error, _seterror] = useState(false)
 	// useEffect(() => {
 	//   if (session && loadedSubs && mySubs.length < 1) {
 	//     //loadAllFast();
@@ -745,7 +745,7 @@ export const MySubsProvider = ({ children }) => {
 			const pState = isUser ? myFollowing : mySubs
 			if (isUser) {
 				setMyFollowing((users) => {
-					let newFollows = users.map((user) => {
+					const newFollows = users.map((user) => {
 						if (user?.data?.subreddit?.display_name === subname) {
 							return {
 								...user,
@@ -770,7 +770,7 @@ export const MySubsProvider = ({ children }) => {
 				})
 			} else {
 				setMySubs((subs) => {
-					let newSubs = subs.map((sub) => {
+					const newSubs = subs.map((sub) => {
 						if (sub?.data?.display_name === subname) {
 							return {
 								...sub,
@@ -798,10 +798,10 @@ export const MySubsProvider = ({ children }) => {
 		}
 	}
 
-	const updateLocalStore = async (key, data, update = false) => {
-		let username = session?.user?.name
+	const updateLocalStore = async (key, data, _update = false) => {
+		const username = session?.user?.name
 		if (username) {
-			let pData = (await localForage.getItem('subSync'))?.[username]
+			const pData = (await localForage.getItem('subSync'))?.[username]
 			await localForage.setItem('subSync', {
 				[`${username}`]: {
 					...pData,
@@ -851,14 +851,14 @@ export const MySubsProvider = ({ children }) => {
 
 	const subscribe = async (action: 'sub' | 'unsub', subname, loggedIn = false) => {
 		//console.log("subAPI", action, subname, loggedIn);
-		let isUser = subname?.substring(0, 2) == 'u_'
+		const isUser = subname?.substring(0, 2) === 'u_'
 
 		const toastId = toast.custom(
 			(t) => (
 				<ToastCustom
 					t={t}
 					message={`${
-						isUser ? (action == 'sub' ? 'Following' : 'Unfollowing') : action == 'sub' ? 'Joining' : 'Leaving'
+						isUser ? (action === 'sub' ? 'Following' : 'Unfollowing') : action === 'sub' ? 'Joining' : 'Leaving'
 					} ${isUser ? subname.substring(2) : subname}`}
 					mode={'loading'}
 				/>
@@ -874,7 +874,7 @@ export const MySubsProvider = ({ children }) => {
 			if (isUser) sub = sub.substring(2)
 			let subInfo = await loadSubInfo(isUser ? `u_${sub}` : sub)
 			if (isUser) {
-				let aboutUser = await loadSubredditInfo(sub, isUser)
+				const aboutUser = await loadSubredditInfo(sub, isUser)
 				aboutUser['data']['subreddit'] = subInfo.data
 				subInfo = aboutUser
 			}
@@ -882,7 +882,7 @@ export const MySubsProvider = ({ children }) => {
 			sub = isUser ? subInfo?.data?.subreddit?.name : subInfo?.data?.name
 			//}
 
-			let status = await subToSub(action, sub)
+			const status = await subToSub(action, sub)
 			if (status) {
 				//loadAllSubs(loggedIn);
 				mutateLocalRedditSubs(action, subInfo, isUser)
@@ -891,7 +891,7 @@ export const MySubsProvider = ({ children }) => {
 						<ToastCustom
 							t={t}
 							message={`${
-								isUser ? (action == 'sub' ? 'Followed' : 'Unfollowed') : action == 'sub' ? 'Joined' : 'Left'
+								isUser ? (action === 'sub' ? 'Followed' : 'Unfollowed') : action === 'sub' ? 'Joined' : 'Left'
 							} ${isUser ? subname.substring(2) : subname}`}
 							mode={'success'}
 						/>
@@ -905,7 +905,7 @@ export const MySubsProvider = ({ children }) => {
 						<ToastCustom
 							t={t}
 							message={`Error ${
-								isUser ? (action == 'sub' ? 'Following' : 'Unfollowing') : action == 'sub' ? 'Joining' : 'Leaving'
+								isUser ? (action === 'sub' ? 'Following' : 'Unfollowing') : action === 'sub' ? 'Joining' : 'Leaving'
 							} ${isUser ? subname.substring(2) : subname}`}
 							mode={'error'}
 						/>
@@ -917,14 +917,14 @@ export const MySubsProvider = ({ children }) => {
 				return false
 			}
 		} else if ((!session && !loading) || !loggedIn) {
-			let status = await context.subToSub(action, subname)
+			const status = await context.subToSub(action, subname)
 			if (status) {
 				toast.custom(
 					(t) => (
 						<ToastCustom
 							t={t}
 							message={`${
-								isUser ? (action == 'sub' ? 'Followed' : 'Unfollowed') : action == 'sub' ? 'Joined' : 'Left'
+								isUser ? (action === 'sub' ? 'Followed' : 'Unfollowed') : action === 'sub' ? 'Joined' : 'Left'
 							} ${isUser ? subname.substring(2) : subname}`}
 							mode={'success'}
 						/>
@@ -937,7 +937,7 @@ export const MySubsProvider = ({ children }) => {
 						<ToastCustom
 							t={t}
 							message={`Error ${
-								isUser ? (action == 'sub' ? 'Following' : 'Unfollowing') : action == 'sub' ? 'Joining' : 'Leaving'
+								isUser ? (action === 'sub' ? 'Following' : 'Unfollowing') : action === 'sub' ? 'Joining' : 'Leaving'
 							} ${isUser ? subname.substring(2) : subname}`}
 							mode={'error'}
 						/>
@@ -952,7 +952,7 @@ export const MySubsProvider = ({ children }) => {
 					<ToastCustom
 						t={t}
 						message={`Error ${
-							isUser ? (action == 'sub' ? 'Following' : 'Unfollowing') : action == 'sub' ? 'Joining' : 'Leaving'
+							isUser ? (action === 'sub' ? 'Following' : 'Unfollowing') : action === 'sub' ? 'Joining' : 'Leaving'
 						} ${isUser ? subname.substring(2) : subname}`}
 						mode={'error'}
 					/>
@@ -965,9 +965,9 @@ export const MySubsProvider = ({ children }) => {
 	const subscribeAll = async (subs: string[]) => {
 		const toastId = toast.custom((t) => <ToastCustom t={t} message={`Joining ${subs.length} subs`} mode={'loading'} />)
 		let issues = 0
-		for (let sub of subs) {
+		for (const sub of subs) {
 			if (!session) {
-				let status = await context.subToSub('sub', sub)
+				const status = await context.subToSub('sub', sub)
 				if (!status) {
 					issues += 1
 				}
@@ -975,7 +975,7 @@ export const MySubsProvider = ({ children }) => {
 				subscribe('sub', sub, true)
 			}
 		}
-		if (issues == 0) {
+		if (issues === 0) {
 			toast.custom((t) => <ToastCustom t={t} message={`Joined ${subs.length} subs`} mode={'success'} />, {
 				id: toastId,
 				duration: 1500

@@ -14,7 +14,7 @@ const reducer = (state, action) => {
 				prevMouseX: action.clientX,
 				prevMouseY: action.clientY
 			}
-		case types.PAN:
+		case types.PAN: {
 			const deltaMouseX = action.clientX - state.prevMouseX
 			const deltaMouseY = action.clientY - state.prevMouseY
 			return {
@@ -24,7 +24,8 @@ const reducer = (state, action) => {
 				prevMouseX: action.clientX,
 				prevMouseY: action.clientY
 			}
-		case types.ZOOM:
+		}
+		case types.ZOOM: {
 			const scaledTranslate = getScaledTranslate(state, action.zoomFactor)
 			const mousePositionOnScreen = { x: action.clientX, y: action.clientY }
 			const zoomOffset = getZoomOffset(action.containerRect, mousePositionOnScreen, action.zoomFactor)
@@ -41,6 +42,7 @@ const reducer = (state, action) => {
 					...initialState
 				}
 			}
+		}
 		case types.RESET:
 			return {
 				...state,

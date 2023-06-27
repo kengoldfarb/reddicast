@@ -4,14 +4,14 @@ import { localRead, localSeen, useMainContext } from '../MainContext'
 
 const useHistory = () => {
 	const context: any = useMainContext()
-	const clearRead = async (since?: number) => {
+	const clearRead = async (_since?: number) => {
 		return await context.clearReadPosts()
 	}
-	const clearSeen = async (since?: number) => {
+	const clearSeen = async (_since?: number) => {
 		try {
 			await localSeen.clear()
 			return true
-		} catch (err) {
+		} catch (_err) {
 			return false
 		}
 	}

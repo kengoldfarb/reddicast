@@ -1,7 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
-import React, { useState, useEffect } from 'react'
-import Carousel from 'nuka-carousel'
 import Image from 'next/legacy/image'
+import Carousel from 'nuka-carousel'
+/* eslint-disable @next/next/no-img-element */
+import React, { useEffect, useState } from 'react'
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai'
 
 const GalleryCarousel = ({
@@ -40,7 +40,7 @@ const GalleryCarousel = ({
 
 	const arrowStyle = mediaMode
 		? 'absolute text-white z-10 bg-black/40 backdrop-blur-lg h-10 w-10 rounded-full flex items-center justify-center md:h-12 md:w-12 md:border md:border-transparent md:hover:border-th-accent md:rounded-md '
-		: `absolute text-white text-xl z-10 bg-black h-8 w-8 rounded-full flex items-center justify-center bg-opacity-50 backdrop-blur-lg`
+		: 'absolute text-white text-xl z-10 bg-black h-8 w-8 rounded-full flex items-center justify-center bg-opacity-50 backdrop-blur-lg'
 
 	return (
 		<>
@@ -68,15 +68,15 @@ const GalleryCarousel = ({
 				}}
 				renderTopCenterControls={({ currentSlide }) => (
 					<div
-						className={
-							(media.length < 2 ? 'hidden ' : '') +
-							' z-10  md:p-2 text-white text-[10px] md:text-xs bg-black bg-opacity-50 rounded-lg backdrop-blur-lg ' +
-							(mediaMode
+						className={`${
+							media.length < 2 ? 'hidden ' : ''
+						} z-10  md:p-2 text-white text-[10px] md:text-xs bg-black bg-opacity-50 rounded-lg backdrop-blur-lg ${
+							mediaMode
 								? 'fixed bottom-[32.5rem] right-1.5 p-2 md:top-6 md:bottom-auto md:right-24  '
-								: ' absolute top-2 right-2 p-1 ')
-						}
+								: ' absolute top-2 right-2 p-1 '
+						}`}
 					>
-						<span>{currentSlide + 1 + '/' + media.length}</span>
+						<span>{`${currentSlide}${1}/${media.length}`}</span>
 					</div>
 				)}
 				renderCenterLeftControls={({ previousDisabled, previousSlide }) => (
@@ -98,7 +98,7 @@ const GalleryCarousel = ({
 								: 'left-2 -translate-y-1/2'
 						} ${previousDisabled || hideArrows ? ' opacity-0 ' : ''} transition-opacity ease-out duration-400 `}
 					>
-						<span role='img' aria-label={`Arrow left`}>
+						<span role='img' aria-label={'Arrow left'}>
 							<AiOutlineLeft className={mediaMode ? 'md:w-6 md:h-6' : ' w-3 h-3 md:w-4 md:h-4 '} />
 						</span>
 					</button>
@@ -120,7 +120,7 @@ const GalleryCarousel = ({
 							mediaMode ? 'bottom-[25.5rem] right-1.5 md:bottom-1/2 md:right-1.5 ' : 'right-2 -translate-y-1/2'
 						} ${nextDisabled || hideArrows ? ' opacity-0 ' : ' '} transition-opacity ease-out duration-400`}
 					>
-						<span role='img' aria-label={`Arrow right`}>
+						<span role='img' aria-label={'Arrow right'}>
 							<AiOutlineRight className={mediaMode ? 'md:w-6 md:h-6' : ' w-3 h-3 md:w-4 md:h-4 '} />
 						</span>
 					</button>
@@ -151,7 +151,7 @@ const GalleryCarousel = ({
 									priority={true}
 									unoptimized={true}
 									className={''}
-								></Image>
+								/>
 								{i === slideIndex && image.caption && (
 									<div className='absolute bottom-0 left-0 z-20 flex text-sm p-0.5 py-1 bg-black/50 bg-opacity-80 w-full text-white text-left'>
 										{image.caption}
@@ -174,7 +174,7 @@ const GalleryCarousel = ({
 											  }
 									}
 									className='absolute inset-0 w-full brightness-[0.2] -z-10 bg-center bg-no-repeat bg-cover blur-md '
-								></div>
+								/>
 							</>
 						) : (
 							<></>

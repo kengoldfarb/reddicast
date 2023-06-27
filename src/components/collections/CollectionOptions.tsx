@@ -1,11 +1,11 @@
-import { BsThreeDotsVertical } from 'react-icons/bs'
-import { Fragment, useEffect, useRef, useState } from 'react'
-import { Menu, Transition } from '@headlessui/react'
 import { useSubsContext } from '../../MySubs'
-import { useSession } from 'next-auth/react'
 import DropdownItem from '../DropdownItem'
 import MultiManageModal from '../MultiManageModal'
+import { Menu, Transition } from '@headlessui/react'
+import { useSession } from 'next-auth/react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import React from 'react'
+import { BsThreeDotsVertical } from 'react-icons/bs'
 
 const CollectionOptions = ({
 	// subInfo,
@@ -82,10 +82,9 @@ const CollectionOptions = ({
 								aria-label='more actions'
 								title={'more actions'}
 								name='Extra Sub Menu'
-								className={
-									'w-6  flex justify-center items-center border rounded-md focus:outline-none bg-background2 hover:bg-th-highlight border-th-border hover:border-th-borderHighlight   ' +
-									(currMulti ? ' h-8' : ' h-9')
-								}
+								className={`w-6  flex justify-center items-center border rounded-md focus:outline-none bg-background2 hover:bg-th-highlight border-th-border hover:border-th-borderHighlight   ${
+									currMulti ? ' h-8' : ' h-9'
+								}`}
 							>
 								<BsThreeDotsVertical className='w-5 h-8' />
 							</Menu.Button>
@@ -101,18 +100,17 @@ const CollectionOptions = ({
 							leaveTo='transform opacity-0 scale-95'
 						>
 							<Menu.Items
-								className={
-									'z-50 absolute   w-40 mt-2 bg-th-background2 ring-th-base border-th-border rounded-md shadow-lg ring-1  ring-opacity-5 focus:outline-none border  select-none cursor-pointer ' +
-									(currMulti ? ' origin-top-right right-7 -top-2  ' : 'origin-bottom-right bottom-10 right-0')
-								}
+								className={`z-50 absolute   w-40 mt-2 bg-th-background2 ring-th-base border-th-border rounded-md shadow-lg ring-1  ring-opacity-5 focus:outline-none border  select-none cursor-pointer ${
+									currMulti ? ' origin-top-right right-7 -top-2  ' : 'origin-bottom-right bottom-10 right-0'
+								}`}
 							>
 								<div className='py-1 '>
 									<Menu.Item disabled={subArray.length < 1}>
 										{({ active, disabled }) => (
 											<div
-												className={
-													(active ? 'bg-th-highlight ' : '') + ' block  text-sm' + (disabled ? ' opacity-20 ' : '')
-												}
+												className={`${active ? 'bg-th-highlight ' : ''} block  text-sm${
+													disabled ? ' opacity-20 ' : ''
+												}`}
 											>
 												<button
 													onClick={(e) => {
@@ -124,14 +122,12 @@ const CollectionOptions = ({
 													Add {subArray.length} to Feed
 												</button>
 												<div
-													className={
-														'absolute top-0 -left-[10rem] w-40 overflow-y-scroll bg-th-background2  rounded-md shadow-lg ring-1 ring-th-base ring-opacity-5 focus:outline-none border border-th-border  select-none cursor-pointer py-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track-rounded-full  scrollbar-thumb-th-scrollbar' +
-														(active ? '  ' : ' hidden ') +
-														(currMulti ? ' max-h-96 ' : ' max-h-40 ')
-													}
+													className={`absolute top-0 -left-[10rem] w-40 overflow-y-scroll bg-th-background2  rounded-md shadow-lg ring-1 ring-th-base ring-opacity-5 focus:outline-none border border-th-border  select-none cursor-pointer py-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track-rounded-full  scrollbar-thumb-th-scrollbar${
+														active ? '  ' : ' hidden '
+													}${currMulti ? ' max-h-96 ' : ' max-h-40 '}`}
 												>
 													<div
-														onClick={(e) => {
+														onClick={(_e) => {
 															setopenMulti((s) => s + 1)
 														}}
 													>
@@ -182,11 +178,9 @@ const CollectionOptions = ({
 									<Menu.Item disabled={subArray.length < 1 || currMulti.length < 1 || !isOwner}>
 										{({ active, disabled }) => (
 											<div
-												className={
-													(active ? 'bg-th-highlight ' : '') +
-													' flex justify-end px-4 py-2.5 md:py-1  text-sm' +
-													(disabled ? ' hidden ' : '')
-												}
+												className={`${active ? 'bg-th-highlight ' : ''} flex justify-end px-4 py-2.5 md:py-1  text-sm${
+													disabled ? ' hidden ' : ''
+												}`}
 												onClick={(e) => {
 													if (!removeCheck) {
 														e.preventDefault()
@@ -213,7 +207,7 @@ const CollectionOptions = ({
 															e.stopPropagation()
 															toggleRemoveCheck()
 														}}
-													>{`Remove ${subArray.length} ${subArray.length == 1 ? 'sub' : 'subs'}`}</div>
+													>{`Remove ${subArray.length} ${subArray.length === 1 ? 'sub' : 'subs'}`}</div>
 												)}
 												{/* <div className="flex flex-row justify-end text-right cursor-pointer select-none">
                           {`Remove from m/${currMulti}`}
@@ -224,9 +218,7 @@ const CollectionOptions = ({
 									<Menu.Item disabled={currMulti.length < 1 || !isOwner}>
 										{({ active, disabled }) => (
 											<div
-												className={
-													(active ? 'bg-th-highlight ' : '') + ' block  text-sm' + (disabled ? ' hidden ' : '')
-												}
+												className={`${active ? 'bg-th-highlight ' : ''} block  text-sm${disabled ? ' hidden ' : ''}`}
 											>
 												<div
 													onClick={(e) => {
@@ -265,11 +257,9 @@ const CollectionOptions = ({
 										<Menu.Item disabled={subArray.length < 1 || !!session || loading}>
 											{({ active, disabled }) => (
 												<div
-													className={
-														(active ? 'bg-th-highlight ' : '') +
-														' block px-4 py-2.5 md:py-1  text-sm' +
-														(disabled ? ' hidden' : '')
-													}
+													className={`${active ? 'bg-th-highlight ' : ''} block px-4 py-2.5 md:py-1  text-sm${
+														disabled ? ' hidden' : ''
+													}`}
 													onClick={JoinAll}
 												>
 													<div className='flex flex-row justify-end cursor-pointer select-none'>
@@ -286,7 +276,7 @@ const CollectionOptions = ({
 				)}
 			</Menu>
 			<Menu as={'div'} className={'relative'}>
-				<Menu.Button ref={feedMenuRef} className='hidden'></Menu.Button>
+				<Menu.Button ref={feedMenuRef} className='hidden' />
 				<Transition
 					as={Fragment}
 					enter='transition ease-out duration-800'
@@ -298,14 +288,13 @@ const CollectionOptions = ({
 				>
 					<Menu.Items
 						as={'div'}
-						className={
-							'absolute z-50  w-40 max-h-96 overflow-y-scroll   rounded-md shadow-lg ring-1  ring-opacity-5 focus:outline-none border  select-none cursor-pointer py-1 scrollbar-thin  scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thumb-th-scrollbar bg-th-background2 border-th-border ring-th-base' +
-							(currMulti ? ' origin-top-right right-7 -top-0  ' : 'origin-bottom-right bottom-6 right-2')
-						}
+						className={`absolute z-50  w-40 max-h-96 overflow-y-scroll   rounded-md shadow-lg ring-1  ring-opacity-5 focus:outline-none border  select-none cursor-pointer py-1 scrollbar-thin  scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thumb-th-scrollbar bg-th-background2 border-th-border ring-th-base${
+							currMulti ? ' origin-top-right right-7 -top-0  ' : 'origin-bottom-right bottom-6 right-2'
+						}`}
 					>
 						<Menu.Item
 							as={'button'}
-							onClick={(e) => {
+							onClick={(_e) => {
 								setopenMulti((s) => s + 1)
 							}}
 							className='w-full'
@@ -313,7 +302,7 @@ const CollectionOptions = ({
 						>
 							{({ active }) => (
 								<div
-									className={'px-2 py-2  hover:cursor-pointer' + (active ? ' bg-th-highlight ' : '')}
+									className={`px-2 py-2  hover:cursor-pointer${active ? ' bg-th-highlight ' : ''}`}
 									onClick={multiCreate}
 								>
 									<h1 className='pl-2'>Create New</h1>
@@ -330,7 +319,7 @@ const CollectionOptions = ({
 											onClick={() => tryAddToMulti(multi.data.display_name)}
 										>
 											{({ active }) => (
-												<div className={'px-2 py-2 ' + (active ? ' bg-th-highlight' : '')}>
+												<div className={`px-2 py-2 ${active ? ' bg-th-highlight' : ''}`}>
 													<DropdownItem sub={multi} />
 												</div>
 											)}
@@ -346,7 +335,7 @@ const CollectionOptions = ({
 											onClick={() => tryAddToMulti(multi.data.display_name)}
 										>
 											{({ active }) => (
-												<div className={'px-2 py-2 ' + (active ? ' bg-th-highlight ' : ' ')}>
+												<div className={`px-2 py-2 ${active ? ' bg-th-highlight ' : ' '}`}>
 													<DropdownItem sub={multi} />
 												</div>
 											)}

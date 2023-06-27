@@ -1,14 +1,14 @@
+import { findGreatestsImages } from '../../lib/utils'
+import { GalleryInfo } from '../../types'
+import { useMainContext } from '../MainContext'
+import GalleryCarousel from './GalleryCarousel'
 /* eslint-disable @next/next/no-img-element */
 import { Transition } from '@headlessui/react'
 import Image from 'next/legacy/image'
 import React from 'react'
-import { useState, useEffect, createRef } from 'react'
-import { AiOutlineRight, AiOutlineLeft } from 'react-icons/ai'
+import { createRef, useEffect, useState } from 'react'
+import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai'
 import { isContext } from 'vm'
-import { findGreatestsImages } from '../../lib/utils'
-import { useMainContext } from '../MainContext'
-import GalleryCarousel from './GalleryCarousel'
-import { GalleryInfo } from '../../types'
 
 const Gallery = ({
 	images,
@@ -33,7 +33,7 @@ const Gallery = ({
 	checkCardHeight?: () => void
 	containerDims?: [number, number]
 }) => {
-	const context: any = useMainContext()
+	const _context: any = useMainContext()
 	// const [loaded, setLoaded] = useState(false);
 	// const [index, setIndex] = useState(0);
 	const [imgRatio, setImgRatio] = useState<{
@@ -41,12 +41,12 @@ const Gallery = ({
 		height: number
 		width: number
 	}>()
-	const [imgtall, setimgtall] = useState<{
+	const [_imgtall, setimgtall] = useState<{
 		src: string
 		height: number
 		width: number
 	}>()
-	const [imgwide, setimgwide] = useState<{
+	const [_imgwide, setimgwide] = useState<{
 		src: string
 		height: number
 		width: number
@@ -54,7 +54,7 @@ const Gallery = ({
 	const [imagesRender, setImagesRender] = useState<{ src: string; height: number; width: number; caption?: string }[]>()
 
 	useEffect(() => {
-		let ratio = 1
+		const _ratio = 1
 
 		if (images && images?.length > 0) {
 			if (maxheight > 0) {

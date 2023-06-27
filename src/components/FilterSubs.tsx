@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
 import useFilterSubs from '../hooks/useFilterSubs'
-import { MdOutlineClear } from 'react-icons/md'
+import React, { useEffect, useRef, useState } from 'react'
 import { AiOutlinePlus } from 'react-icons/ai'
+import { MdOutlineClear } from 'react-icons/md'
 
 const scrollbar =
 	' scrollbar-thin scrollbar-thumb-th-scrollbar scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track-rounded-full '
@@ -26,23 +26,23 @@ const FilterSubs = ({ mode = 'subs' }) => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
-		mode == 'subs' ? addSubFilter(input, false) : mode == 'users' ? addUserFilter(input, false) : ''
+		mode === 'subs' ? addSubFilter(input, false) : mode === 'users' ? addUserFilter(input, false) : ''
 
 		setInput('')
 	}
 
 	const removeFilter = (f) => {
-		mode == 'subs' ? removeSubFilter(f) : mode == 'users' ? removeUserFilter(f) : ''
+		mode === 'subs' ? removeSubFilter(f) : mode === 'users' ? removeUserFilter(f) : ''
 	}
 	return (
 		<div className='flex flex-col gap-2 border rounded-md bg-th-background2 border-th-border'>
-			<div className={'flex flex-col p-2   max-h-40 overflow-y-scroll' + `${scrollbar}`}>
-				{(mode == 'subs' ? filteredSubs : mode == 'users' ? filteredUsers : []).length > 0 ? (
+			<div className={`flex flex-col p-2   max-h-40 overflow-y-scroll${scrollbar}`}>
+				{(mode === 'subs' ? filteredSubs : mode === 'users' ? filteredUsers : []).length > 0 ? (
 					<>
-						{(mode == 'subs' ? filteredSubs : mode == 'users' ? filteredUsers : [])
+						{(mode === 'subs' ? filteredSubs : mode === 'users' ? filteredUsers : [])
 							.sort((a, b) => {
-								let A = a.toUpperCase()
-								let B = b.toUpperCase()
+								const A = a.toUpperCase()
+								const B = b.toUpperCase()
 								return A < B ? -1 : A > B ? 1 : 0
 							})
 							.map((f) => (
@@ -66,7 +66,7 @@ const FilterSubs = ({ mode = 'subs' }) => {
 					</>
 				) : (
 					<h3 className='font-semibold text-center'>
-						{mode == 'subs' ? 'No Subreddits Filtered' : mode == 'users' ? 'No Users Filtered' : ''}
+						{mode === 'subs' ? 'No Subreddits Filtered' : mode === 'users' ? 'No Users Filtered' : ''}
 					</h3>
 				)}
 			</div>

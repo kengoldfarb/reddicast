@@ -1,13 +1,13 @@
+import { Dialog, Transition } from '@headlessui/react'
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useEffect, useRef, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import { RiArrowGoBackLine } from 'react-icons/ri'
 import React from 'react'
+import { RiArrowGoBackLine } from 'react-icons/ri'
 
 const Modal = ({ toOpen, children }) => {
 	const [open, setOpen] = useState(false)
 	const cancelButtonRef = useRef(null)
-	const [input, setInput] = useState('')
+	const [_input, setInput] = useState('')
 	useEffect(() => {
 		toOpen > 0 && setOpen(true)
 		return () => {

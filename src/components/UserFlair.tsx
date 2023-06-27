@@ -1,6 +1,6 @@
-import React from 'react'
 import { useTheme } from 'next-themes'
 import Image from 'next/legacy/image'
+import React from 'react'
 import { useEffect, useState } from 'react'
 
 const UserFlair = ({ post }) => {
@@ -14,9 +14,9 @@ const UserFlair = ({ post }) => {
 		return (
 			<div
 				className={`px-1 rounded-lg inline-block select-none ${
-					post?.author_flair_text_color == 'light'
+					post?.author_flair_text_color === 'light'
 						? ' text-white '
-						: post?.author_flair_text_color == 'dark'
+						: post?.author_flair_text_color === 'dark'
 						? 'text-black'
 						: resolvedTheme === 'light'
 						? 'text-black'
@@ -36,7 +36,7 @@ const UserFlair = ({ post }) => {
 					<div className='flex flex-row items-center justify-center '>
 						{post?.author_flair_richtext.map((e, i) => (
 							<div key={i} className=''>
-								{e?.e == 'emoji' && (
+								{e?.e === 'emoji' && (
 									<Image
 										src={e?.u}
 										alt=''
@@ -47,7 +47,7 @@ const UserFlair = ({ post }) => {
 										className='translate-y-0.5'
 									/>
 								)}
-								{e?.e == 'text' && <h1 className=''>{e?.t}</h1>}
+								{e?.e === 'text' && <h1 className=''>{e?.t}</h1>}
 							</div>
 						))}
 					</div>

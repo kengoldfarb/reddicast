@@ -1,10 +1,10 @@
-import React from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { loadSubredditInfo } from '../RedditAPI'
+import { useQuery } from '@tanstack/react-query'
+import React from 'react'
 
 const useSubreddit = (subreddit, isUser = false) => {
 	const subInfo = async () => {
-		let data = await loadSubredditInfo(subreddit, isUser)
+		const data = await loadSubredditInfo(subreddit, isUser)
 		return data
 	}
 

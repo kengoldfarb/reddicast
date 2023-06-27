@@ -1,21 +1,21 @@
-/* eslint-disable @next/next/no-img-element */
-import Image from 'next/legacy/image'
+import { checkImageInCache, findMediaInfo, findOptimalImageIndex } from '../../lib/utils'
+import { GalleryInfo } from '../../types'
+import { useMainContext } from '../MainContext'
+import { logApiRequest } from '../RedditAPI'
 import Gallery from './Gallery'
 import VideoHandler from './media/video/VideoHandler'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useMainContext } from '../MainContext'
-import { TwitterTweetEmbed } from 'react-twitter-embed'
-import { useTheme } from 'next-themes'
-import { useWindowSize, useWindowWidth } from '@react-hook/window-size'
-import { checkImageInCache, findMediaInfo, findOptimalImageIndex } from '../../lib/utils'
-import { AiOutlineTwitter } from 'react-icons/ai'
-import { ImEmbed } from 'react-icons/im'
-import { BsBoxArrowInUpRight } from 'react-icons/bs'
-import { BiExpand } from 'react-icons/bi'
 import ExternalLink from './ui/ExternalLink'
-import { GalleryInfo } from '../../types'
 import LoaderPuff from './ui/LoaderPuff'
-import { logApiRequest } from '../RedditAPI'
+import { useWindowSize, useWindowWidth } from '@react-hook/window-size'
+import { useTheme } from 'next-themes'
+/* eslint-disable @next/next/no-img-element */
+import Image from 'next/legacy/image'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { AiOutlineTwitter } from 'react-icons/ai'
+import { BiExpand } from 'react-icons/bi'
+import { BsBoxArrowInUpRight } from 'react-icons/bs'
+import { ImEmbed } from 'react-icons/im'
+import { TwitterTweetEmbed } from 'react-twitter-embed'
 const scrollStyle =
 	' scrollbar-thin scrollbar-thumb-th-scrollbar scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track-rounded-full '
 
@@ -24,7 +24,7 @@ const Media = ({
 	columns,
 	cardStyle = undefined as undefined | 'card1' | 'card2' | 'row1' | 'default',
 	curPostName = undefined,
-	handleClick = (a: any, b: any) => {},
+	handleClick = (_a: any, _b: any) => {},
 	imgFull = false,
 	forceMute = 0,
 	portraitMode = false,
@@ -82,7 +82,7 @@ const Media = ({
 
 	const onLoaded = () => {
 		setMediaLoaded(true)
-		checkCardHeight && checkCardHeight()
+		checkCardHeight?.()
 	}
 
 	const [allowIFrame, setAllowIFrame] = useState<boolean>(() => !!postMode)
@@ -121,10 +121,12 @@ const Media = ({
 
 		const initialize = async () => {
 			if (!post?.['mediaInfo']) {
-				let m = await findMediaInfo(post, false, DOMAIN)
+				const m = await findMediaInfo(post, false, DOMAIN)
 				post['mediaInfo'] = m
 			}
-			let a, b, c
+			let a
+			let b
+			let c
 			if (
 				post['mediaInfo'].isVideo &&
 				!(uniformMediaMode && columns > 1 && windowWidth < 640) //dont load videos on small devices with multiple columns
@@ -209,9 +211,9 @@ const Media = ({
 			return false
 		}
 
-		const stringToHTML = function (str) {
-			let parser = new DOMParser()
-			let doc = parser.parseFromString(str, 'text/html')
+		const _stringToHTML = function (str) {
+			const parser = new DOMParser()
+			const doc = parser.parseFromString(str, 'text/html')
 			return doc.body.firstElementChild
 		}
 
@@ -251,7 +253,7 @@ const Media = ({
 				(post?.mediaInfo?.isVideo || post?.mediaInfo?.isImage || post?.mediaInfo?.isTweet || post?.mediaInfo?.isLink) &&
 				post?.mediaInfo?.imageInfo
 			) {
-				let num = findOptimalImageIndex(post.mediaInfo.imageInfo, {
+				const num = findOptimalImageIndex(post.mediaInfo.imageInfo, {
 					windowWidth,
 					fullRes: fullRes || context.highRes,
 					containerDims,
@@ -263,8 +265,8 @@ const Media = ({
 					postMode
 				})
 
-				let imgheight = post.mediaInfo.imageInfo[num].height
-				let imgwidth = post.mediaInfo.imageInfo[num].width
+				const imgheight = post.mediaInfo.imageInfo[num].height
+				const imgwidth = post.mediaInfo.imageInfo[num].width
 				const imgSrc = checkURL(post.mediaInfo.imageInfo[num].src.replace('amp;', ''))
 				setImageInfo({
 					src: imgSrc,
@@ -380,15 +382,14 @@ const Media = ({
 		<a
 			aria-label='external link'
 			onClick={(e) => e.stopPropagation()}
-			className={
-				'flex flex-grow items-center gap-1 px-0.5 py-2 mt-auto text-xs text-th-link hover:text-th-linkHover bg-th-base  bg-opacity-50 ' +
-				(postMode || columns === 1 ? ' ' : ' md:bg-black/0 md:group-hover:bg-black/80 ')
-			}
+			className={`flex flex-grow items-center gap-1 px-0.5 py-2 mt-auto text-xs text-th-link hover:text-th-linkHover bg-th-base  bg-opacity-50 ${
+				postMode || columns === 1 ? ' ' : ' md:bg-black/0 md:group-hover:bg-black/80 '
+			}`}
 			target={'_blank'}
 			rel='noreferrer'
 			href={post?.url}
 		>
-			<span className={'ml-2 ' + (postMode || columns === 1 ? '' : 'md:opacity-0 group-hover:opacity-100')}>
+			<span className={`ml-2 ${postMode || columns === 1 ? '' : 'md:opacity-0 group-hover:opacity-100'}`}>
 				{post?.url?.split('?')?.[0]}
 			</span>
 			<BsBoxArrowInUpRight className='flex-none w-6 h-6 ml-auto mr-2 text-white group-hover:scale-110 ' />
@@ -410,10 +411,9 @@ const Media = ({
 								e.preventDefault()
 								setAllowIFrame((f) => !f)
 							}}
-							className={
-								'absolute  items-center z-10 gap-1 p-1 text-xs text-white bg-black rounded-md group-hover:flex   bg-opacity-20 hover:bg-opacity-40  ' +
-								(fullMediaMode ? `bottom-1.5 left-10 md:bottom-24 md:left-1 flex ` : 'bottom-24 hidden z-10 left-1 ')
-							}
+							className={`absolute  items-center z-10 gap-1 p-1 text-xs text-white bg-black rounded-md group-hover:flex   bg-opacity-20 hover:bg-opacity-40  ${
+								fullMediaMode ? 'bottom-1.5 left-10 md:bottom-24 md:left-1 flex ' : 'bottom-24 hidden z-10 left-1 '
+							}`}
 						>
 							<ImEmbed />
 							switch embed
@@ -422,7 +422,7 @@ const Media = ({
 
 					{isTweet && allowIFrame && !hide && (
 						<div
-							className={scrollStyle + ' overflow-hidden'}
+							className={`${scrollStyle} overflow-hidden`}
 							style={
 								mediaDimensions?.[1] || postMode
 									? {
@@ -430,7 +430,7 @@ const Media = ({
 											maxHeight: `${maxheightnum}px`
 									  }
 									: {
-											height: `24rem`
+											height: '24rem'
 									  }
 							}
 						>
@@ -444,7 +444,7 @@ const Media = ({
 										</div>
 									}
 									onLoad={() => {
-										checkCardHeight && checkCardHeight()
+										checkCardHeight?.()
 									}}
 									options={{
 										theme: theme === 'light' ? 'light' : 'dark',
@@ -458,7 +458,7 @@ const Media = ({
 					{isIFrame && iFrame && allowIFrame && !isTweet && !hide && (
 						<>
 							<div
-								className={'w-full  ' + (containerDims?.[1] ? '' : postMode ? ' max-h-[50vh]' : '')}
+								className={`w-full  ${containerDims?.[1] ? '' : postMode ? ' max-h-[50vh]' : ''}`}
 								style={
 									containerDims?.[1]
 										? { height: `${containerDims[1]}px` }
@@ -475,7 +475,7 @@ const Media = ({
 								dangerouslySetInnerHTML={{
 									__html: iFrame.outerHTML
 								}}
-							></div>
+							/>
 							{!postMode && (
 								<button
 									onClick={(e) => {
@@ -483,10 +483,9 @@ const Media = ({
 										e.preventDefault()
 										handleClick(e, { toMedia: true })
 									}}
-									className={
-										(uniformMediaMode ? 'hidden md:flex' : 'flex') +
-										' absolute items-center justify-center w-8 h-8 text-white bg-black rounded-md md:hidden md:group-hover:flex top-2 right-2 bg-opacity-20 hover:bg-opacity-40 '
-									}
+									className={`${
+										uniformMediaMode ? 'hidden md:flex' : 'flex'
+									} absolute items-center justify-center w-8 h-8 text-white bg-black rounded-md md:hidden md:group-hover:flex top-2 right-2 bg-opacity-20 hover:bg-opacity-40 `}
 								>
 									<BiExpand className='flex-none w-4 h-4' />
 								</button>
@@ -511,13 +510,11 @@ const Media = ({
 
 					{isImage && (!allowIFrame || !isIFrame) && !isMP4 && (
 						<div
-							className={
-								'block relative ' +
-								(post?.mediaInfo?.isTweet
+							className={`block relative ${
+								post?.mediaInfo?.isTweet
 									? ' flex items-center justify-center overflow-hidden rounded-lg relative ring-1 ring-[#E7E5E4] '
-									: '') +
-								(uniformMediaMode ? ' h-full w-full' : ' ')
-							}
+									: ''
+							}${uniformMediaMode ? ' h-full w-full' : ' '}`}
 							style={
 								fill
 									? {}
@@ -542,10 +539,9 @@ const Media = ({
 							)}
 							{post?.mediaInfo?.isLink && !fill && (
 								<div
-									className={
-										'absolute bottom-0 z-20 flex items-end w-full overflow-hidden break-all ' +
-										(post?.mediaInfo?.isTweet ? ' rounded-b-lg ' : '')
-									}
+									className={`absolute bottom-0 z-20 flex items-end w-full overflow-hidden break-all ${
+										post?.mediaInfo?.isTweet ? ' rounded-b-lg ' : ''
+									}`}
 								>
 									{mediaExternalLink}
 								</div>
@@ -569,10 +565,9 @@ const Media = ({
 								placeholder={post?.mediaInfo?.imageInfo?.[0]?.url && !fullMediaMode ? 'blur' : undefined}
 								blurDataURL={post?.mediaInfo?.imageInfo?.[0]?.url}
 								unoptimized={true}
-								className={
-									' transition-opacity ease-in duration-300 ' +
-									(mediaLoaded || fullMediaMode ? 'opacity-100' : 'opacity-50')
-								}
+								className={` transition-opacity ease-in duration-300 ${
+									mediaLoaded || fullMediaMode ? 'opacity-100' : 'opacity-50'
+								}`}
 							/>
 						</div>
 					)}
@@ -603,10 +598,9 @@ const Media = ({
 										e.preventDefault()
 										handleClick(e, { toMedia: true })
 									}}
-									className={
-										(uniformMediaMode ? 'hidden md:flex' : 'flex') +
-										' absolute items-center justify-center w-8 h-8 text-white bg-black rounded-md md:hidden md:group-hover:flex top-2 right-2 bg-opacity-20 hover:bg-opacity-40 '
-									}
+									className={`${
+										uniformMediaMode ? 'hidden md:flex' : 'flex'
+									} absolute items-center justify-center w-8 h-8 text-white bg-black rounded-md md:hidden md:group-hover:flex top-2 right-2 bg-opacity-20 hover:bg-opacity-40 `}
 								>
 									<BiExpand className='flex-none w-4 h-4' />
 								</button>

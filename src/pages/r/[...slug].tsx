@@ -1,20 +1,20 @@
-import { useRouter } from 'next/router'
-import Link from 'next/link'
-import Head from 'next/head'
-import NavBar from '../../components/NavBar'
-import Feed from '../../components/Feed'
-import { useEffect, useState } from 'react'
-import SubredditBanner from '../../components/SubredditBanner'
-import { getWikiContent, loadPost, loadSubredditInfo, loadSubreddits } from '../../RedditAPI'
-import ParseBodyHTML from '../../components/ParseBodyHTML'
-import Collection from '../../components/collections/Collection'
-import PostModal from '../../components/PostModal'
-import LoginModal from '../../components/LoginModal'
-import React from 'react'
-import useThread from '../../hooks/useThread'
 import { findMediaInfo } from '../../../lib/utils'
+import { getWikiContent, loadPost, loadSubredditInfo, loadSubreddits } from '../../RedditAPI'
+import Feed from '../../components/Feed'
+import LoginModal from '../../components/LoginModal'
+import NavBar from '../../components/NavBar'
+import ParseBodyHTML from '../../components/ParseBodyHTML'
+import PostModal from '../../components/PostModal'
+import SubredditBanner from '../../components/SubredditBanner'
+import Collection from '../../components/collections/Collection'
+import useThread from '../../hooks/useThread'
 import { getToken } from 'next-auth/jwt'
 import { getSession } from 'next-auth/react'
+import Head from 'next/head'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import React from 'react'
 const SubredditPage = ({ query, metaTags, post, postData }) => {
 	const [subsArray, setSubsArray] = useState<string[]>([])
 	const [wikiContent, setWikiContent] = useState('')
@@ -35,7 +35,7 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 			query?.slug?.[4] && setCommentThread(true)
 		} else if (query?.slug?.[1]?.toUpperCase() === 'WIKI') {
 			setWikiMode(true)
-			let wikiquery = query.slug
+			const wikiquery = query.slug
 			if (!wikiquery?.[2]) wikiquery[2] = 'index'
 			getWiki(wikiquery)
 		}
@@ -49,14 +49,13 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 	}, [query])
 	return (
 		<div
-			className={
-				(subsArray?.[0]?.toUpperCase() !== 'ALL' && subsArray?.[0]?.toUpperCase() !== 'POPULAR' ? ' -mt-2 ' : '') +
-				' overflow-x-hidden overflow-y-auto '
-			}
+			className={`${
+				subsArray?.[0]?.toUpperCase() !== 'ALL' && subsArray?.[0]?.toUpperCase() !== 'POPULAR' ? ' -mt-2 ' : ''
+			} overflow-x-hidden overflow-y-auto `}
 		>
 			<Head>
 				<title>{query?.slug?.[0] ? `troddit · ${query?.slug?.[0]}` : 'troddit'}</title>
-				{metaTags?.ogDescription && <meta name='description' content={metaTags.ogDescription}></meta>}
+				{metaTags?.ogDescription && <meta name='description' content={metaTags.ogDescription} />}
 				{metaTags?.ogSiteName && (
 					<>
 						<meta property='og:site_name' content={metaTags?.ogSiteName} />
@@ -77,7 +76,7 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 						<SubredditBanner subreddits={subsArray} userMode={false} />
 					</div>
 				) : (
-					<div className=''></div>
+					<div className='' />
 				)}
 				{wikiMode ? (
 					<div className='flex flex-col flex-wrap mb-10 md:mx-10 lg:mx-20'>
@@ -87,14 +86,14 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 						{wikiContent ? (
 							<ParseBodyHTML html={wikiContent} newTabLinks={false} />
 						) : (
-							<div className='w-full rounded-md h-96 bg-th-highlight animate-pulse'></div>
+							<div className='w-full rounded-md h-96 bg-th-highlight animate-pulse' />
 						)}
 					</div>
 				) : postThread ? (
 					<div className='mt-10'>
 						<LoginModal />
 						<PostModal
-							permalink={'/r/' + query?.slug.join('/')}
+							permalink={`/r/${query?.slug.join('/')}`}
 							returnRoute={query?.slug?.[0] ? `/r/${query?.slug[0]}` : '/'}
 							setSelect={setCommentThread}
 							direct={true}
@@ -155,7 +154,7 @@ SubredditPage.getInitialProps = async (d) => {
 			subInfo = data?.data
 		}
 		await Promise.all([loadPosts(), loadSub()])
-		let metaTags = {
+		const metaTags = {
 			ogSiteName: 'troddit',
 			ogDescription: `r/${subInfo?.display_name}: ${subInfo?.public_description}`,
 			ogImage: subInfo?.icon_img ?? subInfo?.header_img,
@@ -183,11 +182,9 @@ SubredditPage.getInitialProps = async (d) => {
 				const media = await findMediaInfo(
 					post,
 					true,
-					d?.req?.headers?.host && d?.req?.headers?.host?.includes(':')
-						? d?.req?.headers?.host?.split(':')?.[0]
-						: d?.req?.headers?.host
+					d?.req?.headers?.host?.includes(':') ? d?.req?.headers?.host?.split(':')?.[0] : d?.req?.headers?.host
 				)
-				let metaTags = {
+				const metaTags = {
 					ogSiteName: 'troddit',
 					ogDescription: `Post on r/${post.subreddit} by u/${post.author} • ${post.score?.toLocaleString(
 						'en-US'
@@ -196,11 +193,11 @@ SubredditPage.getInitialProps = async (d) => {
 					ogImage: media?.imageInfo?.[media?.imageInfo?.length - 1]?.src,
 					ogHeight: media?.dimensions?.[1],
 					ogWidth: media?.dimensions?.[0],
-					ogType: `image`
+					ogType: 'image'
 				}
 				res.setHeader('Cache-Control', 'max-age=0, s-maxage=3600, stale-while-revalidate=30')
 				return { query, metaTags, post: post?.preview ? post : undefined }
-			} catch (err) {
+			} catch (_err) {
 				return { query }
 			}
 		}

@@ -1,22 +1,22 @@
-import Search from './Search'
-import React, { useEffect, useState } from 'react'
-import Link from 'next/link'
 import DropdownPane from './DropdownPane'
+import Search from './Search'
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
 
-import { CgMenu } from 'react-icons/cg'
-import SideNav from './SideNav'
 import NavMenu from './NavMenu'
 import NavMessage from './NavMessage'
-import { useRouter } from 'next/router'
+import SideNav from './SideNav'
 import SortMenu from './SortMenu'
+import { useRouter } from 'next/router'
+import { CgMenu } from 'react-icons/cg'
 
-import { usePlausible } from 'next-plausible'
 import { useMainContext } from '../MainContext'
+import useNavBarScrollHelper from '../hooks/useNavBarScrollHelper'
+import useRefresh from '../hooks/useRefresh'
 import FilterMenu from './FilterMenu'
 import LoginProfile from './LoginProfile'
-import useRefresh from '../hooks/useRefresh'
-import useNavBarScrollHelper from '../hooks/useNavBarScrollHelper'
 import { useWindowWidth } from '@react-hook/window-size'
+import { usePlausible } from 'next-plausible'
 import { AiOutlineSearch } from 'react-icons/ai'
 
 const NavBar = ({ toggleSideNav = 0 }) => {
@@ -115,11 +115,9 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 	return (
 		<>
 			<header
-				className={
-					`${hidden ? '-translate-y-full' : ' translate-y-0 '}` +
-					' z-50 fixed top-0 transition ease-in-out transform  w-screen  ' +
-					(hidden ? ' duration-500' : ' duration-200')
-				}
+				className={`${
+					hidden ? '-translate-y-full' : ' translate-y-0 '
+				} z-50 fixed top-0 transition ease-in-out transform  w-screen  ${hidden ? ' duration-500' : ' duration-200'}`}
 			>
 				<NavMessage hide={router.asPath?.includes('/comments/')} timeSinceNav={timeSinceNav} />
 				<SideNav visible={sidebarVisible} toggle={setSidebarVisible} />
@@ -146,15 +144,14 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 						<Search id={'subreddit search main'} />
 					</div>
 					<div
-						className={
-							'flex-none  h-10 transition  duration-200 ease-in-out origin-top md:origin-top-right lg:origin-right ' +
-							(showSearch
-								? ` absolute top-[3.2rem] w-[90vw]  left-[5vw] md:left-[25vw] md:w-[50vw] lg:relative lg:top-auto lg:left-0  lg:w-[24rem] scale-x-100 `
-								: ' w-0 absolute lg:scale-x-0 scale-x-0 scale-y-0 lg:scale-y-100 opacity-0 ')
-						}
+						className={`flex-none  h-10 transition  duration-200 ease-in-out origin-top md:origin-top-right lg:origin-right ${
+							showSearch
+								? ' absolute top-[3.2rem] w-[90vw]  left-[5vw] md:left-[25vw] md:w-[50vw] lg:relative lg:top-auto lg:left-0  lg:w-[24rem] scale-x-100 '
+								: ' w-0 absolute lg:scale-x-0 scale-x-0 scale-y-0 lg:scale-y-100 opacity-0 '
+						}`}
 					>
 						{showSearch && (
-							<Search id={'subreddit search main'} setShowSearch={windowWidth < 1024 ? setShowSearch : (a) => {}} />
+							<Search id={'subreddit search main'} setShowSearch={windowWidth < 1024 ? setShowSearch : (_a) => {}} />
 						)}
 					</div>
 					<div className='flex flex-row items-center justify-end h-full py-1.5 ml-auto mr-2 space-x-1 md:ml-2'>
@@ -192,12 +189,12 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 				</nav>
 				{fetchingCount > 0 && (
 					<div className='relative'>
-						<div className='absolute top-0 z-40 w-screen h-1 bg-th-accent animate-pulse'></div>
-						<div className='absolute top-0 z-30 w-screen h-1 bg-th-base'></div>
+						<div className='absolute top-0 z-40 w-screen h-1 bg-th-accent animate-pulse' />
+						<div className='absolute top-0 z-30 w-screen h-1 bg-th-base' />
 					</div>
 				)}
 			</header>
-			<div className={' h-[6.5rem]'}></div>
+			<div className={' h-[6.5rem]'} />
 		</>
 	)
 }

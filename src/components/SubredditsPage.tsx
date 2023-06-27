@@ -1,17 +1,17 @@
-import React, { Fragment, useEffect, useState } from 'react'
 import { useSubsContext } from '../MySubs'
 import { getSubreddits, loadSubredditInfo } from '../RedditAPI'
 import SubCard from './cards/SubCard'
 import SubCardPlaceHolder from './cards/SubCardPlaceHolder'
+import React, { Fragment, useEffect, useState } from 'react'
 
+import { localSubInfoCache, useMainContext } from '../MainContext'
+import Collection from './collections/Collection'
+import { MyCollectionsProvider } from './collections/CollectionContext'
+import MyMultiCollections from './collections/MyMultiCollections'
+import SelectedSubs from './collections/SelectedSubs'
 import { Tab } from '@headlessui/react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { useMainContext, localSubInfoCache } from '../MainContext'
-import Collection from './collections/Collection'
-import MyMultiCollections from './collections/MyMultiCollections'
-import SelectedSubs from './collections/SelectedSubs'
-import { MyCollectionsProvider } from './collections/CollectionContext'
 import { IoMdRefresh } from 'react-icons/io'
 
 const SubredditsPage = ({ query = undefined }) => {
@@ -19,7 +19,7 @@ const SubredditsPage = ({ query = undefined }) => {
 	const loading = status === 'loading'
 	const [waiting, setWaiting] = useState(false)
 	const router = useRouter()
-	const context: any = useMainContext()
+	const _context: any = useMainContext()
 	const subsContext: any = useSubsContext()
 	const {
 		loadingSubs,
@@ -54,7 +54,7 @@ const SubredditsPage = ({ query = undefined }) => {
 	}, [selectedIndex])
 
 	useEffect(() => {
-		let index = categories.indexOf(query?.slug?.[0])
+		const index = categories.indexOf(query?.slug?.[0])
 		if (index > -1) {
 			setSelectedIndex(index)
 		}
@@ -63,8 +63,8 @@ const SubredditsPage = ({ query = undefined }) => {
 	const [myLocalSubsFiltered, setMyLocalSubsFiltered] = useState([])
 	const [myLocalFollows, setMyLocalFollows] = useState([])
 	useEffect(() => {
-		let subs = []
-		let follows = []
+		const subs = []
+		const follows = []
 		if (myLocalSubs?.length > 0) {
 			myLocalSubs.forEach((s) => {
 				if (s.data.url.substring(0, 3) === '/u/') {
@@ -162,7 +162,7 @@ const SubredditsPage = ({ query = undefined }) => {
 	const [endNew, setEndNew] = useState(false)
 	const fetchSubreddits = async (after = '', type = 'popular') => {
 		setWaiting(true)
-		let data = await getSubreddits(after, type)
+		const data = await getSubreddits(after, type)
 		if (type === 'popular') {
 			data?.children && setSubreddits((p) => [...p, ...data?.children])
 			data?.after ? setAfter(data?.after) : setEnd(true)
@@ -203,12 +203,11 @@ const SubredditsPage = ({ query = undefined }) => {
 								<Tab key={c} as={Fragment}>
 									{({ selected }) => (
 										<div
-											className={
-												(selected ? ' font-bold opacity-100 bg-th-highlight  ' : '') +
-												' outline-none ring-0 cursor-pointer opacity-50 hover:opacity-80 select-none flex flex-col-reverse md:flex-row flex-grow items-center'
-											}
+											className={`${
+												selected ? ' font-bold opacity-100 bg-th-highlight  ' : ''
+											} outline-none ring-0 cursor-pointer opacity-50 hover:opacity-80 select-none flex flex-col-reverse md:flex-row flex-grow items-center`}
 										>
-											<div className='w-full h-1 mt-1 md:w-1 md:h-8 md:mr-2 md:mt-0 bg-th-scrollbar '></div>
+											<div className='w-full h-1 mt-1 md:w-1 md:h-8 md:mr-2 md:mt-0 bg-th-scrollbar ' />
 
 											<h1>
 												{c === 'mine'
@@ -228,7 +227,7 @@ const SubredditsPage = ({ query = undefined }) => {
 						</div>
 					</Tab.List>
 					<Tab.Panels>
-						{categories.map((c, i) => (
+						{categories.map((c, _i) => (
 							<Tab.Panel
 								key={c}
 								className={' mb-10 mt-2   flex flex-col gap-3  md:w-[32rem] lg:w-[48rem] xl:w-[54rem] 2xl:w-[60rem] '}
@@ -289,7 +288,7 @@ const SubredditsPage = ({ query = undefined }) => {
 									<>
 										{copyMySubs.length > 0 ? (
 											<>
-												{copyMySubs.map((s, i) => (
+												{copyMySubs.map((s, _i) => (
 													<div key={s?.data?.name}>
 														<SubCard data={s} />
 													</div>
@@ -297,7 +296,7 @@ const SubredditsPage = ({ query = undefined }) => {
 											</>
 										) : session && !loadedSubs ? (
 											<>
-												{[...Array(10)].map((u, i) => (
+												{[...Array(10)].map((_u, i) => (
 													<div key={i}>
 														<SubCardPlaceHolder user={false} />
 													</div>
@@ -320,7 +319,7 @@ const SubredditsPage = ({ query = undefined }) => {
 											</>
 										) : !session && !loading && loadingLocalSubs ? (
 											<>
-												{[...Array(myLocalSubsFiltered?.length ?? 10)].map((u, i) => (
+												{[...Array(myLocalSubsFiltered?.length ?? 10)].map((_u, i) => (
 													<div key={i}>
 														<SubCardPlaceHolder user={false} />
 													</div>
@@ -349,7 +348,7 @@ const SubredditsPage = ({ query = undefined }) => {
 											</>
 										) : session && !loadedSubs ? (
 											<>
-												{[...Array(10)].map((u, i) => (
+												{[...Array(10)].map((_u, i) => (
 													<div key={i}>
 														<SubCardPlaceHolder user={false} />
 													</div>
@@ -374,7 +373,7 @@ const SubredditsPage = ({ query = undefined }) => {
 											</>
 										) : !session && !loading && loadingLocalFollows ? (
 											<>
-												{[...Array(myLocalFollows?.length ?? 10)].map((u, i) => (
+												{[...Array(myLocalFollows?.length ?? 10)].map((_u, i) => (
 													<div key={i}>
 														<SubCardPlaceHolder user={false} />
 													</div>
@@ -397,7 +396,7 @@ const SubredditsPage = ({ query = undefined }) => {
 									</>
 								) : (
 									<>
-										{[...Array(3)].map((u, i) => (
+										{[...Array(3)].map((_u, i) => (
 											<div key={i}>
 												<SubCardPlaceHolder user={false} />
 											</div>
@@ -428,12 +427,12 @@ const SubredditsPage = ({ query = undefined }) => {
 								loadAllFromReddit()
 							}}
 							disabled={loadingSubs}
-							className={
-								'flex justify-center w-full text-xs p-1 text-th-textLight ' + (loadingSubs ? '' : 'hover:text-th-text')
-							}
+							className={`flex justify-center w-full text-xs p-1 text-th-textLight ${
+								loadingSubs ? '' : 'hover:text-th-text'
+							}`}
 						>
 							<span className='hidden md:block'>refresh</span>
-							<IoMdRefresh className={'w-6 h-6 md:w-4 md:h-4 ' + (loadingSubs ? 'animate-spin' : '')} />
+							<IoMdRefresh className={`w-6 h-6 md:w-4 md:h-4 ${loadingSubs ? 'animate-spin' : ''}`} />
 						</button>
 					</div>
 				)}

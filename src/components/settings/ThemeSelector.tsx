@@ -1,6 +1,6 @@
+import SimpleDropDownSelector from '../ui/SimpleDropDownSelector'
 import { useTheme } from 'next-themes'
 import React, { useEffect, useState } from 'react'
-import SimpleDropDownSelector from '../ui/SimpleDropDownSelector'
 
 const THEMES = {
 	system: { name: 'system' },
@@ -26,7 +26,7 @@ const ThemeSelector = () => {
 				buttonName='theme options'
 				onSelect={setTheme}
 				items={THEMES}
-				selected={mounted ? (theme == 'system' ? `System` : THEMES?.[theme]?.name) : ''}
+				selected={mounted ? (theme === 'system' ? 'System' : THEMES?.[theme]?.name) : ''}
 			/>
 		</>
 	)

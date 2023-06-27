@@ -16,7 +16,7 @@ export const MyCollectionsProvider = ({ children }) => {
 	}
 	const toggleAllSelected = (subs: [any]) => {
 		setSelected((selected) => {
-			let exclude = selected.filter((s) => !subs.find((sub) => s?.toUpperCase() === sub?.toUpperCase()))
+			const exclude = selected.filter((s) => !subs.find((sub) => s?.toUpperCase() === sub?.toUpperCase()))
 			if (exclude.length < selected.length) {
 				return exclude
 			} else {

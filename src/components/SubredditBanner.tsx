@@ -1,14 +1,14 @@
 import SubInfoModal from './SubInfoModal'
 
-import React, { useState, useEffect } from 'react'
 import { useSubsContext } from '../MySubs'
-import router, { useRouter } from 'next/router'
 import SubPills from './SubPills'
 import SubCard from './cards/SubCard'
-import Link from 'next/link'
 import Collection from './collections/Collection'
-import { useSession } from 'next-auth/react'
 import Toggles from './settings/Toggles'
+import { useSession } from 'next-auth/react'
+import Link from 'next/link'
+import router, { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
 
 const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', isSelf = false }) => {
 	const router = useRouter()
@@ -17,7 +17,7 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 	const subsContext: any = useSubsContext()
 	const { currSubInfo, multi, myMultis, myLocalMultis, loadedSubs } = subsContext
 	const [currSubData, setCurrSubData] = useState<any>({})
-	const [subreddit, setSubreddit] = useState('')
+	const [_subreddit, setSubreddit] = useState('')
 	const [multiSub, setMultiSub] = useState('')
 	const [currMulti, setCurrMulti] = useState('')
 	const [subArray, setSubArray] = useState([])
@@ -35,9 +35,9 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 
 	//entry point
 	useEffect(() => {
-		let s = subreddits.sort((a, b) => {
-			let aUpper = a.toUpperCase()
-			let bUpper = b.toUpperCase()
+		const s = subreddits.sort((a, b) => {
+			const aUpper = a.toUpperCase()
+			const bUpper = b.toUpperCase()
 			if (aUpper < bUpper) return -1
 			if (aUpper > bUpper) return 1
 			return 0
@@ -71,8 +71,8 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 		setMultiSub(s)
 		setKeepInMultiArray(true)
 		//console.log(router);
-		let query = []
-		for (let q in router.query) {
+		const query = []
+		for (const q in router.query) {
 			if (q !== 'slug') {
 				query.push(`${q}=${router.query[q]}`)
 			}
@@ -87,10 +87,10 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 	const removeSub = (s) => {
 		if (router.route === '/r/[...slug]') {
 			setMultiSub('')
-			let curr: string = router.query.slug[0]
-			let currsubs = curr.split('+')
-			let filtered = currsubs.filter((c) => c.toUpperCase() !== s.toUpperCase())
-			let filteredSubAry = subArray.filter((c) => c.toUpperCase() !== s.toUpperCase())
+			const curr: string = router.query.slug[0]
+			const currsubs = curr.split('+')
+			const filtered = currsubs.filter((c) => c.toUpperCase() !== s.toUpperCase())
+			const filteredSubAry = subArray.filter((c) => c.toUpperCase() !== s.toUpperCase())
 			setSubArray((c) => c.filter((sub) => sub.toUpperCase() !== s.toUpperCase()))
 			//console.log(currsubs);
 			if (filtered.length > 1) {
@@ -117,7 +117,7 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 			const multiSubs: string[] = myMulti?.data?.subreddits?.map((sub) => sub?.name?.toUpperCase())
 
 			let allFound = true
-			for (let multiSub of multiSubs) {
+			for (const multiSub of multiSubs) {
 				if (!currSubs.includes(multiSub)) {
 					allFound = false
 					break
@@ -133,12 +133,12 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 		const checkIsMyMulti = (currSubs, currMulti) => {
 			let matched = [false, {}] as [boolean, any]
 			if (myMultis && session) {
-				for (let myMulti of myMultis) {
+				for (const myMulti of myMultis) {
 					matched = matchMulti(myMulti, currSubs, currMulti)
 					if (matched) return [true, matched]
 				}
 			} else if (myLocalMultis) {
-				for (let myMulti of myLocalMultis) {
+				for (const myMulti of myLocalMultis) {
 					matched = matchMulti(myMulti, currSubs, currMulti)
 					if (matched) return [true, matched]
 				}
@@ -150,7 +150,7 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 			const currSubs: string[] = multiSub
 				? subArray?.map((s) => s?.toUpperCase())
 				: subreddits?.map((s) => s?.toUpperCase())
-			let matched = checkIsMyMulti(currSubs, multi)
+			const matched = checkIsMyMulti(currSubs, multi)
 			if (((!matched || matched?.[0] === false) && !multi) || multi === 'Feed') {
 				setMyMultiInfo(undefined)
 			}
@@ -177,12 +177,11 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 
 	return (
 		<div
-			className={
-				'w-full h-full  relative  ' +
-				(subArray.length === 1 && multi === '' && !name
+			className={`w-full h-full  relative  ${
+				subArray.length === 1 && multi === '' && !name
 					? ' mb-2  md:mb-4 lg:mb-6 '
-					: ' space-y-2 mb-2 md:space-y-3 md:mb-3  ')
-			}
+					: ' space-y-2 mb-2 md:space-y-3 md:mb-3  '
+			}`}
 		>
 			<SubInfoModal
 				toOpen={openDescription}
@@ -198,7 +197,7 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 					over_18={myMultiInfo?.data?.over_18}
 					key_color={myMultiInfo?.data?.key_color}
 					isOwner={
-						router?.query?.m && myMultiInfo?.data?.name?.toUpperCase() == router?.query?.m?.toString()?.toUpperCase()
+						router?.query?.m && myMultiInfo?.data?.name?.toUpperCase() === router?.query?.m?.toString()?.toUpperCase()
 					}
 					bannerMode={true}
 					goToMultiSub={goToMultiSub}
@@ -221,30 +220,27 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 					<div className='flex flex-row flex-wrap gap-4 mx-2 text-xl md:w-11/12'>
 						<Link href={`/u/${name}/overview`}>
 							<div
-								className={
-									' cursor-pointer font-bold' +
-									(userPostMode === '' || userPostMode === 'OVERVIEW' ? ' font-bold  ' : ' opacity-50 hover:opacity-70')
-								}
+								className={` cursor-pointer font-bold${
+									userPostMode === '' || userPostMode === 'OVERVIEW' ? ' font-bold  ' : ' opacity-50 hover:opacity-70'
+								}`}
 							>
 								Overview
 							</div>
 						</Link>
 						<Link href={`/u/${name}/submitted`}>
 							<div
-								className={
-									' cursor-pointer font-bold' +
-									(userPostMode === 'SUBMITTED' ? ' font-bold  ' : ' opacity-50 hover:opacity-70')
-								}
+								className={` cursor-pointer font-bold${
+									userPostMode === 'SUBMITTED' ? ' font-bold  ' : ' opacity-50 hover:opacity-70'
+								}`}
 							>
 								Posts
 							</div>
 						</Link>
 						<Link href={`/u/${name}/comments`}>
 							<div
-								className={
-									' cursor-pointer font-bold' +
-									(userPostMode === 'COMMENTS' ? ' font-bold  ' : ' opacity-50 hover:opacity-70')
-								}
+								className={` cursor-pointer font-bold${
+									userPostMode === 'COMMENTS' ? ' font-bold  ' : ' opacity-50 hover:opacity-70'
+								}`}
 							>
 								Comments
 							</div>
@@ -253,40 +249,36 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 							<>
 								<Link href={`/u/${name}/upvoted`}>
 									<div
-										className={
-											' cursor-pointer font-bold' +
-											(userPostMode === 'UPVOTED' ? ' font-bold  ' : ' opacity-50 hover:opacity-70')
-										}
+										className={` cursor-pointer font-bold${
+											userPostMode === 'UPVOTED' ? ' font-bold  ' : ' opacity-50 hover:opacity-70'
+										}`}
 									>
 										Upvoted
 									</div>
 								</Link>
 								<Link href={`/u/${name}/downvoted`}>
 									<div
-										className={
-											' cursor-pointer font-bold' +
-											(userPostMode === 'DOWNVOTED' ? ' font-bold  ' : ' opacity-50 hover:opacity-70')
-										}
+										className={` cursor-pointer font-bold${
+											userPostMode === 'DOWNVOTED' ? ' font-bold  ' : ' opacity-50 hover:opacity-70'
+										}`}
 									>
 										Downvoted
 									</div>
 								</Link>
 								<Link href={`/u/${name}/hidden`}>
 									<div
-										className={
-											' cursor-pointer font-bold' +
-											(userPostMode === 'HIDDEN' ? ' font-bold  ' : ' opacity-50 hover:opacity-70')
-										}
+										className={` cursor-pointer font-bold${
+											userPostMode === 'HIDDEN' ? ' font-bold  ' : ' opacity-50 hover:opacity-70'
+										}`}
 									>
 										Hidden
 									</div>
 								</Link>
 								<Link href={`/u/${name}/saved`}>
 									<div
-										className={
-											' cursor-pointer font-bold' +
-											(userPostMode === 'SAVED' ? ' font-bold  ' : ' opacity-50 hover:opacity-70')
-										}
+										className={` cursor-pointer font-bold${
+											userPostMode === 'SAVED' ? ' font-bold  ' : ' opacity-50 hover:opacity-70'
+										}`}
 									>
 										Saved
 									</div>

@@ -1,5 +1,5 @@
-import React, { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
+import React, { Fragment } from 'react'
 
 const SimpleDropDownSelector = ({
 	selected,

@@ -1,12 +1,14 @@
-import { COMMENT_SORTS } from '../CommentSort'
 import { useMainContext } from '../../MainContext'
-import React, { useEffect, useState } from 'react'
+import { COMMENT_SORTS } from '../CommentSort'
 import SimpleDropDownSelector from '../ui/SimpleDropDownSelector'
+import React, { useEffect, useState } from 'react'
 
 const DefaultSortSelector = ({ mode }: { mode: 'comments' | 'posts' }) => {
 	const context: any = useMainContext()
 
-	let SORTS, sort, setSort
+	let SORTS
+	let sort
+	let setSort
 
 	if (mode === 'posts') {
 		throw Error('Not implemented')
@@ -21,7 +23,7 @@ const DefaultSortSelector = ({ mode }: { mode: 'comments' | 'posts' }) => {
 		setSort = context.setDefaultSortComments.bind(context)
 	}
 
-	let sortFriendlyName = SORTS[sort]
+	const sortFriendlyName = SORTS[sort]
 
 	const [mounted, setMounted] = useState(false)
 	useEffect(() => {

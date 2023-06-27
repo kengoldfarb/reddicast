@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react'
-import { useRouter } from 'next/dist/client/router'
-import { useSession } from 'next-auth/react'
+import useCardHeightTrigger from '../hooks/useCardHeightTrigger'
+import { useRead } from '../hooks/useRead'
 import Card1 from './cards/Card1'
 import Card2 from './cards/Card2'
-import Row1 from './cards/Row1'
 import CommentCard from './cards/CommentCard'
-import { useRead } from '../hooks/useRead'
-import useCardHeightTrigger from '../hooks/useCardHeightTrigger'
+import Row1 from './cards/Row1'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/dist/client/router'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 const Post = ({
 	post,
@@ -32,7 +32,7 @@ const Post = ({
 		postName: post?.data?.name
 	})
 	const [hideNSFW, setHideNSFW] = useState(false)
-	const [forceMute, setforceMute] = useState(0)
+	const [forceMute, _setforceMute] = useState(0)
 	const [origCommentCount, setOrigCommentCount] = useState<number>()
 
 	useEffect(() => {
@@ -48,7 +48,7 @@ const Post = ({
 		if (!e.ctrlKey && !e.metaKey) {
 			openPost(post, postNum, nav, router.asPath)
 			const multi = router.query?.m ?? ''
-			const queryParams = `${multi ? `?m=${multi}` : ``}`
+			const queryParams = `${multi ? `?m=${multi}` : ''}`
 			if (router.query?.frontsort) {
 				router.push('', `${post?.data.id}`, { shallow: true })
 			} else if (

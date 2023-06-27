@@ -3,10 +3,10 @@ import {
 	Masonry,
 	useContainerPosition,
 	useInfiniteLoader,
-	usePositioner,
 	useMasonry,
-	useScroller,
-	useResizeObserver
+	usePositioner,
+	useResizeObserver,
+	useScroller
 } from 'masonic'
 import React from 'react'
 
@@ -22,7 +22,7 @@ const MasonicStatic = ({ key, items, render, onRender, cols, margin }) => {
 	})
 	const resizeObserver = useResizeObserver(positioner)
 	const { scrollTop, isScrolling } = useScroller(offset)
-	let m = parseInt(margin.split('m-')?.[1] ?? 0)
+	const m = parseInt(margin.split('m-')?.[1] ?? 0)
 
 	return (
 		<>

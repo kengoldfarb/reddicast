@@ -24,10 +24,9 @@ const ExternalLink = ({ domain, url, shorten = false }) => {
 		>
 			<span className='opacity-100 '>{link}</span>
 			<BsBoxArrowInUpRight
-				className={
-					'flex-none w-6 h-6 ml-auto  group-hover:scale-110 ' +
-					(resolvedTheme === 'light' ? 'text-th-text' : ' text-white ')
-				}
+				className={`flex-none w-6 h-6 ml-auto  group-hover:scale-110 ${
+					resolvedTheme === 'light' ? 'text-th-text' : ' text-white '
+				}`}
 			/>
 		</a>
 	)

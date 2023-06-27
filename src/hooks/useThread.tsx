@@ -1,11 +1,11 @@
-import { useSession } from 'next-auth/react'
-import React from 'react'
-import { QueryFunctionContext, useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { fixCommentFormat } from '../../lib/utils'
 import { useMainContext } from '../MainContext'
 import { loadMoreComments, loadPost } from '../RedditAPI'
+import { QueryFunctionContext, useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
+import React from 'react'
 
-const useThread = (permalink, sort, initialData?, withContext = false) => {
+const useThread = (permalink, sort, _initialData?, withContext = false) => {
 	const { data: session, status } = useSession()
 	const queryClient = useQueryClient()
 	const context: any = useMainContext()
@@ -32,10 +32,10 @@ const useThread = (permalink, sort, initialData?, withContext = false) => {
 		}
 
 		const processChildren = (prevState, newComment) => {
-			let prevComment = prevState.get(newComment?.data?.name)
-			let repliesData = newComment?.data?.replies
+			const prevComment = prevState.get(newComment?.data?.name)
+			const repliesData = newComment?.data?.replies
 			if (newComment?.data?.replies) {
-				let children = newComment?.data?.replies?.data?.children ?? []
+				const children = newComment?.data?.replies?.data?.children ?? []
 				if (prevComment?.data?.replies?.data?.children) {
 					if (children?.length > 0) {
 						let newChildren = prevComment?.data?.replies?.data?.children
@@ -49,7 +49,7 @@ const useThread = (permalink, sort, initialData?, withContext = false) => {
 				}
 			}
 
-			let comment = {
+			const comment = {
 				...newComment,
 				data: {
 					...newComment.data,
@@ -74,7 +74,7 @@ const useThread = (permalink, sort, initialData?, withContext = false) => {
 	}
 
 	const loadChildComments = async (children: string[], link_id) => {
-		let childrenstring = children.join(',')
+		const childrenstring = children.join(',')
 		if (session) {
 			const data = await loadMoreComments(
 				childrenstring,
@@ -84,7 +84,7 @@ const useThread = (permalink, sort, initialData?, withContext = false) => {
 				context?.token,
 				sort
 			)
-			let morecomments = await fixCommentFormat(data?.data)
+			const morecomments = await fixCommentFormat(data?.data)
 			return {
 				post_comments: morecomments,
 				token: data?.token
@@ -95,7 +95,7 @@ const useThread = (permalink, sort, initialData?, withContext = false) => {
 	}
 
 	const processComments = (newComments) => {
-		let prevQueryData: any = queryClient.getQueryData([
+		const prevQueryData: any = queryClient.getQueryData([
 			'thread',
 			threadId,
 			sort,
@@ -103,7 +103,7 @@ const useThread = (permalink, sort, initialData?, withContext = false) => {
 			withContext,
 			session?.user?.name
 		])
-		const prevComments = prevQueryData?.pages?.map((page) => page.comments)?.flat()
+		const prevComments = prevQueryData?.pages?.flatMap((page) => page.comments)
 		let comments = newComments
 		if (newComments?.length > 0 && prevComments?.length > 0) {
 			comments = updateComments(prevComments, newComments)

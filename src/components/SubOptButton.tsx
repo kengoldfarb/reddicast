@@ -1,14 +1,14 @@
-import { BsThreeDotsVertical } from 'react-icons/bs'
-import { Fragment, useEffect, useRef, useState } from 'react'
-import { Menu, Transition } from '@headlessui/react'
 import { useSubsContext } from '../MySubs'
+import { addToMulti, createMulti, deleteFromMulti } from '../RedditAPI'
+import useFilterSubs from '../hooks/useFilterSubs'
 import DropdownItem from './DropdownItem'
 import MultiManageModal from './MultiManageModal'
+import { Menu, Transition } from '@headlessui/react'
 import { useSession } from 'next-auth/react'
-import { addToMulti, createMulti, deleteFromMulti } from '../RedditAPI'
 import Link from 'next/link'
-import useFilterSubs from '../hooks/useFilterSubs'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import React from 'react'
+import { BsThreeDotsVertical } from 'react-icons/bs'
 
 const SubOptButton = ({ subInfo, subArray, currMulti, openDescription = () => {} }) => {
 	const { data: session, status } = useSession()
@@ -149,7 +149,7 @@ const SubOptButton = ({ subInfo, subArray, currMulti, openDescription = () => {}
 								<div className='py-1 '>
 									<Menu.Item>
 										{({ active }) => (
-											<div className={(active ? 'bg-th-highlight ' : '') + ' block  text-sm'}>
+											<div className={`${active ? 'bg-th-highlight ' : ''} block  text-sm`}>
 												<button
 													onClick={(e) => {
 														e.preventDefault()
@@ -160,13 +160,12 @@ const SubOptButton = ({ subInfo, subArray, currMulti, openDescription = () => {}
 													Add to Feed..
 												</button>
 												<div
-													className={
-														'absolute top-0 -left-[10rem] w-40 max-h-96 overflow-y-scroll   rounded-md shadow-lg ring-1  ring-opacity-5 focus:outline-none border  select-none cursor-pointer py-1 scrollbar-thin  scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thumb-th-scrollbar bg-th-background2 border-th-border ring-th-base' +
-														(active ? '  ' : ' hidden ')
-													}
+													className={`absolute top-0 -left-[10rem] w-40 max-h-96 overflow-y-scroll   rounded-md shadow-lg ring-1  ring-opacity-5 focus:outline-none border  select-none cursor-pointer py-1 scrollbar-thin  scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thumb-th-scrollbar bg-th-background2 border-th-border ring-th-base${
+														active ? '  ' : ' hidden '
+													}`}
 												>
 													<div
-														onClick={(e) => {
+														onClick={(_e) => {
 															setopenMulti((s) => s + 1)
 														}}
 													>
@@ -218,7 +217,7 @@ const SubOptButton = ({ subInfo, subArray, currMulti, openDescription = () => {}
 										<Menu.Item>
 											{({ active }) => (
 												<div
-													className={(active ? 'bg-th-highlight ' : '') + ' block px-4 py-2.5 md:py-1 text-sm'}
+													className={`${active ? 'bg-th-highlight ' : ''} block px-4 py-2.5 md:py-1 text-sm`}
 													onClick={removeFromMulti}
 												>
 													<div className='flex flex-row justify-end text-right cursor-pointer select-none'>
@@ -231,7 +230,7 @@ const SubOptButton = ({ subInfo, subArray, currMulti, openDescription = () => {}
 									{currMultiExist && (
 										<Menu.Item>
 											{({ active }) => (
-												<div className={(active ? 'bg-th-highlight ' : '') + ' block px-4 py-2.5 md:py-1 text-sm'}>
+												<div className={`${active ? 'bg-th-highlight ' : ''} block px-4 py-2.5 md:py-1 text-sm`}>
 													<div
 														onClick={(e) => {
 															if (!deleteCheck) {
@@ -269,10 +268,10 @@ const SubOptButton = ({ subInfo, subArray, currMulti, openDescription = () => {}
 									<Menu.Item>
 										{({ active }) => (
 											<div
-												className={(active ? 'bg-th-highlight ' : '') + ' block px-4 py-2.5 md:py-1 text-sm'}
+												className={`${active ? 'bg-th-highlight ' : ''} block px-4 py-2.5 md:py-1 text-sm`}
 												onClick={() => addSubFilter(subInfo?.display_name)}
 											>
-												<div className='flex flex-row justify-end cursor-pointer select-none'>{`Filter Subreddit`}</div>
+												<div className='flex flex-row justify-end cursor-pointer select-none'>{'Filter Subreddit'}</div>
 											</div>
 										)}
 									</Menu.Item>
@@ -281,23 +280,22 @@ const SubOptButton = ({ subInfo, subArray, currMulti, openDescription = () => {}
 											<Menu.Item>
 												{({ active }) => (
 													<div
-														className={(active ? 'bg-th-highlight ' : '') + ' block px-4 py-2.5 md:py-1 text-sm'}
+														className={`${active ? 'bg-th-highlight ' : ''} block px-4 py-2.5 md:py-1 text-sm`}
 														onClick={openDescription}
 													>
-														<div className='flex flex-row justify-end cursor-pointer select-none'>{`Sidebar`}</div>
+														<div className='flex flex-row justify-end cursor-pointer select-none'>{'Sidebar'}</div>
 													</div>
 												)}
 											</Menu.Item>
 											<Menu.Item>
 												{({ active }) => (
 													<div
-														className={
-															(active ? 'bg-th-highlight ' : '') +
-															' block px-4 py-2.5 md:py-1 text-sm cursor-pointer select-none'
-														}
+														className={`${
+															active ? 'bg-th-highlight ' : ''
+														} block px-4 py-2.5 md:py-1 text-sm cursor-pointer select-none`}
 													>
 														<Link href={`/r/${subInfo?.display_name}/wiki/`} className='flex flex-row justify-end'>
-															{`Wiki`}
+															{'Wiki'}
 														</Link>
 													</div>
 												)}
@@ -308,10 +306,10 @@ const SubOptButton = ({ subInfo, subArray, currMulti, openDescription = () => {}
 										<Menu.Item>
 											{({ active }) => (
 												<div
-													className={(active ? 'bg-th-highlight ' : '') + ' block px-4 py-2.5 md:py-1 text-sm'}
+													className={`${active ? 'bg-th-highlight ' : ''} block px-4 py-2.5 md:py-1 text-sm`}
 													onClick={JoinAll}
 												>
-													<div className='flex flex-row justify-end cursor-pointer select-none'>{`Join All`}</div>
+													<div className='flex flex-row justify-end cursor-pointer select-none'>{'Join All'}</div>
 												</div>
 											)}
 										</Menu.Item>
@@ -323,7 +321,7 @@ const SubOptButton = ({ subInfo, subArray, currMulti, openDescription = () => {}
 				)}
 			</Menu>
 			<Menu as={'div'} className={'relative'}>
-				<Menu.Button ref={feedMenuRef} className='hidden'></Menu.Button>
+				<Menu.Button ref={feedMenuRef} className='hidden' />
 				<Transition
 					as={Fragment}
 					enter='transition ease-out duration-800'
@@ -341,7 +339,7 @@ const SubOptButton = ({ subInfo, subArray, currMulti, openDescription = () => {}
 					>
 						<Menu.Item
 							as={'button'}
-							onClick={(e) => {
+							onClick={(_e) => {
 								setopenMulti((s) => s + 1)
 							}}
 							className='w-full'
@@ -349,7 +347,7 @@ const SubOptButton = ({ subInfo, subArray, currMulti, openDescription = () => {}
 						>
 							{({ active }) => (
 								<div
-									className={'px-2 py-2  hover:cursor-pointer' + (active ? ' bg-th-highlight ' : '')}
+									className={`px-2 py-2  hover:cursor-pointer${active ? ' bg-th-highlight ' : ''}`}
 									onClick={multiCreate}
 								>
 									<h1 className='pl-2'>Create New</h1>
@@ -366,7 +364,7 @@ const SubOptButton = ({ subInfo, subArray, currMulti, openDescription = () => {}
 											onClick={() => tryAddToMulti(multi.data.display_name)}
 										>
 											{({ active }) => (
-												<div className={'px-2 py-2 ' + (active ? ' bg-th-highlight' : '')}>
+												<div className={`px-2 py-2 ${active ? ' bg-th-highlight' : ''}`}>
 													<DropdownItem sub={multi} />
 												</div>
 											)}
@@ -382,7 +380,7 @@ const SubOptButton = ({ subInfo, subArray, currMulti, openDescription = () => {}
 											onClick={() => tryAddToMulti(multi.data.display_name)}
 										>
 											{({ active }) => (
-												<div className={'px-2 py-2 ' + (active ? ' bg-th-highlight ' : ' ')}>
+												<div className={`px-2 py-2 ${active ? ' bg-th-highlight ' : ' '}`}>
 													<DropdownItem sub={multi} />
 												</div>
 											)}

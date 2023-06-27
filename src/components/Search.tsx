@@ -1,19 +1,19 @@
-import Link from 'next/link'
-import Autosuggest from 'react-autosuggest'
-import React, { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/router'
 import { useMainContext } from '../MainContext'
 import { searchSubreddits } from '../RedditAPI'
-import { useSession, signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import Image from 'next/legacy/image'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import React, { useEffect, useRef, useState } from 'react'
+import Autosuggest from 'react-autosuggest'
 // import { usePlausible } from "next-plausible";
 
-import { AiOutlinePlus, AiOutlineSearch, AiOutlineCheck, AiOutlineMinus } from 'react-icons/ai'
 import { useCollectionContext } from './collections/CollectionContext'
-import Checkbox from './ui/Checkbox'
 import ItemsList from './search/ItemsList'
+import Checkbox from './ui/Checkbox'
+import { AiOutlineCheck, AiOutlineMinus, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai'
 
-const Search = ({ id, setShowSearch = (a) => {} }) => {
+const Search = ({ id, setShowSearch = (_a) => {} }) => {
 	const router = useRouter()
 	const [error, seterror] = useState(false)
 	const [value, setValue] = useState('')
@@ -22,7 +22,7 @@ const Search = ({ id, setShowSearch = (a) => {} }) => {
 	const { data: session, status } = useSession()
 	const [loading, setLoading] = useState(false)
 	const [lastsuggestion, setlastsuggestion] = useState('')
-	const [morethanonesuggestion, setmorethanonesuggestion] = useState(false)
+	const [_morethanonesuggestion, setmorethanonesuggestion] = useState(false)
 	const context: any = useMainContext()
 	const lastRequest = useRef(null)
 	const [updated, setUpdated] = useState(false)
@@ -45,7 +45,7 @@ const Search = ({ id, setShowSearch = (a) => {} }) => {
 			sub = router.query.slug[0]
 		}
 		if (router?.query?.q) {
-			setPlaceHolder('searching ' + `"${router?.query?.q?.toString()}"` + (sub !== '' ? ` in r/${sub}` : ''))
+			setPlaceHolder(`searching "${router?.query?.q?.toString()}"${sub !== '' ? ` in r/${sub}` : ''}`)
 		}
 		return () => {
 			setPlaceHolder('search')
@@ -54,7 +54,7 @@ const Search = ({ id, setShowSearch = (a) => {} }) => {
 
 	useEffect(() => {
 		if (router.pathname === '/r/[...slug]') {
-			let sub = router?.query?.slug?.[0]
+			const sub = router?.query?.slug?.[0]
 				.split(' ')
 				.join('+')
 				.split(',')
@@ -109,11 +109,11 @@ const Search = ({ id, setShowSearch = (a) => {} }) => {
 			setUpdated(true)
 		}
 	}
-	const searchFields = ['author, flair, nsfw, self, selftext, site, subreddit, title, url']
-	const extractFields = (query) => {}
+	const _searchFields = ['author, flair, nsfw, self, selftext, site, subreddit, title, url']
+	const _extractFields = (_query) => {}
 	const getSuggestions = async (value) => {
 		//console.log(value);
-		let search = {
+		const search = {
 			kind: 'search',
 			data: {
 				restrict_sr: false,
@@ -135,15 +135,15 @@ const Search = ({ id, setShowSearch = (a) => {} }) => {
 		]
 
 		setLoading(true)
-		let res: any = await searchSubreddits(value.value, context.nsfw, !!session, context?.token)
-		let data = res?.data
+		const res: any = await searchSubreddits(value.value, context.nsfw, !!session, context?.token)
+		const data = res?.data
 		data?.token && context.setToken(data?.token)
 		//console.log(data);
 		if (data?.length > 0) {
 			let match = false
 			if (lastRequest.current === value.value) {
 				seterror(false)
-				let filtered = data.filter((sub) => {
+				const filtered = data.filter((sub) => {
 					if (context.nsfw === true || sub?.data?.over18 !== true) {
 						if (sub?.data?.display_name?.toLowerCase() === value.value.toLowerCase()) {
 							match = true
@@ -193,7 +193,7 @@ const Search = ({ id, setShowSearch = (a) => {} }) => {
 											layout='fill'
 											className='rounded-full'
 											unoptimized={true}
-										></Image>
+										/>
 									</div>
 								) : (
 									<div className='w-6 h-6 text-center text-white rounded-full bg-th-accent'>r/</div>
@@ -216,14 +216,14 @@ const Search = ({ id, setShowSearch = (a) => {} }) => {
 												layout='fill'
 												className='rounded-full'
 												unoptimized={true}
-											></Image>
+											/>
 										</div>
 									) : (
 										<div className='w-6 h-6 text-center text-white rounded-full bg-th-accent animate-pulse'>r/</div>
 									)}
 								</div>
 								<div className='flex flex-col ml-4'>
-									<div className='h-4 rounded-md bg-th-highlight w-52 animate-pulse'></div>
+									<div className='h-4 rounded-md bg-th-highlight w-52 animate-pulse' />
 									<div className='text-xs text-th-text opacity-70 animate-pulse'>{'?? followers '}</div>
 								</div>
 							</div>
@@ -289,7 +289,7 @@ const Search = ({ id, setShowSearch = (a) => {} }) => {
 										layout='fill'
 										className='rounded-full'
 										unoptimized={true}
-									></Image>
+									/>
 								</div>
 							) : (
 								<div className='w-6 h-6 text-center text-white rounded-full bg-th-accent'>r/</div>
@@ -302,7 +302,7 @@ const Search = ({ id, setShowSearch = (a) => {} }) => {
 							<div>{suggestion?.data?.display_name_prefixed}</div>
 							<div className='text-xs text-th-textLight opacity-70'>
 								{suggestion?.data?.subscribers
-									? suggestion.data.subscribers.toLocaleString('en-US') + ' followers '
+									? `${suggestion.data.subscribers.toLocaleString('en-US')} followers `
 									: '?? followers '}
 								{suggestion?.data?.over18 && <span className='pl-2 text-xs font-semibold text-th-red '>nsfw</span>}
 							</div>
@@ -314,14 +314,14 @@ const Search = ({ id, setShowSearch = (a) => {} }) => {
 								onClick={(e) => addSub(e, suggestion?.data?.display_name)}
 							>
 								<span className='hidden text-xs lg:block'>
-									{addMode == 'subs'
+									{addMode === 'subs'
 										? 'Multi Browse'
 										: selected.find((s) => s?.toUpperCase() === suggestion?.data?.display_name?.toUpperCase())
 										? 'Remove Selected'
 										: 'Add to Selected'}
 								</span>
 								<div className='flex items-center justify-center flex-none border rounded-md w-7 h-7 group-hover:border-0 hover:ring-2 ring-th-accent hover:bg-th-highlight border-th-border '>
-									{addMode == 'feeds' &&
+									{addMode === 'feeds' &&
 									selected.find((s) => s?.toUpperCase() === suggestion?.data?.display_name?.toUpperCase()) ? (
 										<AiOutlineMinus />
 									) : (
@@ -346,7 +346,7 @@ const Search = ({ id, setShowSearch = (a) => {} }) => {
 		)
 	}
 
-	const handleSignIn = (e) => {
+	const _handleSignIn = (e) => {
 		e.stopPropagation()
 		signIn('reddit')
 	}
@@ -354,9 +354,9 @@ const Search = ({ id, setShowSearch = (a) => {} }) => {
 	const addSub = (e, sub) => {
 		e.preventDefault()
 		e.stopPropagation()
-		if (addMode == 'subs') {
+		if (addMode === 'subs') {
 			if (router.route === '/r/[...slug]') {
-				let curr = router?.query?.slug?.[0]
+				const curr = router?.query?.slug?.[0]
 				let alreadyadded = false
 				curr
 					.split(' ')
@@ -381,7 +381,7 @@ const Search = ({ id, setShowSearch = (a) => {} }) => {
 		}
 	}
 
-	const goToSub = (e, suggestion) => {
+	const goToSub = (_e, suggestion) => {
 		//e.preventDefault();
 		router.push(`/r/${suggestion}`)
 	}
@@ -418,7 +418,7 @@ const Search = ({ id, setShowSearch = (a) => {} }) => {
 		// plausible("search");
 	}
 
-	const onChange = (event, { newValue, method }) => {
+	const onChange = (_event, { newValue, method }) => {
 		setValue(method === 'click' || method === 'enter' ? '' : newValue)
 	}
 

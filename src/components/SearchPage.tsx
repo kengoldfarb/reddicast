@@ -1,14 +1,14 @@
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { AiOutlineCheck } from 'react-icons/ai'
-import { RiArrowGoBackLine } from 'react-icons/ri'
 import { useMainContext } from '../MainContext'
 import { getRedditSearch } from '../RedditAPI'
 import Feed from './Feed'
 import SubCard from './cards/SubCard'
 import SubCardPlaceHolder from './cards/SubCardPlaceHolder'
 import Checkbox from './ui/Checkbox'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import React from 'react'
+import { AiOutlineCheck } from 'react-icons/ai'
+import { RiArrowGoBackLine } from 'react-icons/ri'
 const SearchPage = ({ query }) => {
 	const router = useRouter()
 	const context: any = useMainContext()
@@ -19,7 +19,7 @@ const SearchPage = ({ query }) => {
 	const [searchUsers, setSearchUsers] = useState(false)
 	const { safeSearch, setSafeSearch } = context
 	const loadMore = async () => {
-		let subs = await getRedditSearch(
+		const subs = await getRedditSearch(
 			{ q: query?.q },
 			after,
 			undefined,
@@ -31,7 +31,7 @@ const SearchPage = ({ query }) => {
 			router.query?.type === 'user' ? 'user' : 'sr'
 		)
 		if (subs?.children) {
-			let filtered = subs?.children?.filter((c) => c?.data?.accept_followers === true)
+			const filtered = subs?.children?.filter((c) => c?.data?.accept_followers === true)
 			setSubs((p) => [...p, ...filtered])
 		}
 
@@ -68,7 +68,7 @@ const SearchPage = ({ query }) => {
 	useEffect(() => {
 		const getSearch = async () => {
 			//console.log("findsubs", query?.q);
-			let subs = await getRedditSearch(
+			const subs = await getRedditSearch(
 				{ q: query?.q },
 				'',
 				undefined,
@@ -81,7 +81,7 @@ const SearchPage = ({ query }) => {
 			)
 			//console.log(subs);
 			if (subs?.children) {
-				let filtered = subs.children.filter((c) => c?.data?.accept_followers === true)
+				const filtered = subs.children.filter((c) => c?.data?.accept_followers === true)
 				setSubs(filtered)
 			}
 
@@ -100,13 +100,12 @@ const SearchPage = ({ query }) => {
 		<div>
 			<div className='flex flex-col items-center flex-none w-screen '>
 				<div
-					className={
-						'w-full ' +
-						(!expand &&
-							(context.columnOverride === 1 && context.cardStyle !== 'row1' && !context.wideUI
-								? ' max-w-2xl '
-								: ' md:w-11/12 '))
-					}
+					className={`w-full ${
+						!expand &&
+						(context.columnOverride === 1 && context.cardStyle !== 'row1' && !context.wideUI
+							? ' max-w-2xl '
+							: ' md:w-11/12 ')
+					}`}
 				>
 					<div
 						className={
@@ -117,46 +116,44 @@ const SearchPage = ({ query }) => {
 					>
 						<div>
 							<div
-								className={
-									(expand
+								className={`${
+									expand
 										? 'md:sticky top-[4rem] flex flex-row md:flex-col gap-2 w-full md:w-52 md:flex-none  p-2 md:px-0 md:mr-4  border  bg-th-post border-th-border2   shadow-md  ' +
 										  ' rounded-lg '
-										: 'flex flex-row justify-between select-none  ') + ' '
-								}
+										: 'flex flex-row justify-between select-none  '
+								} `}
 							>
 								<div
-									className={
-										'flex flex-row items-baseline gap-2  w-full ' +
-										(expand ? ' md:flex-col md:items-start    ' : ' font-bold ')
-									}
+									className={`flex flex-row items-baseline gap-2  w-full ${
+										expand ? ' md:flex-col md:items-start    ' : ' font-bold '
+									}`}
 								>
 									{['Subreddits', 'Users'].map((sel) => (
 										<div
 											key={sel}
-											className={
-												'cursor-pointer ' +
-												((searchUsers && sel == 'Users') || (!searchUsers && sel == 'Subreddits')
+											className={`cursor-pointer ${
+												(searchUsers && sel === 'Users') || (!searchUsers && sel === 'Subreddits')
 													? ` font-bold  ${expand ? ' bg-th-highlight ' : ''} `
-													: ' opacity-50 hover:opacity-70') +
-												(expand
+													: ' opacity-50 hover:opacity-70'
+											}${
+												expand
 													? ' md:w-full flex flex-col-reverse   -mb-2 md:mb-0 items-center md:flex-row flex-grow'
-													: '')
-											}
+													: ''
+											}`}
 											onClick={(e) => {
 												e.preventDefault()
 												setSearchUsers((p) => !p)
 											}}
 										>
-											{expand && <div className='w-full h-1 mt-1 md:w-1 md:h-8 md:mr-2 md:mt-0 bg-th-scrollbar'></div>}
+											{expand && <div className='w-full h-1 mt-1 md:w-1 md:h-8 md:mr-2 md:mt-0 bg-th-scrollbar' />}
 
 											{sel}
 										</div>
 									))}
 									<div
-										className={
-											'flex flex-row items-center my-auto gap-2 hover:cursor-pointer' +
-											(expand ? ' md:flex-row-reverse ml-auto md:mr-auto md:ml-0 md:my-1 pl-2 ' : ' mr-2 ml-auto ')
-										}
+										className={`flex flex-row items-center my-auto gap-2 hover:cursor-pointer${
+											expand ? ' md:flex-row-reverse ml-auto md:mr-auto md:ml-0 md:my-1 pl-2 ' : ' mr-2 ml-auto '
+										}`}
 									>
 										<Checkbox
 											clickEvent={() => setSafeSearch((r) => !r)}
@@ -168,10 +165,9 @@ const SearchPage = ({ query }) => {
 								</div>
 							</div>
 							<div
-								className={
-									(expand ? ' hidden md:block ' : ' hidden ') +
-									' cursor-pointer opacity-50 hover:opacity-70 w-full sticky top-[13rem] '
-								}
+								className={`${
+									expand ? ' hidden md:block ' : ' hidden '
+								} cursor-pointer opacity-50 hover:opacity-70 w-full sticky top-[13rem] `}
 								onClick={(e) => {
 									e.preventDefault()
 									router.back()
@@ -187,13 +183,11 @@ const SearchPage = ({ query }) => {
 						>
 							{loading && (
 								<div
-									className={
-										' flex flex-col  ' +
-										(context.cardStyle === 'row1' || expand ? ' ' : ' mx-1') +
-										(expand ? ' gap-3 ' : ' gap-1')
-									}
+									className={` flex flex-col  ${context.cardStyle === 'row1' || expand ? ' ' : ' mx-1'}${
+										expand ? ' gap-3 ' : ' gap-1'
+									}`}
 								>
-									{[...Array(expand ? 3 : 3)].map((u, i) => (
+									{[...Array(expand ? 3 : 3)].map((_u, i) => (
 										<div key={i}>
 											<SubCardPlaceHolder user={searchUsers} />
 										</div>
@@ -213,11 +207,9 @@ const SearchPage = ({ query }) => {
 							{subs.length > 0 ? (
 								<>
 									<div
-										className={
-											' flex flex-col  ' +
-											(context.cardStyle === 'row1' || expand ? ' ' : ' mx-1') +
-											(expand ? ' gap-3' : ' gap-1')
-										}
+										className={` flex flex-col  ${context.cardStyle === 'row1' || expand ? ' ' : ' mx-1'}${
+											expand ? ' gap-3' : ' gap-1'
+										}`}
 									>
 										{subs.map((s, i) => {
 											if (i < 3 || expand) {
@@ -229,7 +221,7 @@ const SearchPage = ({ query }) => {
 											}
 										})}
 										{subs.length > 0 && (
-											<div className={'flex flex-row min-w-full mt-2 ' + (expand ? ' mb-10 ' : ' ')}>
+											<div className={`flex flex-row min-w-full mt-2 ${expand ? ' mb-10 ' : ' '}`}>
 												{expand && (
 													<div
 														onClick={(e) => {
@@ -287,9 +279,9 @@ const SearchPage = ({ query }) => {
 							) : (
 								!loading && (
 									<>
-										<div className={'relative mb-2' + (context.cardStyle === 'row1' ? ' ' : ' mx-1 ')}>
+										<div className={`relative mb-2${context.cardStyle === 'row1' ? ' ' : ' mx-1 '}`}>
 											<div className='opacity-0'>
-												{[...Array(expand ? 10 : 3)].map((u, i) => (
+												{[...Array(expand ? 10 : 3)].map((_u, i) => (
 													<div key={i}>
 														<SubCardPlaceHolder user={searchUsers} />
 													</div>

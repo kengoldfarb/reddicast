@@ -1,12 +1,12 @@
+import { findMediaInfo } from '../../../lib/utils'
+import { loadPost } from '../../RedditAPI'
+import Feed from '../../components/Feed'
+import LoginModal from '../../components/LoginModal'
+import NavBar from '../../components/NavBar'
+import PostModal from '../../components/PostModal'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import Feed from '../../components/Feed'
-import NavBar from '../../components/NavBar'
-import Head from 'next/head'
-import PostModal from '../../components/PostModal'
-import LoginModal from '../../components/LoginModal'
-import { loadPost } from '../../RedditAPI'
-import { findMediaInfo } from '../../../lib/utils'
 
 const FrontSortPage = ({ query, metaTags, post }) => {
 	return (
@@ -67,7 +67,7 @@ FrontSortPage.getInitialProps = async (d) => {
 	if (req) {
 		res.setHeader('Cache-Control', 'max-age=0, s-maxage=1200, stale-while-revalidate=30')
 	}
-	let url = query.frontsort
+	const url = query.frontsort
 	if (
 		!(
 			query.frontsort === 'best' ||
@@ -78,10 +78,10 @@ FrontSortPage.getInitialProps = async (d) => {
 		)
 	) {
 		try {
-			let { post } = await loadPost(`/${url}`)
+			const { post } = await loadPost(`/${url}`)
 			const media = await findMediaInfo(post, true, d?.req?.headers.host?.split(':')?.[0])
 			post['mediaInfo'] = media
-			let metaTags = {
+			const metaTags = {
 				ogSiteName: 'troddit',
 				ogDescription: `Post on r/${post.subreddit} by u/${post.author} • ${post.score?.toLocaleString(
 					'en-US'
@@ -90,7 +90,7 @@ FrontSortPage.getInitialProps = async (d) => {
 				ogImage: media?.imageInfo?.[media?.imageInfo?.length - 1]?.src,
 				ogHeight: media?.dimensions?.[1],
 				ogWidth: media?.dimensions?.[0],
-				ogType: `image`
+				ogType: 'image'
 			}
 			return {
 				query,
@@ -98,7 +98,7 @@ FrontSortPage.getInitialProps = async (d) => {
 				post: post?.preview ? post : undefined,
 				user: undefined
 			}
-		} catch (err) {
+		} catch (_err) {
 			return { query }
 		}
 	}

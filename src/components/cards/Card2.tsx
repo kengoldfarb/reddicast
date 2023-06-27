@@ -1,22 +1,22 @@
-import { useMainContext } from '../../MainContext'
-import Link from 'next/link'
-import Media from '../Media'
 import { numToString, secondsToTime } from '../../../lib/utils'
+import { useMainContext } from '../../MainContext'
+import Awardings from '../Awardings'
+import Media from '../Media'
+import MediaWrapper from '../MediaWrapper'
+import PostOptButton from '../PostOptButton'
+import PostTitle from '../PostTitle'
 import TitleFlair from '../TitleFlair'
 import Vote from '../Vote'
-import MediaWrapper from '../MediaWrapper'
-import Awardings from '../Awardings'
-import PostTitle from '../PostTitle'
-import PostOptButton from '../PostOptButton'
-import { GoRepoForked } from 'react-icons/go'
-import { BiComment } from 'react-icons/bi'
-import React, { useEffect, useMemo, useState } from 'react'
-import { useWindowWidth } from '@react-hook/window-size'
 import ExternalLink from '../ui/ExternalLink'
+import { useWindowWidth } from '@react-hook/window-size'
+import Link from 'next/link'
+import React, { useEffect, useMemo, useState } from 'react'
+import { BiComment } from 'react-icons/bi'
+import { GoRepoForked } from 'react-icons/go'
 
 const VoteFilledUp = (
 	<svg stroke='currentColor' fill='currentColor' strokeWidth='0' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
-		<path d='M12.781,2.375C12.4,1.9,11.6,1.9,11.219,2.375l-8,10c-0.24,0.301-0.286,0.712-0.12,1.059C3.266,13.779,3.615,14,4,14h2h2 v3v4c0,0.553,0.447,1,1,1h6c0.553,0,1-0.447,1-1v-5v-2h2h2c0.385,0,0.734-0.221,0.901-0.566c0.166-0.347,0.12-0.758-0.12-1.059 L12.781,2.375z'></path>
+		<path d='M12.781,2.375C12.4,1.9,11.6,1.9,11.219,2.375l-8,10c-0.24,0.301-0.286,0.712-0.12,1.059C3.266,13.779,3.615,14,4,14h2h2 v3v4c0,0.553,0.447,1,1,1h6c0.553,0,1-0.447,1-1v-5v-2h2h2c0.385,0,0.734-0.221,0.901-0.566c0.166-0.347,0.12-0.758-0.12-1.059 L12.781,2.375z' />
 	</svg>
 )
 
@@ -39,13 +39,13 @@ const Card2 = ({
 	const windowWidth = useWindowWidth()
 	const [mounted, setMounted] = useState(false)
 	const voteScore = useMemo(() => {
-		let x = post?.score ?? 0
+		const x = post?.score ?? 0
 		if (x < 1000) {
 			return x.toString() // + (x === 1 ? " pt" : " pts");
 		} else {
-			let y = Math.floor(x / 1000)
-			let z = (x / 1000).toFixed(1)
-			return z.toString() + 'k'
+			const _y = Math.floor(x / 1000)
+			const z = (x / 1000).toFixed(1)
+			return `${z.toString()}k`
 		}
 	}, [post?.score])
 	const linkMode =
@@ -131,11 +131,9 @@ const Card2 = ({
 									<h1 className='my-auto'>
 										<Link className='' href={post?.permalink} onClick={(e) => e.preventDefault()}>
 											<span
-												className={
-													' hover:underline font-normal text-sm sm:text-base mr-2 ' +
-													(post?.distinguished == 'moderator' || post?.stickied ? ' text-th-green ' : ' ') +
-													(read && context.dimRead ? ' opacity-50' : '')
-												}
+												className={` hover:underline font-normal text-sm sm:text-base mr-2 ${
+													post?.distinguished === 'moderator' || post?.stickied ? ' text-th-green ' : ' '
+												}${read && context.dimRead ? ' opacity-50' : ''}`}
 												style={{
 													wordBreak: 'break-word'
 												}}
@@ -146,7 +144,7 @@ const Card2 = ({
 												<TitleFlair post={post} padding={columns > 1 && windowWidth < 640 ? ' px-1 ' : 'p-0.5 px-1 '} />
 											</span>
 										)}
-										{newPost && <span className='text-xs italic font-light text-th-textLight'>{`(new)`}</span>}
+										{newPost && <span className='text-xs italic font-light text-th-textLight'>{'(new)'}</span>}
 									</h1>
 								</div>
 								{linkMode && (
@@ -191,7 +189,7 @@ const Card2 = ({
 									{post?.crosspost_parent_list?.[0] ? (
 										<div className='flex flex-row '>
 											<GoRepoForked className='flex-none w-4 h-4 mr-1 rotate-90' />
-											<span className={(columns > 1 ? ' hidden sm:block ' : ' ') + ' italic font-semibold'}>
+											<span className={`${columns > 1 ? ' hidden sm:block ' : ' '} italic font-semibold`}>
 												crosspost by
 											</span>
 										</div>
@@ -212,7 +210,7 @@ const Card2 = ({
 									</Link>
 
 									<p
-										className={(columns > 1 ? ' hidden sm:block ' : ' ') + ' ml-1'}
+										className={`${columns > 1 ? ' hidden sm:block ' : ' '} ml-1`}
 										title={new Date(post?.created_utc * 1000)?.toString()}
 									>
 										{secondsToTime(post?.created_utc, ['s ago', 'm ago', 'h ago', 'd ago', 'mo ago', 'yr ago'])}
@@ -228,23 +226,23 @@ const Card2 = ({
 									)}
 
 									{post?.over_18 && (
-										<div className={(columns > 1 ? ' hidden sm:flex ' : 'flex ') + ' pl-1 space-x-1'}>
+										<div className={`${columns > 1 ? ' hidden sm:flex ' : 'flex '} pl-1 space-x-1`}>
 											<p>•</p>
 											<span className='text-th-red'>NSFW</span>
 										</div>
 									)}
 									{post?.spoiler && (
-										<div className={(columns > 1 ? ' hidden sm:flex ' : 'flex ') + ' pl-1 space-x-1'}>
+										<div className={`${columns > 1 ? ' hidden sm:flex ' : 'flex '} pl-1 space-x-1`}>
 											<p>•</p>
 											<span className='text-th-red'>SPOILER</span>
 										</div>
 									)}
-									<div className='mx-0.5'></div>
+									<div className='mx-0.5' />
 									{post?.all_awardings?.length > 0 && !(columns > 1 && windowWidth < 640 && mounted) && (
 										<Awardings all_awardings={post?.all_awardings} />
 									)}
 								</div>
-								<div className={(columns > 1 ? ' hidden sm:flex sm:ml-auto ' : 'flex ml-auto ') + ' '}>
+								<div className={`${columns > 1 ? ' hidden sm:flex sm:ml-auto ' : 'flex ml-auto '} `}>
 									<a
 										className={context.clickCount > 10 && Math.random() > 0.3 ? ' click-zone ' : ''}
 										title='open source'
@@ -261,9 +259,7 @@ const Card2 = ({
 								</div>
 							</div>
 							<div className='flex flex-row flex-wrap items-center py-1 pt-1 text-sm select-none'>
-								<div
-									className={' items-center space-x-1 font-semibold ' + (columns > 1 ? ' hidden sm:flex ' : ' flex')}
-								>
+								<div className={` items-center space-x-1 font-semibold ${columns > 1 ? ' hidden sm:flex ' : ' flex'}`}>
 									<Vote
 										name={post?.name}
 										score={post?.score}
@@ -274,23 +270,23 @@ const Card2 = ({
 									/>
 								</div>
 								<span
-									className={
-										(columns > 1 ? ' sm:hidden ' : ' hidden ') +
-										' text-th-textLight text-xs flex items-center gap-0.5 ' +
-										(post?.likes === true || post?.likes === 1
+									className={`${
+										columns > 1 ? ' sm:hidden ' : ' hidden '
+									} text-th-textLight text-xs flex items-center gap-0.5 ${
+										post?.likes === true || post?.likes === 1
 											? ' text-th-upvote '
 											: post?.likes === false || post?.likes === -1
 											? ' text-th-downvote '
-											: '')
-									}
+											: ''
+									}`}
 								>
 									<span className='flex-none w-4 h-4'>{VoteFilledUp}</span>
 									{voteScore}
 								</span>
 								<div
-									className={
-										(columns > 1 ? ' ml-2 sm:ml-auto ' : ' ml-auto ') + 'flex  flex-row items-center gap-2  mr-6'
-									}
+									className={`${
+										columns > 1 ? ' ml-2 sm:ml-auto ' : ' ml-auto '
+									}flex  flex-row items-center gap-2  mr-6`}
 								>
 									<a
 										className={context.clickCount > 10 && Math.random() > 0.3 ? ' click-zone ' : ''}
@@ -302,11 +298,9 @@ const Card2 = ({
 										}}
 									>
 										<h2
-											className={
-												(columns > 1 ? ' hidden sm:block ' : ' ') +
-												'cursor-pointer hover:underline font-semibold  ' +
-												' text-th-textLight group-hover:text-th-text   '
-											}
+											className={`${
+												columns > 1 ? ' hidden sm:block ' : ' '
+											}cursor-pointer hover:underline font-semibold   text-th-textLight group-hover:text-th-text   `}
 										>
 											{`${numToString(post.num_comments, 1000)} ${post.num_comments === 1 ? 'comment' : 'comments'}`}{' '}
 											{typeof origCommentCount === 'number' && post?.num_comments > origCommentCount && (
@@ -316,10 +310,9 @@ const Card2 = ({
 											)}
 										</h2>
 										<span
-											className={
-												(columns > 1 ? ' flex sm:hidden ' : ' hidden ') +
-												' items-center text-xs text-th-textLight gap-0.5 mr-1'
-											}
+											className={`${
+												columns > 1 ? ' flex sm:hidden ' : ' hidden '
+											} items-center text-xs text-th-textLight gap-0.5 mr-1`}
 										>
 											<BiComment className='flex-none w-4 h-4' />
 											{numToString(post.num_comments, 1000)}

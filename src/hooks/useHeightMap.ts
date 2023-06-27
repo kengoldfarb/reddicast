@@ -78,7 +78,7 @@ const useHeightMap = (args: UseHeightMap) => {
 		}
 		queryClient.setQueryData(queryKeyHeights, (pData: Map<string, number> | undefined) => {
 			if (!pData) {
-				let heightMap = new Map() //restoreSavedHeightMap();
+				const heightMap = new Map() //restoreSavedHeightMap();
 				heightMap.set(key, value)
 				return heightMap //{ heightMap: heightMap };
 			} else {

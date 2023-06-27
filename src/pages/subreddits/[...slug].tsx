@@ -1,13 +1,13 @@
-import Head from 'next/head'
 import NavBar from '../../components/NavBar'
 import SubredditsPage from '../../components/SubredditsPage'
+import Head from 'next/head'
 import React from 'react'
 
 const Subs = ({ query }) => {
 	return (
 		<div>
 			<Head>
-				<title>{`troddit · subreddits`}</title>
+				<title>{'troddit · subreddits'}</title>
 			</Head>
 
 			<main>

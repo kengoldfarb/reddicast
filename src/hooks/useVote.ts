@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react'
 import useMutate from './useMutate'
+import React, { useEffect, useMemo, useState } from 'react'
 interface VoteArgs {
 	name: string
 	likes: number | boolean
@@ -12,9 +12,9 @@ const calculateScore = (x: number) => {
 	if (x < 1000) {
 		return x.toString()
 	} else {
-		let y = Math.floor(x / 1000)
-		let z = (x / 1000).toFixed(1)
-		return z.toString() + 'k'
+		const _y = Math.floor(x / 1000)
+		const z = (x / 1000).toFixed(1)
+		return `${z.toString()}k`
 	}
 }
 
@@ -52,7 +52,7 @@ const useVote = ({ name, likes, score, postTime, scoreHideMins }: VoteArgs) => {
 		} else if (v === -1) {
 			postv = -1
 		}
-		let increment =
+		const increment =
 			postv === 0
 				? liked === 1
 					? -1

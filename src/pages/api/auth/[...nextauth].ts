@@ -2,20 +2,20 @@ import NextAuth from 'next-auth'
 import type { NextAuthOptions } from 'next-auth'
 import type { JWTOptions } from 'next-auth/jwt'
 function b2a(a) {
-	var c,
-		d,
-		e,
-		f,
-		g,
-		h,
-		i,
-		j,
-		o,
-		b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=',
-		k = 0,
-		l = 0,
-		m = '',
-		n = [] as string[]
+	let c
+	let d
+	let e
+	let f
+	let g
+	let h
+	let i
+	let j
+	let o
+	const b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
+	let k = 0
+	let l = 0
+	const m = ''
+	const n = [] as string[]
 	if (!a) return a
 	do
 		(c = a.charCodeAt(k++)),
@@ -28,7 +28,7 @@ function b2a(a) {
 			(i = 63 & j),
 			(n[l++] = b.charAt(f) + b.charAt(g) + b.charAt(h) + b.charAt(i))
 	while (k < a.length)
-	return (m = n.join('')), (o = a.length % 3), (o ? m.slice(0, o - 3) : m) + '==='.slice(o || 3)
+	return m === n.join(''), o === a.length % 3, (o ? m.slice(0, o - 3) : m) + '==='.slice(o || 3)
 }
 
 async function refreshAccessToken(token) {
@@ -47,12 +47,10 @@ async function refreshAccessToken(token) {
 		const authvalue = `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`
 		//console.log(authvalue, refreshtoken);
 		try {
-			const url =
-				'https://www.reddit.com/api/v1/access_token?' +
-				new URLSearchParams({
-					grant_type: 'refresh_token',
-					refresh_token: refreshtoken
-				})
+			const url = `https://www.reddit.com/api/v1/access_token?${new URLSearchParams({
+				grant_type: 'refresh_token',
+				refresh_token: refreshtoken
+			})}`
 
 			const response = await fetch(url, {
 				headers: {
@@ -76,7 +74,7 @@ async function refreshAccessToken(token) {
 				//iat: Math.floor(Date.now() / 1000),
 				expires: Math.floor(Date.now() / 1000) + refreshedTokens.expires_in
 			}
-		} catch (error) {
+		} catch (_error) {
 			return {
 				...token,
 				error: 'RefreshAccessTokenError'

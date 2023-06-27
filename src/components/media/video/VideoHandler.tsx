@@ -1,18 +1,18 @@
+import { secondsToHMS } from '../../../../lib/utils'
+import { useMainContext } from '../../../MainContext'
+import { useKeyPress } from '../../../hooks/KeyPress'
+import useBrowser from '../../../hooks/useBrowser'
+import useGlobalState from '../../../hooks/useGlobalState'
+import LoaderPuff from '../../ui/LoaderPuff'
+import HlsPlayer from './HLSPlayer'
+import { useWindowWidth } from '@react-hook/window-size'
+import type { HlsConfig } from 'hls.js'
 /* eslint-disable @next/next/no-img-element */
 import Image from 'next/legacy/image'
-import useBrowser from '../../../hooks/useBrowser'
-import { useInView } from 'react-intersection-observer'
-import { useState, useEffect, useRef, useMemo } from 'react'
-import { useMainContext } from '../../../MainContext'
-import { BiVolumeMute, BiVolumeFull, BiPlay, BiPause } from 'react-icons/bi'
-import { secondsToHMS } from '../../../../lib/utils'
-import { useKeyPress } from '../../../hooks/KeyPress'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import React from 'react'
-import useGlobalState from '../../../hooks/useGlobalState'
-import { useWindowWidth } from '@react-hook/window-size'
-import HlsPlayer from './HLSPlayer'
-import type { HlsConfig } from 'hls.js'
-import LoaderPuff from '../../ui/LoaderPuff'
+import { BiPause, BiPlay, BiVolumeFull, BiVolumeMute } from 'react-icons/bi'
+import { useInView } from 'react-intersection-observer'
 
 const VideoHandler = ({
 	name,
@@ -45,9 +45,9 @@ const VideoHandler = ({
 		setVideoQuality(quality)
 	}, [quality])
 
-	const [vodInfo, setVodInfo] = useState(() => videoInfo)
+	const [vodInfo, _setVodInfo] = useState(() => videoInfo)
 	const [videoLoaded, setVideoLoaded] = useState(false)
-	const [useFallback, setUseFallback] = useState(false)
+	const [_useFallback, setUseFallback] = useState(false)
 	const [videoPlaying, setVideoPlaying] = useState(false)
 	const [preventPlay, setPreventPlay] = useState(() => hide)
 	const [manualPlay, setmanualPlay] = useState(false)
@@ -56,7 +56,7 @@ const VideoHandler = ({
 
 	const { volume, setVolume } = context
 	const [hasAudio, setHasAudio] = useState(() => (!videoInfo.hlsSrc && !videoInfo.hasAudio ? false : true))
-	const [prevMuted, setPrevMuted] = useState(true)
+	const [_prevMuted, setPrevMuted] = useState(true)
 	const [manualAudio, setManualAudio] = useState(false)
 	const [currentTime, setCurrentTime] = useState(0.0)
 	const [videoDuration, setVideoDuration] = useState(() => videoInfo?.duration ?? 0.0)
@@ -71,7 +71,7 @@ const VideoHandler = ({
 	const [vidWidth, setVidWidth] = useState(videoInfo?.width)
 	useEffect(() => {
 		const maximizeWidth = () => {
-			let r = fullWidthRef?.current?.clientWidth / videoInfo.width
+			const r = fullWidthRef?.current?.clientWidth / videoInfo.width
 			setVidWidth(r * videoInfo.width)
 			setVidHeight(r * videoInfo.height)
 		}
@@ -81,8 +81,8 @@ const VideoHandler = ({
 		}
 		//if container (containerDims) fill it
 		else if (containerDims?.[1]) {
-			let ry = containerDims?.[1] / videoInfo?.height
-			let rx = containerDims?.[0] / videoInfo?.width
+			const ry = containerDims?.[1] / videoInfo?.height
+			const rx = containerDims?.[0] / videoInfo?.width
 			if (Math.abs(ry - rx) < 0.05) {
 				//if minimal cropping just fill the area
 				setVidHeight(containerDims?.[1])
@@ -97,9 +97,9 @@ const VideoHandler = ({
 		}
 		//
 		//in single column or in a post we will scale video so height is within window. By default maxHeightNum is x * windowHeight (set in Media component)
-		else if ((columns == 1 || postMode) && maxHeightNum > 0) {
+		else if ((columns === 1 || postMode) && maxHeightNum > 0) {
 			if (videoInfo.height > maxHeightNum) {
-				let r2 = maxHeightNum / videoInfo.height
+				const r2 = maxHeightNum / videoInfo.height
 				// console.log("set",videoInfo.width * r2,maxHeightNum )
 				setVidHeight(maxHeightNum)
 				setVidWidth(videoInfo.width * r2)
@@ -120,7 +120,7 @@ const VideoHandler = ({
 	//unify overall heights to avoid weird sizing issues
 	useEffect(() => {
 		if (videoRef.current?.clientWidth) {
-			let h = (videoRef?.current?.clientWidth / vidWidth) * vidHeight
+			const h = (videoRef?.current?.clientWidth / vidWidth) * vidHeight
 			if (h > 0) {
 				setHeightStyle({
 					height: `${Math.min(h, vidHeight)}px`
@@ -136,12 +136,12 @@ const VideoHandler = ({
 
 	const { ref } = useInView({
 		threshold: [0, 0.7, 0.8, 0.9, 1],
-		onChange: (inView, entry) => {
+		onChange: (_inView, entry) => {
 			if (!postMode && !preventPlay && !context?.mediaMode) {
-				entry.intersectionRatio == 0 ? setShow(false) : entry.intersectionRatio >= 0.8 && setShow(true)
+				entry.intersectionRatio === 0 ? setShow(false) : entry.intersectionRatio >= 0.8 && setShow(true)
 				show && !postMode && entry.intersectionRatio < 1
 					? setLeft(true)
-					: entry.intersectionRatio == 1 && setLeft(false)
+					: entry.intersectionRatio === 1 && setLeft(false)
 			}
 		}
 	})
@@ -201,7 +201,7 @@ const VideoHandler = ({
 					setBuffering(false)
 					manual && setmanualPlay(true)
 				})
-				.catch((e) => {
+				.catch((_e) => {
 					if (manual) {
 						setmanualPlay(false)
 					} else if (videoRef.current && videoRef.current?.muted !== true) {
@@ -278,12 +278,12 @@ const VideoHandler = ({
 		}
 	}
 
-	const [showVol, setShowVol] = useState(false)
+	const [_showVol, setShowVol] = useState(false)
 	const [seekTime, setSeekTime] = useState('')
 	const [seekLeftOfset, setSeekLeftOffset] = useState(0)
 	const [seekTargetLength, setSeekTargetLenght] = useState(0)
 	const showSeek = (e) => {
-		let r = e.nativeEvent.offsetX / e.nativeEvent.target.clientWidth
+		const r = e.nativeEvent.offsetX / e.nativeEvent.target.clientWidth
 		setSeekLeftOffset(e.nativeEvent.offsetX)
 		setSeekTargetLenght(e.nativeEvent.target.clientWidth)
 		setSeekTime(secondsToHMS(r * videoDuration))
@@ -292,7 +292,7 @@ const VideoHandler = ({
 	const updateSeek = (e) => {
 		e.stopPropagation()
 		e.preventDefault()
-		let r = e.nativeEvent.offsetX / e.nativeEvent.target.clientWidth
+		const r = e.nativeEvent.offsetX / e.nativeEvent.target.clientWidth
 		if (videoRef.current) {
 			videoRef.current.currentTime = r * videoDuration
 			if (!videoPlaying) {
@@ -334,7 +334,7 @@ const VideoHandler = ({
 			setMuted(true)
 		} else if (
 			context?.audioOnHover &&
-			(postMode || columns == 1) &&
+			(postMode || columns === 1) &&
 			!left &&
 			//!(browser.includes("Safari") && windowWidth < 640) &&
 			videoRef.current
@@ -376,12 +376,12 @@ const VideoHandler = ({
 	const [resetInterval, setResetInterval] = useState(0)
 	useEffect(() => {
 		if (videoPlaying && videoRef?.current && (mouseIn || postMode || columns === 1) && !preventPlay) {
-			let initial = Date.now()
+			const initial = Date.now()
 			let timepassed = 0
-			let duration = videoRef?.current?.duration * 1000
-			let initialTime = videoRef?.current?.currentTime * 1000
+			const duration = videoRef?.current?.duration * 1000
+			const initialTime = videoRef?.current?.currentTime * 1000
 			let delta = initialTime / duration
-			let updateSeekRange = () => {
+			const updateSeekRange = () => {
 				if (videoPlaying) {
 					timepassed = Date.now() - initial
 					delta = (initialTime + timepassed) / duration
@@ -447,10 +447,9 @@ const VideoHandler = ({
 
 	return (
 		<div
-			className={
-				' min-w-full group hover:cursor-pointer overflow-hidden ' +
-				(uniformMediaMode ? 'object-cover object-center aspect-[9/16] ' : ' flex items-center justify-center')
-			}
+			className={` min-w-full group hover:cursor-pointer overflow-hidden ${
+				uniformMediaMode ? 'object-cover object-center aspect-[9/16] ' : ' flex items-center justify-center'
+			}`}
 			onClick={(e) => {
 				if (fullMediaMode) {
 					if (timeoutRef.current === null) {
@@ -463,7 +462,7 @@ const VideoHandler = ({
 					playControl({ e: e, manual: true })
 				}
 			}}
-			onDoubleClick={(e) => {
+			onDoubleClick={(_e) => {
 				if (fullMediaMode) {
 					clearTimeout(timeoutRef.current)
 					timeoutRef.current = null
@@ -473,7 +472,7 @@ const VideoHandler = ({
 				setFocused(true)
 				windowWidth > 640 && handleMouseIn(e)
 			}}
-			onMouseLeave={(e) => {
+			onMouseLeave={(_e) => {
 				!postMode && setFocused(false)
 				windowWidth > 640 && handleMouseOut()
 			}}
@@ -531,15 +530,13 @@ const VideoHandler = ({
 								onClick={(e) => {
 									playControl({ e: e, manual: true })
 								}}
-								className={
-									(fullMediaMode ? 'hidden sm:flex ' : '') +
-									(uniformMediaMode ? (mouseIn ? ' flex  ' : ' hidden ') : '') +
-									(context?.autoplay ? `${mouseIn ? ' flex ' : ' flex sm:hidden '}` : ' flex ') +
-									(windowWidth <= 640 && !fullMediaMode && videoPlaying && (columns === 1 || postMode)
+								className={`${fullMediaMode ? 'hidden sm:flex ' : ''}${
+									uniformMediaMode ? (mouseIn ? ' flex  ' : ' hidden ') : ''
+								}${context?.autoplay ? `${mouseIn ? ' flex ' : ' flex sm:hidden '}` : ' flex '}${
+									windowWidth <= 640 && !fullMediaMode && videoPlaying && (columns === 1 || postMode)
 										? ' p-0.5 rounded-lg px-2 '
-										: ' w-8 h-8  ') +
-									'items-center justify-center bg-black rounded-md bg-opacity-20 hover:bg-opacity-40  '
-								}
+										: ' w-8 h-8  '
+								}items-center justify-center bg-black rounded-md bg-opacity-20 hover:bg-opacity-40  `}
 							>
 								<div className=''>
 									{videoPlaying ? (
@@ -570,7 +567,7 @@ const VideoHandler = ({
                   ) : (
                     <BiPlay className="flex-none w-3 h-3 sm:hidden" />
                   )} */}
-									{secondsToHMS(currentTime) + '/' + secondsToHMS(videoDuration)}
+									{`${secondsToHMS(currentTime)}/${secondsToHMS(videoDuration)}`}
 								</div>
 							)}
 						</div>
@@ -601,13 +598,12 @@ const VideoHandler = ({
 												e.preventDefault()
 												e.stopPropagation()
 											}}
-											onMouseDown={(e) => setVolMouseDown(true)}
-											onMouseUp={(e) => setVolMouseDown(false)}
+											onMouseDown={(_e) => setVolMouseDown(true)}
+											onMouseUp={(_e) => setVolMouseDown(false)}
 											onMouseLeave={() => setVolMouseDown(false)}
-											className={
-												'relative bottom-0 left-0  justify-center w-full h-32 bg-black bg-opacity-40 rounded-md ' +
-												(showVolSlider ? ' hidden md:flex ' : ' hidden ')
-											}
+											className={`relative bottom-0 left-0  justify-center w-full h-32 bg-black bg-opacity-40 rounded-md ${
+												showVolSlider ? ' hidden md:flex ' : ' hidden '
+											}`}
 										>
 											<div
 												//slide range
@@ -625,7 +621,7 @@ const VideoHandler = ({
 													onMouseMove={(e) => {
 														updateVolumeDrag(e)
 													}}
-												></div>
+												/>
 												<div className='absolute bottom-0 w-2 h-full'>
 													<div
 														//control circle
@@ -639,13 +635,13 @@ const VideoHandler = ({
 														}
 														onMouseDown={() => setVolMouseDown(true)}
 														onMouseUp={() => setVolMouseDown(false)}
-													></div>
+													/>
 													<div
 														//vol container
 														className='absolute bottom-0 z-10 w-full origin-bottom rounded-full bg-th-scrollbar'
 														style={{ height: `${muted ? 0 : volume * 100}%` }}
-													></div>
-													<div className='absolute bottom-0 z-0 w-full h-full rounded-full bg-white/10'></div>
+													/>
+													<div className='absolute bottom-0 z-0 w-full h-full rounded-full bg-white/10' />
 												</div>
 											</div>
 										</div>
@@ -672,8 +668,9 @@ const VideoHandler = ({
 									className={
 										windowWidth < 640 && fullMediaMode
 											? ' absolute flex-none outline-none select-none md:hidden flex items-center justify-center  right-0.5 z-[98] bottom-[9rem] backdrop-blur-lg text-white bg-black/40 w-10 h-10 rounded-full '
-											: (fullMediaMode || uniformMediaMode ? ' hidden md:flex' : '  flex ') +
-											  ' w-8 h-8 relative  items-center justify-center ml-auto bg-black rounded-md bg-opacity-20 hover:bg-opacity-40'
+											: `${
+													fullMediaMode || uniformMediaMode ? ' hidden md:flex' : '  flex '
+											  } w-8 h-8 relative  items-center justify-center ml-auto bg-black rounded-md bg-opacity-20 hover:bg-opacity-40`
 									}
 								>
 									{muted ? (
@@ -689,10 +686,9 @@ const VideoHandler = ({
 
 							id={'progressBarContainer'}
 							ref={seekRef}
-							className={
-								'absolute bottom-0 left-0 z-10  w-full h-5  ' +
-								(mouseIn || postMode || columns === 1 ? ' block ' : ' hidden ')
-							}
+							className={`absolute bottom-0 left-0 z-10  w-full h-5  ${
+								mouseIn || postMode || columns === 1 ? ' block ' : ' hidden '
+							}`}
 						>
 							{seekTime !== '' && (
 								<div
@@ -714,7 +710,7 @@ const VideoHandler = ({
 								//video duration
 								className='absolute bottom-0 left-0 h-1 origin-left bg-th-scrollbar '
 								style={{ width: `${progressPerc * 100}%` }}
-							></div>
+							/>
 							<div
 								className='absolute left-0 w-full h-full '
 								onMouseMove={(e) => showSeek(e)}
@@ -722,7 +718,7 @@ const VideoHandler = ({
 								onClick={(e: any) => {
 									updateSeek(e)
 								}}
-							></div>
+							/>
 						</div>
 					</div>
 				</>
@@ -737,7 +733,7 @@ const VideoHandler = ({
 						: 'relative overflow-hidden flex  object-fill'
 				}
 				style={
-					uniformMediaMode ? { height: `100%` } : containerDims?.[1] ? { height: `${containerDims[1]}px` } : heightStyle
+					uniformMediaMode ? { height: '100%' } : containerDims?.[1] ? { height: `${containerDims[1]}px` } : heightStyle
 				}
 			>
 				{/* <div
@@ -794,16 +790,15 @@ const VideoHandler = ({
 								: thumbnail.src
 							: ''
 					}
-					className={
-						(videoLoaded ? 'opacity-100 ' : ' opacity-100') +
-						(!containerDims?.[1]
+					className={`${videoLoaded ? 'opacity-100 ' : ' opacity-100'}${
+						!containerDims?.[1]
 							? ' min-w-full min-h-full max-w-full max-h-full m-auto block absolute inset-0 w-0 h-0  ' //absolute top-0 left-1/2 -translate-x-1/2
-							: '  ') +
-						(uniformMediaMode
+							: '  '
+					}${
+						uniformMediaMode
 							? ' min-w-full min-h-full max-w-full max-h-full m-auto block absolute inset-0 w-0 h-0 '
-							: '') +
-						' '
-					}
+							: ''
+					} `}
 					width={`${vidWidth}`}
 					height={`${vidHeight}`}
 					autoPlay={(context.autoplay && columns === 1) || postMode || fullMediaMode}
@@ -831,7 +826,7 @@ const VideoHandler = ({
 						//
 					}}
 					onLoadedMetadata={() => {
-						checkCardHeight && checkCardHeight()
+						checkCardHeight?.()
 					}}
 					onLoadedData={onLoadedData}
 					playsInline

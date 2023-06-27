@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { useCollectionContext } from './CollectionContext'
 import CollectionOptions from './CollectionOptions'
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
 import { BsArrowRight } from 'react-icons/bs'
 import { MdOutlineClear } from 'react-icons/md'
 
@@ -38,7 +38,7 @@ const SelectedSubs = () => {
 					<BsArrowRight className='flex-none w-6 h-5 ' />
 				</Link>
 			</div>
-			<div className='my-2'></div>
+			<div className='my-2' />
 			<div
 				className={
 					'flex flex-row flex-wrap gap-1 overflow-y-scroll max-h-32 ' +
@@ -47,8 +47,8 @@ const SelectedSubs = () => {
 			>
 				{selected
 					?.sort((a, b) => {
-						let A = a?.toUpperCase()
-						let B = b?.toUpperCase()
+						const A = a?.toUpperCase()
+						const B = b?.toUpperCase()
 						return A < B ? -1 : A > B ? 1 : 0
 					})
 					?.map((s) => (

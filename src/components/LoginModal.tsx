@@ -1,11 +1,11 @@
-/* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useEffect, useRef, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import { MdErrorOutline } from 'react-icons/md'
 import { useMainContext } from '../MainContext'
+import { Dialog, Transition } from '@headlessui/react'
 import { signIn } from 'next-auth/react'
 import { usePlausible } from 'next-plausible'
+/* This example requires Tailwind CSS v2.0+ */
+import { Fragment, useEffect, useRef, useState } from 'react'
 import React from 'react'
+import { MdErrorOutline } from 'react-icons/md'
 
 const Login = () => {
 	const [open, setOpen] = useState(false)

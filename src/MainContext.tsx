@@ -1,5 +1,5 @@
 import localForage from 'localforage'
-import React, { useState, useContext, useEffect, useReducer } from 'react'
+import React, { useContext, useEffect, useReducer, useState } from 'react'
 
 export const localRead = localForage.createInstance({ storeName: 'readPosts' })
 export const localSeen = localForage.createInstance({ storeName: 'seenPosts' })
@@ -198,14 +198,14 @@ export const MainProvider = ({ children }) => {
 			setReadPosts({})
 			setReadPostsChange((n) => n + 1)
 			return true
-		} catch (err) {
+		} catch (_err) {
 			return false
 		}
 	}
 	const bulkAddReadPosts = (posts: { postId; numComments }[]) => {
 		setReadPosts((read) => {
-			let now = new Date()
-			let updatedRead = {}
+			const now = new Date()
+			const updatedRead = {}
 			posts.forEach(({ postId, numComments }) => {
 				updatedRead[postId] = { postId, numComments, time: now }
 				localRead.setItem(postId, { postId, numComments, time: now })
@@ -232,7 +232,7 @@ export const MainProvider = ({ children }) => {
 				return read
 			}
 			//resetting object if space becomes too large
-			let newread = {}
+			const newread = {}
 			newread[postId] = { postId, numComments, time: new Date() }
 
 			return newread
@@ -267,13 +267,13 @@ export const MainProvider = ({ children }) => {
 	//'img' filters also apply to reddit videos since those have known res as well..
 	const [imgPortraitFilter, setImgPortraitFilter] = useState<boolean>()
 	const [imgLandscapeFilter, setImgLandScapeFilter] = useState<boolean>()
-	const [imgResFilter, setImgResFilter] = useState(false)
-	const [imgResXFilter, setImgResXFilter] = useState(0)
-	const [imgResYFilter, setImgResYFilter] = useState(0)
-	const [imgResExactFilter, setImgResExactFilter] = useState(false)
+	const [imgResFilter, _setImgResFilter] = useState(false)
+	const [imgResXFilter, _setImgResXFilter] = useState(0)
+	const [imgResYFilter, _setImgResYFilter] = useState(0)
+	const [imgResExactFilter, _setImgResExactFilter] = useState(false)
 	const [scoreFilter, setScoreFilter] = useState(false)
-	const [scoreFilterNum, setScoreFilterNum] = useState()
-	const [scoreGreater, setScoreGreater] = useState(true)
+	const [scoreFilterNum, _setScoreFilterNum] = useState()
+	const [scoreGreater, _setScoreGreater] = useState(true)
 
 	const [replyFocus, setReplyFocus] = useState(false)
 	/*To keep subreddit/user filters responsive */
@@ -417,7 +417,7 @@ export const MainProvider = ({ children }) => {
 		}
 	}
 	const updateHidden = (i, hidden) => {
-		let p = posts
+		const p = posts
 		if (p?.[i]?.data) {
 			setPosts((p) => {
 				p[i].data.hidden = hidden
@@ -429,14 +429,14 @@ export const MainProvider = ({ children }) => {
 	const [localSubs, setLocalSubs] = useState([])
 	const [localFavoriteSubs, setLocalFavoriteSubs] = useState([])
 	const subToSub = async (action, sub) => {
-		if (action == 'sub') {
+		if (action === 'sub') {
 			return await addLocalSub(sub)
-		} else if (action == 'unsub') {
+		} else if (action === 'unsub') {
 			return await removeLocalSub(sub)
 		} else return false
 	}
 	const addLocalSub = async (sub) => {
-		let found = localSubs.find((s) => s?.toUpperCase() === sub?.toUpperCase())
+		const found = localSubs.find((s) => s?.toUpperCase() === sub?.toUpperCase())
 		if (!found) {
 			setLocalSubs((p) => [...p, sub])
 		}
@@ -444,7 +444,7 @@ export const MainProvider = ({ children }) => {
 	}
 	const removeLocalSub = async (sub) => {
 		setLocalSubs((p) => {
-			let filtered = p.filter((s) => s?.toUpperCase() !== sub?.toUpperCase())
+			const filtered = p.filter((s) => s?.toUpperCase() !== sub?.toUpperCase())
 			if (!(filtered.length > 0)) {
 				localStorage.removeItem('localSubs')
 				localForage.setItem('localSubs', [])
@@ -455,13 +455,13 @@ export const MainProvider = ({ children }) => {
 	}
 	const favoriteLocalSub = async (makeFavorite, subname) => {
 		if (makeFavorite === true) {
-			let found = localFavoriteSubs.find((s) => s?.toUpperCase() === subname?.toUpperCase())
+			const found = localFavoriteSubs.find((s) => s?.toUpperCase() === subname?.toUpperCase())
 			if (!found) {
 				setLocalFavoriteSubs((p) => [...p, subname])
 			}
 		} else {
 			setLocalFavoriteSubs((p) => {
-				let filtered = p.filter((s) => s?.toUpperCase() !== subname?.toUpperCase())
+				const filtered = p.filter((s) => s?.toUpperCase() !== subname?.toUpperCase())
 				if (!(filtered.length > 0)) {
 					localForage.setItem('localFavoriteSubs', [])
 				}
@@ -522,85 +522,85 @@ export const MainProvider = ({ children }) => {
 			//fall back to localstorage for legacy settings
 			let fallback = false
 			const loadNSFW = async () => {
-				let saved_nsfw = await localForage.getItem('nsfw')
+				const saved_nsfw = await localForage.getItem('nsfw')
 				if (saved_nsfw !== null) {
 					saved_nsfw === true ? setNSFW(true) : setNSFW(false)
 					localStorage.removeItem('nsfw')
 				} else {
 					fallback = true
-					let local_nsfw = localStorage.getItem('nsfw')
+					const local_nsfw = localStorage.getItem('nsfw')
 					local_nsfw?.includes('true') ? setNSFW(true) : setNSFW(false)
 				}
 			}
 
 			const loadAutoplay = async () => {
-				let saved_autoplay = await localForage.getItem('autoplay')
+				const saved_autoplay = await localForage.getItem('autoplay')
 				if (saved_autoplay !== null) {
 					saved_autoplay === true ? setAutoplay(true) : setAutoplay(false)
 					localStorage.removeItem('autoplay')
 				} else {
 					fallback = true
-					let local_autoplay = localStorage.getItem('autoplay')
+					const local_autoplay = localStorage.getItem('autoplay')
 					local_autoplay?.includes('true') ? setAutoplay(true) : setAutoplay(false)
 				}
 			}
 
 			const loadHoverPlay = async () => {
-				let saved_hoverplay = await localForage.getItem('hoverplay')
+				const saved_hoverplay = await localForage.getItem('hoverplay')
 				if (saved_hoverplay !== null) {
 					saved_hoverplay === true ? setHoverPlay(true) : setHoverPlay(false)
 					localStorage.removeItem('hoverplay')
 				} else {
 					fallback = true
-					let local_hoverplay = localStorage.getItem('hoverplay')
+					const local_hoverplay = localStorage.getItem('hoverplay')
 					local_hoverplay?.includes('true') ? setHoverPlay(true) : setHoverPlay(false)
 				}
 			}
 
 			const loadMediaOnly = async () => {
-				let saved_mediaOnly: boolean = await localForage.getItem('mediaOnly')
+				const saved_mediaOnly: boolean = await localForage.getItem('mediaOnly')
 				if (saved_mediaOnly !== null) {
 					saved_mediaOnly === true ? setMediaOnly(true) : setMediaOnly(false)
 					localStorage.removeItem('mediaOnly')
 				} else {
 					fallback = true
-					let local_mediaOnly = localStorage.getItem('mediaOnly')
+					const local_mediaOnly = localStorage.getItem('mediaOnly')
 					local_mediaOnly?.includes('true') ? setMediaOnly(true) : setMediaOnly(false)
 				}
 			}
 
 			const audioOnHover = async () => {
-				let saved_audioOnHover = await localForage.getItem('audioOnHover')
+				const saved_audioOnHover = await localForage.getItem('audioOnHover')
 				if (saved_audioOnHover !== null) {
 					saved_audioOnHover === true ? setaudioOnHover(true) : setaudioOnHover(false)
 					localStorage.removeItem('audioOnHover')
 				} else {
 					fallback = true
-					let local_audioOnHover = localStorage.getItem('audioOnHover')
+					const local_audioOnHover = localStorage.getItem('audioOnHover')
 					local_audioOnHover?.includes('true') ? setaudioOnHover(true) : setaudioOnHover(false)
 				}
 			}
 
 			const columnOverride = async () => {
-				let saved_columnOverride: number = await localForage.getItem('columnOverride')
+				const saved_columnOverride: number = await localForage.getItem('columnOverride')
 				if (saved_columnOverride !== null) {
 					saved_columnOverride > 0 ? setColumnOverride(saved_columnOverride) : setColumnOverride(0)
 					localStorage.removeItem('columnOverride')
 				} else {
 					fallback = true
-					let local_columnOverride = parseInt(localStorage.getItem('columnOverride'))
+					const local_columnOverride = parseInt(localStorage.getItem('columnOverride'))
 					local_columnOverride > 0 ? setColumnOverride(local_columnOverride) : setColumnOverride(0)
 				}
 			}
 
 			const savedWideUI = async () => {
-				let saved_saveWideUI = await localForage.getItem('saveWideUI')
+				const saved_saveWideUI = await localForage.getItem('saveWideUI')
 				if (saved_saveWideUI !== null) {
 					saved_saveWideUI === false ? setSaveWideUI(false) : setSaveWideUI(true)
 					localStorage.removeItem('saveWideUI')
 				} else {
 					fallback = true
-					let local_saveWideUI = localStorage.getItem('saveWideUI')
+					const local_saveWideUI = localStorage.getItem('saveWideUI')
 					local_saveWideUI?.includes('false') ? setSaveWideUI(false) : setSaveWideUI(true)
 				}
 			}
@@ -622,61 +622,61 @@ export const MainProvider = ({ children }) => {
 			// };
 
 			const postWideUI = async () => {
-				let saved_postWideUI = await localForage.getItem('postWideUI')
+				const saved_postWideUI = await localForage.getItem('postWideUI')
 				if (saved_postWideUI !== null) {
 					saved_postWideUI === false ? setPostWideUI(false) : setPostWideUI(true)
 					localStorage.removeItem('postWideUI')
 				} else {
 					fallback = true
-					let local_postWideUI = localStorage.getItem('postWideUI')
+					const local_postWideUI = localStorage.getItem('postWideUI')
 					local_postWideUI?.includes('false') ? setPostWideUI(false) : setPostWideUI(true)
 				}
 			}
 
 			const loadWideUI = async () => {
-				let saved_wideUI = await localForage.getItem('wideUI')
+				const saved_wideUI = await localForage.getItem('wideUI')
 				if (saved_wideUI !== null) {
 					saved_wideUI === false ? setWideUI(false) : setWideUI(true)
 					localStorage.removeItem('wideUI')
 				} else {
 					fallback = true
-					let local_wideUI = localStorage.getItem('wideUI')
+					const local_wideUI = localStorage.getItem('wideUI')
 					local_wideUI?.includes('false') ? setWideUI(false) : setWideUI(true)
 				}
 			}
 
 			const loadCardStyle = async () => {
-				let saved_cardStyle: string = await localForage.getItem('cardStyle')
+				const saved_cardStyle: string = await localForage.getItem('cardStyle')
 				if (saved_cardStyle !== null) {
 					saved_cardStyle && setCardStyle(saved_cardStyle)
 					localStorage.removeItem('cardStyle')
 				} else {
 					fallback = true
-					let local_cardStyle = localStorage.getItem('cardStyle')
+					const local_cardStyle = localStorage.getItem('cardStyle')
 					local_cardStyle?.length > 0 ? setCardStyle(saved_cardStyle) : setCardStyle('default')
 				}
 			}
 
 			const loadLocalSubs = async () => {
-				let saved_localSubs: [] = await localForage.getItem('localSubs')
+				const saved_localSubs: [] = await localForage.getItem('localSubs')
 				if (saved_localSubs !== null) {
 					saved_localSubs && setLocalSubs(saved_localSubs)
 					localStorage.removeItem('localSubs')
 				} else {
 					fallback = true
-					let local_localSubs = JSON.parse(localStorage.getItem('localSubs'))
+					const local_localSubs = JSON.parse(localStorage.getItem('localSubs'))
 					local_localSubs && setLocalSubs(local_localSubs)
 				}
 			}
 			//new setting no fallback
 			const loadLocalFavoriteSubs = async () => {
-				let saved_favs: [] = await localForage.getItem('localFavoriteSubs')
+				const saved_favs: [] = await localForage.getItem('localFavoriteSubs')
 				if (saved_favs !== null) {
 					saved_favs && setLocalFavoriteSubs(saved_favs)
 				}
 			}
 
-			let filters = {
+			const filters = {
 				seenFilter: true,
 				readFilter: true,
 				imgFilter: true,
@@ -688,7 +688,7 @@ export const MainProvider = ({ children }) => {
 			}
 
 			const loadImgFilter = async () => {
-				let saved_imgFilter = await localForage.getItem('imgFilter')
+				const saved_imgFilter = await localForage.getItem('imgFilter')
 				if (saved_imgFilter !== null) {
 					if (saved_imgFilter === false) {
 						filters.imgFilter = false
@@ -699,7 +699,7 @@ export const MainProvider = ({ children }) => {
 					localStorage.removeItem('imgFilter')
 				} else {
 					fallback = true
-					let local_imgFilter = localStorage.getItem('imgFilter')
+					const local_imgFilter = localStorage.getItem('imgFilter')
 					if (local_imgFilter?.includes('false')) {
 						filters.imgFilter = false
 						setImgFilter(false)
@@ -709,7 +709,7 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const loadImgPortraitFilter = async () => {
-				let saved_imgPortraitFilter = await localForage.getItem('imgPortraitFilter')
+				const saved_imgPortraitFilter = await localForage.getItem('imgPortraitFilter')
 				if (saved_imgPortraitFilter !== null) {
 					if (saved_imgPortraitFilter === false) {
 						filters.imgPortraitFilter = false
@@ -720,7 +720,7 @@ export const MainProvider = ({ children }) => {
 					localStorage.removeItem('imgPortraitFilter')
 				} else {
 					fallback = true
-					let local_imgPortraitFilter = localStorage.getItem('imgPortraitFilter')
+					const local_imgPortraitFilter = localStorage.getItem('imgPortraitFilter')
 					if (local_imgPortraitFilter?.includes('false')) {
 						setImgPortraitFilter(false)
 						filters.imgPortraitFilter = false
@@ -731,7 +731,7 @@ export const MainProvider = ({ children }) => {
 			}
 
 			const loadImgLandscapeFilter = async () => {
-				let saved_imgLandscapeFilter = await localForage.getItem('imgLandscapeFilter')
+				const saved_imgLandscapeFilter = await localForage.getItem('imgLandscapeFilter')
 				if (saved_imgLandscapeFilter !== null) {
 					if (saved_imgLandscapeFilter === false) {
 						filters.imgLandscapeFilter = false
@@ -742,7 +742,7 @@ export const MainProvider = ({ children }) => {
 					localStorage.removeItem('imgLandscapeFilter')
 				} else {
 					fallback = true
-					let local_imgLandscapeFilter = localStorage.getItem('imgLandscapeFilter')
+					const local_imgLandscapeFilter = localStorage.getItem('imgLandscapeFilter')
 					if (local_imgLandscapeFilter?.includes('false')) {
 						filters.imgLandscapeFilter = false
 						setImgLandScapeFilter(false)
@@ -753,7 +753,7 @@ export const MainProvider = ({ children }) => {
 			}
 
 			const loadVidFilter = async () => {
-				let saved_vidFilter = await localForage.getItem('vidFilter')
+				const saved_vidFilter = await localForage.getItem('vidFilter')
 				if (saved_vidFilter !== null) {
 					if (saved_vidFilter === false) {
 						filters.vidFilter = false
@@ -764,7 +764,7 @@ export const MainProvider = ({ children }) => {
 					localStorage.removeItem('vidFilter')
 				} else {
 					fallback = true
-					let local_vidFilter = localStorage.getItem('vidFilter')
+					const local_vidFilter = localStorage.getItem('vidFilter')
 					if (local_vidFilter?.includes('false')) {
 						filters.vidFilter = false
 						setVidFilter(false)
@@ -775,7 +775,7 @@ export const MainProvider = ({ children }) => {
 			}
 
 			const loadLinkFilter = async () => {
-				let saved_linkFilter = await localForage.getItem('linkFilter')
+				const saved_linkFilter = await localForage.getItem('linkFilter')
 				if (saved_linkFilter !== null) {
 					if (saved_linkFilter === false) {
 						filters.linkFilter = false
@@ -786,7 +786,7 @@ export const MainProvider = ({ children }) => {
 					localStorage.removeItem('linkFilter')
 				} else {
 					fallback = true
-					let local_linkFilter = localStorage.getItem('linkFilter')
+					const local_linkFilter = localStorage.getItem('linkFilter')
 					if (local_linkFilter?.includes('false')) {
 						filters.linkFilter = false
 						setLinkFilter(false)
@@ -797,7 +797,7 @@ export const MainProvider = ({ children }) => {
 			}
 
 			const loadSelfFilter = async () => {
-				let saved_selfFilter = await localForage.getItem('selfFilter')
+				const saved_selfFilter = await localForage.getItem('selfFilter')
 				if (saved_selfFilter !== null) {
 					if (saved_selfFilter === false) {
 						filters.selfFilter = false
@@ -808,7 +808,7 @@ export const MainProvider = ({ children }) => {
 					localStorage.removeItem('selfFilter')
 				} else {
 					fallback = true
-					let local_selfFilter = localStorage.getItem('selfFilter')
+					const local_selfFilter = localStorage.getItem('selfFilter')
 					if (local_selfFilter?.includes('false')) {
 						filters.selfFilter = false
 						setSelfFilter(false)
@@ -819,7 +819,7 @@ export const MainProvider = ({ children }) => {
 			}
 
 			const loadReadFilter = async () => {
-				let saved_readFilter = await localForage.getItem('readFilter')
+				const saved_readFilter = await localForage.getItem('readFilter')
 				if (saved_readFilter !== null) {
 					if (saved_readFilter === false) {
 						filters.readFilter = false
@@ -830,7 +830,7 @@ export const MainProvider = ({ children }) => {
 					localStorage.removeItem('readFilter')
 				} else {
 					fallback = true
-					let local_readFilter = localStorage.getItem('readFilter')
+					const local_readFilter = localStorage.getItem('readFilter')
 					if (local_readFilter?.includes('false')) {
 						filters.readFilter = false
 						setReadFilter(false)
@@ -842,7 +842,7 @@ export const MainProvider = ({ children }) => {
 
 			//new setting
 			const loadSeenFilter = async () => {
-				let saved = await localForage.getItem('seenFilter')
+				const saved = await localForage.getItem('seenFilter')
 				if (saved === false) {
 					filters.seenFilter = false
 					setSeenFilter(false)
@@ -853,84 +853,84 @@ export const MainProvider = ({ children }) => {
 
 			//new settings don't need localstorage fallback..
 			const loadRibbonCollapseOnly = async () => {
-				let saved = await localForage.getItem('ribbonCollapseOnly')
+				const saved = await localForage.getItem('ribbonCollapseOnly')
 				saved === true ? setRibbonCollapseOnly(true) : setRibbonCollapseOnly(false)
 			}
 			const loadCollapseChildrenOnly = async () => {
-				let saved_collapseChildrenOnly = await localForage.getItem('collapseChildrenOnly')
+				const saved_collapseChildrenOnly = await localForage.getItem('collapseChildrenOnly')
 				saved_collapseChildrenOnly === true ? setCollapseChildrenOnly(true) : setCollapseChildrenOnly(false)
 			}
 			const loadDefaultCollapseChildren = async () => {
-				let saved_defaultCollapseChildren = await localForage.getItem('defaultCollapseChildren')
+				const saved_defaultCollapseChildren = await localForage.getItem('defaultCollapseChildren')
 				saved_defaultCollapseChildren === true ? setDefaultCollapseChildren(true) : setDefaultCollapseChildren(false)
 			}
 			const loadShowUserIcons = async () => {
-				let saved_loadShowUserIcons = await localForage.getItem('showUserIcons')
+				const saved_loadShowUserIcons = await localForage.getItem('showUserIcons')
 				saved_loadShowUserIcons === false ? setShowUserIcons(false) : setShowUserIcons(true)
 			}
 			const loadShowAwardings = async () => {
-				let saved_showAwardings = await localForage.getItem('showAwardings')
+				const saved_showAwardings = await localForage.getItem('showAwardings')
 				saved_showAwardings === false ? setShowAwardings(false) : setShowAwardings(true)
 			}
 			const loadShowFlairs = async () => {
-				let saved_showFlairs = await localForage.getItem('showFlairs')
+				const saved_showFlairs = await localForage.getItem('showFlairs')
 				saved_showFlairs === false ? setShowFlairs(false) : setShowFlairs(true)
 			}
 			const loadShowUserFlairs = async () => {
-				let saved_showUserFlairs = await localForage.getItem('showUserFlairs')
+				const saved_showUserFlairs = await localForage.getItem('showUserFlairs')
 				saved_showUserFlairs === false ? setShowUserFlairs(false) : setShowUserFlairs(true)
 			}
 			const loadExpandedSubPane = async () => {
-				let saved = await localForage.getItem('expandedSubPane')
+				const saved = await localForage.getItem('expandedSubPane')
 				saved === true ? setExpandedSubPane(true) : setExpandedSubPane(false)
 			}
 			const loadInfiniteLoading = async () => {
-				let saved = await localForage.getItem('infiniteLoading')
+				const saved = await localForage.getItem('infiniteLoading')
 				saved === false ? setInfinitLoading(false) : setInfinitLoading(true)
 			}
 			const loadDimRead = async () => {
-				let saved = await localForage.getItem('dimRead')
+				const saved = await localForage.getItem('dimRead')
 				saved === false ? setDimRead(false) : setDimRead(true)
 			}
 			const loadAutoRead = async () => {
-				let saved = await localForage.getItem('autoRead')
+				const saved = await localForage.getItem('autoRead')
 				saved === false ? setAutoRead(false) : setAutoRead(true)
 			}
 			const loadAutoSeen = async () => {
-				let saved = await localForage.getItem('autoSeen')
+				const saved = await localForage.getItem('autoSeen')
 				saved === false ? setAutoSeen(false) : setAutoSeen(true)
 			}
 			const loadDisableEmbeds = async () => {
-				let saved = await localForage.getItem('disableEmbeds')
+				const saved = await localForage.getItem('disableEmbeds')
 				saved === true ? setDisableEmbeds(true) : setDisableEmbeds(false)
 			}
 			const loadPreferEmbeds = async () => {
-				let saved = await localForage.getItem('preferEmbeds')
+				const saved = await localForage.getItem('preferEmbeds')
 				saved === true ? setPreferEmbeds(true) : setPreferEmbeds(false)
 			}
 			const loadEmbedsEverywhere = async () => {
-				let saved = await localForage.getItem('embedsEverywhere')
+				const saved = await localForage.getItem('embedsEverywhere')
 				saved === true ? setEmbedsEveryWhere(true) : setEmbedsEveryWhere(false)
 			}
 
 			const autoRefreshFeed = async () => {
-				let saved = await localForage.getItem('autoRefreshFeed')
+				const saved = await localForage.getItem('autoRefreshFeed')
 				saved === false ? setAutoRefreshFeed(false) : setAutoRefreshFeed(true)
 			}
 			const autoRefreshComments = async () => {
-				let saved = await localForage.getItem('autoRefreshComments')
+				const saved = await localForage.getItem('autoRefreshComments')
 				saved === false ? setAutoRefreshComments(false) : setAutoRefreshComments(true)
 			}
 			const askToUpdateFeed = async () => {
-				let saved = await localForage.getItem('askToUpdateFeed')
+				const saved = await localForage.getItem('askToUpdateFeed')
 				saved === false ? setAskToUpdateFeed(false) : setAskToUpdateFeed(true)
 			}
 			const refreshOnFocus = async () => {
-				let saved = await localForage.getItem('refreshOnFocus')
+				const saved = await localForage.getItem('refreshOnFocus')
 				saved === false ? setRefreshOnFocus(false) : setRefreshOnFocus(true)
 			}
 			const loadVolume = async () => {
-				let saved = await localForage.getItem('volume')
+				const saved = await localForage.getItem('volume')
 				if (typeof saved === 'number' && saved >= 0 && saved <= 1) {
 					setVolume(saved)
 				} else {
@@ -938,7 +938,7 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const fastRefreshInterval = async () => {
-				let saved = (await localForage.getItem('fastRefreshInterval')) as number
+				const saved = (await localForage.getItem('fastRefreshInterval')) as number
 				if (typeof saved === 'number' && saved >= 10 * 1000) {
 					setFastRefreshInterval(saved)
 				} else {
@@ -946,7 +946,7 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const slowRefreshInterval = async () => {
-				let saved = (await localForage.getItem('slowRefreshInterval')) as number
+				const saved = (await localForage.getItem('slowRefreshInterval')) as number
 				if (typeof saved === 'number' && saved >= 10 * 1000) {
 					setSlowRefreshInterval(saved)
 				} else {
@@ -954,7 +954,7 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const defaultSortComments = async () => {
-				let saved = (await localForage.getItem('defaultSortComments')) as string
+				const saved = (await localForage.getItem('defaultSortComments')) as string
 				if (typeof saved === 'string') {
 					setDefaultSortComments(saved)
 				} else {
@@ -962,7 +962,7 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const autoPlayInterval = async () => {
-				let saved = (await localForage.getItem('autoPlayInterval')) as number
+				const saved = (await localForage.getItem('autoPlayInterval')) as number
 				if (typeof saved === 'number' && saved >= 1) {
 					setAutoPlayInterval(saved)
 				} else {
@@ -970,7 +970,7 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const waitForVidInterval = async () => {
-				let saved = (await localForage.getItem('waitForVidInterval')) as boolean
+				const saved = (await localForage.getItem('waitForVidInterval')) as boolean
 				if (saved === false) {
 					setWaitForVidInterval(false)
 				} else {
@@ -978,7 +978,7 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const loadUniformHeights = async () => {
-				let s = await localForage.getItem('uniformHeights')
+				const s = await localForage.getItem('uniformHeights')
 				if (s === false) {
 					setUniformHeights(false)
 				} else {
@@ -986,7 +986,7 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const compactLinkPics = async () => {
-				let saved = await localForage.getItem('compactLinkPics')
+				const saved = await localForage.getItem('compactLinkPics')
 				if (saved === false) {
 					setCompactLinkPics(saved)
 				} else {
@@ -994,7 +994,7 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const autoHideNav = async () => {
-				let saved = await localForage.getItem('autoHideNav')
+				const saved = await localForage.getItem('autoHideNav')
 				if (saved === true) {
 					setAutoHideNav(saved)
 				} else {
@@ -1002,7 +1002,7 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const preferSideBySide = async () => {
-				let saved = await localForage.getItem('preferSideBySide')
+				const saved = await localForage.getItem('preferSideBySide')
 				if (saved === true) {
 					setPreferSideBySide(saved)
 				} else {
@@ -1010,7 +1010,7 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const disableSideBySide = async () => {
-				let saved = await localForage.getItem('disableSideBySide')
+				const saved = await localForage.getItem('disableSideBySide')
 				if (saved === true) {
 					setDisableSideBySide(saved)
 				} else {
@@ -1018,7 +1018,7 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const autoCollapseComments = async () => {
-				let saved = await localForage.getItem('autoCollapseComments')
+				const saved = await localForage.getItem('autoCollapseComments')
 				if (saved === false) {
 					setAutoCollapseComments(saved)
 				} else {
@@ -1039,48 +1039,48 @@ export const MainProvider = ({ children }) => {
 			autoCollapseComments()
 
 			//things we need loaded before posts are rendered
-			let autohidenav = autoHideNav()
-			let compactlinkpics = compactLinkPics()
-			let autoseen = loadAutoSeen()
-			let autorefreshfeed = autoRefreshFeed()
-			let autorefreshcomments = autoRefreshComments()
-			let asktoupdatefeed = askToUpdateFeed()
-			let refreshonfocus = refreshOnFocus()
-			let fastrefreshinterval = fastRefreshInterval()
-			let slowrefreshinterval = slowRefreshInterval()
-			let defaultsortcomments = defaultSortComments()
-			let autoplayinterval = autoPlayInterval()
-			let waitforvidinterval = waitForVidInterval()
-			let uniformheights = loadUniformHeights()
-			let volumes = loadVolume()
-			let nsfw = loadNSFW()
-			let autoplay = loadAutoplay()
-			let hoverplay = loadHoverPlay()
-			let mediaonly = loadMediaOnly()
-			let audiohover = audioOnHover()
-			let columnoverride = columnOverride()
-			let savewideui = savedWideUI()
+			const autohidenav = autoHideNav()
+			const compactlinkpics = compactLinkPics()
+			const autoseen = loadAutoSeen()
+			const autorefreshfeed = autoRefreshFeed()
+			const autorefreshcomments = autoRefreshComments()
+			const asktoupdatefeed = askToUpdateFeed()
+			const refreshonfocus = refreshOnFocus()
+			const fastrefreshinterval = fastRefreshInterval()
+			const slowrefreshinterval = slowRefreshInterval()
+			const defaultsortcomments = defaultSortComments()
+			const autoplayinterval = autoPlayInterval()
+			const waitforvidinterval = waitForVidInterval()
+			const uniformheights = loadUniformHeights()
+			const volumes = loadVolume()
+			const nsfw = loadNSFW()
+			const autoplay = loadAutoplay()
+			const hoverplay = loadHoverPlay()
+			const mediaonly = loadMediaOnly()
+			const audiohover = audioOnHover()
+			const columnoverride = columnOverride()
+			const savewideui = savedWideUI()
 			//let syncwideui = syncWideUI();
-			let postwideui = postWideUI()
-			let wideUI = loadWideUI()
-			let cardstyle = loadCardStyle()
-			let localfavorites = loadLocalFavoriteSubs()
-			let localsubs = loadLocalSubs()
-			let imgfilter = loadImgFilter()
-			let imgportraitfilter = loadImgPortraitFilter()
-			let imglandscapefilter = loadImgLandscapeFilter()
-			let vidfilter = loadVidFilter()
-			let linkfilter = loadLinkFilter()
-			let selffilter = loadSelfFilter()
-			let readfilter = loadReadFilter()
-			let seenfilter = loadSeenFilter()
-			let showflairs = loadShowFlairs()
-			let showawardings = loadShowAwardings()
-			let infiniteLoading = loadInfiniteLoading()
-			let dimread = loadDimRead()
-			let disableembeds = loadDisableEmbeds()
-			let preferembeds = loadPreferEmbeds()
-			let loadembedseverywhere = loadEmbedsEverywhere()
+			const postwideui = postWideUI()
+			const wideUI = loadWideUI()
+			const cardstyle = loadCardStyle()
+			const localfavorites = loadLocalFavoriteSubs()
+			const localsubs = loadLocalSubs()
+			const imgfilter = loadImgFilter()
+			const imgportraitfilter = loadImgPortraitFilter()
+			const imglandscapefilter = loadImgLandscapeFilter()
+			const vidfilter = loadVidFilter()
+			const linkfilter = loadLinkFilter()
+			const selffilter = loadSelfFilter()
+			const readfilter = loadReadFilter()
+			const seenfilter = loadSeenFilter()
+			const showflairs = loadShowFlairs()
+			const showawardings = loadShowAwardings()
+			const infiniteLoading = loadInfiniteLoading()
+			const dimread = loadDimRead()
+			const disableembeds = loadDisableEmbeds()
+			const preferembeds = loadPreferEmbeds()
+			const loadembedseverywhere = loadEmbedsEverywhere()
 			await Promise.all([
 				autoplayinterval,
 				waitforvidinterval,
@@ -1333,7 +1333,7 @@ export const MainProvider = ({ children }) => {
 
 	useEffect(() => {
 		if (localSubs?.length > 0) {
-			let encoded = encodeURIComponent(localSubs.join(','))
+			const encoded = encodeURIComponent(localSubs.join(','))
 			//if we can fit this in the cookie
 			if (encoded.length < 4000) {
 				document.cookie = `localSubs=${encoded};samesite=strict;path=/`
@@ -1344,7 +1344,7 @@ export const MainProvider = ({ children }) => {
 			}
 			localForage.setItem('localSubs', localSubs)
 		} else {
-			document.cookie = `localSubs=false;samesite=strict`
+			document.cookie = 'localSubs=false;samesite=strict'
 		}
 	}, [localSubs])
 	useEffect(() => {

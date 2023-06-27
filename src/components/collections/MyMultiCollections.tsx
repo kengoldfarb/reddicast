@@ -1,12 +1,12 @@
-import { useSession } from 'next-auth/react'
 import { useSubsContext } from '../../MySubs'
 import Collection from './Collection'
+import { useSession } from 'next-auth/react'
 
 const MyMultiCollections = () => {
 	const mySubs: any = useSubsContext()
 	const { data: session, status } = useSession()
 	const loading = status === 'loading'
-	let { myMultis, myLocalMultis, myLocalMultiRender } = mySubs
+	const { myMultis, myLocalMultis, myLocalMultiRender } = mySubs
 	if (session && myMultis?.length > 0) {
 		return (
 			<>
@@ -50,7 +50,9 @@ const MyMultiCollections = () => {
 
 	return (
 		<div className='mt-3 text-center'>
-			No multis or subreddit collections found<br></br>Try using the search to add subs and create a multi
+			No multis or subreddit collections found
+			<br />
+			Try using the search to add subs and create a multi
 		</div>
 	)
 }

@@ -1,7 +1,7 @@
-import { useSession } from 'next-auth/react'
-import React, { useEffect, useState } from 'react'
 import { useMainContext } from '../MainContext'
 import ChildComments from './ChildComments'
+import { useSession } from 'next-auth/react'
+import React, { useEffect, useState } from 'react'
 
 const Comments = ({
 	comments,
@@ -43,10 +43,9 @@ const Comments = ({
 					{comment?.kind === 'more' ? (
 						<button
 							aria-label='load more'
-							className={
-								'text-sm pl-2 text-semibold flex hover:font-semibold w-full ' +
-								(thread.isFetching ? ' animate-pulse' : ' ')
-							}
+							className={`text-sm pl-2 text-semibold flex hover:font-semibold w-full ${
+								thread.isFetching ? ' animate-pulse' : ' '
+							}`}
 							disabled={thread.isFetching}
 							onClick={(e) => {
 								e.preventDefault()

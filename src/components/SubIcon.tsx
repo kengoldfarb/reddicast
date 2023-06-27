@@ -1,6 +1,6 @@
-import Image from 'next/legacy/image'
-import { useState, useEffect } from 'react'
 import { useMainContext } from '../MainContext'
+import Image from 'next/legacy/image'
+import { useEffect, useState } from 'react'
 
 const SubIcon = ({ subname = '', subInfo = {}, isUser = false, size = 6 }) => {
 	const [thumbURL, setThumbURL] = useState('')
@@ -45,11 +45,9 @@ const SubIcon = ({ subname = '', subInfo = {}, isUser = false, size = 6 }) => {
 				/>
 			) : (
 				<div
-					className={
-						'rounded-full bg-th-accent ' +
-						' w-full h-full  text-white  overflow-hidden items-center justify-center flex !no-underline border-2 ' +
-						(hideNSFW ? ' text-md ' : ' text-xl')
-					}
+					className={`rounded-full bg-th-accent  w-full h-full  text-white  overflow-hidden items-center justify-center flex !no-underline border-2 ${
+						hideNSFW ? ' text-md ' : ' text-xl'
+					}`}
 				>
 					{hideNSFW ? '18+' : isUser ? 'u/' : 'r/'}
 					{/* {hideNSFW && (

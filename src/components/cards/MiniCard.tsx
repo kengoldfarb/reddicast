@@ -1,12 +1,12 @@
-import React from 'react'
+import { secondsToTime } from '../../../lib/utils'
+import Awardings from '../Awardings'
+import TitleFlair from '../TitleFlair'
 import Vote from '../Vote'
 import Image from 'next/legacy/image'
-import { BsBoxArrowInUpRight, BsCardText } from 'react-icons/bs'
-import { AiOutlineLink } from 'react-icons/ai'
-import TitleFlair from '../TitleFlair'
-import Awardings from '../Awardings'
-import { secondsToTime } from '../../../lib/utils'
 import Link from 'next/link'
+import React from 'react'
+import { AiOutlineLink } from 'react-icons/ai'
+import { BsBoxArrowInUpRight, BsCardText } from 'react-icons/bs'
 
 const MiniCard = ({ post }) => {
 	return (
@@ -35,8 +35,8 @@ const MiniCard = ({ post }) => {
 						width={post?.thumbnail_width}
 						unoptimized={true}
 						className={'rounded-md  '}
-					></Image>
-				) : post?.thumbnail == 'self' ? (
+					/>
+				) : post?.thumbnail === 'self' ? (
 					<BsCardText className='w-6 h-6' />
 				) : (
 					<AiOutlineLink className='w-6 h-6' />
@@ -92,7 +92,7 @@ const MiniCard = ({ post }) => {
 					</span>
 					{post?.all_awardings?.length > 0 && (
 						<>
-							<div className='ml-0.5'></div>
+							<div className='ml-0.5' />
 							<Awardings all_awardings={post?.all_awardings} styles='mr-0.5 -mb-0.5' />
 						</>
 					)}

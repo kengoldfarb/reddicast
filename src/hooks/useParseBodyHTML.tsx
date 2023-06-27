@@ -1,6 +1,6 @@
+import ParseATag from '../components/ParseATag'
 /* eslint-disable react/display-name */
 import React, { useEffect, useState } from 'react'
-import ParseATag from '../components/ParseATag'
 
 import HtmlToReact from 'html-to-react'
 
@@ -15,22 +15,21 @@ const processNodeDefinitions = new HtmlToReact.ProcessNodeDefinitions(React)
 const processingInstructions = [
 	{
 		shouldProcessNode: function (node) {
-			let check =
-				node.parent &&
-				node.parent.name &&
+			const check =
+				node.parent?.name &&
 				node.parent.name === 'a' &&
 				node.parent?.attribs?.href?.includes('https://') &&
 				checkSupport(node.parent?.attribs?.href, node) &&
 				node.name !== 'img' //leave comment gifs alone
 			return check
 		},
-		processNode: function (node, children, index) {
+		processNode: function (node, _children, index) {
 			return React.createElement(ParseATag, { key: index }, node) //node?.data?.toUpperCase();
 		}
 	},
 	{
 		// Anything else
-		shouldProcessNode: function (node) {
+		shouldProcessNode: function (_node) {
 			return true
 		},
 		processNode: processNodeDefinitions.processDefaultNode
@@ -42,9 +41,9 @@ const checkSupport = (link: string, node: any) => {
 		return false
 	}
 
-	let imgurRegex = /([A-z.]+\.)?(imgur(\.com))+(\/)+([A-z0-9]){7}\./gm
-	let redditRegex = /(preview+\.)+(reddit(\.com)|redd(\.it))+(\/[A-z0-9]+)+(\.(png|jpg))\./gm
-	let greedyRegex = /(\.(png|jpg))/gm
+	const imgurRegex = /([A-z.]+\.)?(imgur(\.com))+(\/)+([A-z0-9]){7}\./gm
+	const redditRegex = /(preview+\.)+(reddit(\.com)|redd(\.it))+(\/[A-z0-9]+)+(\.(png|jpg))\./gm
+	const greedyRegex = /(\.(png|jpg))/gm
 	return !!(link.match(imgurRegex) || link.match(redditRegex) || link.match(greedyRegex))
 }
 
@@ -63,18 +62,18 @@ const useParseBodyHTML = ({ rawHTML, newTabLinks = false }) => {
 		}
 
 		const replaceDomains = (str) => {
-			if (typeof str == 'undefined' || !str) return
-			let splitstr = str.split('<a')
-			let replaceall: string[] = []
+			if (typeof str === 'undefined' || !str) return
+			const splitstr = str.split('<a')
+			const replaceall: string[] = []
 			splitstr.forEach((substr) => replaceall.push(replaceUserDomains(substr)))
 			return replaceall.join('<a')
 		}
 
 		const replaceUserDomains = (str: string) => {
-			let redditRegex = /([A-z.]+\.)?(reddit(\.com)|redd(\.it))/gm
-			let matchRegex1 = /([A-z.]+\.)?(reddit(\.com)|redd(\.it))+(\/[ru]\/)/gm
-			let matchRegex2 = /([A-z.]+\.)?(reddit(\.com)|redd(\.it))+(\/user\/)/gm
-			let matchRegex3 = /([A-z.]+\.)?(reddit(\.com)|redd(\.it))+(\/)+([A-z0-9]){6}("|\s)/gm
+			const redditRegex = /([A-z.]+\.)?(reddit(\.com)|redd(\.it))/gm
+			const matchRegex1 = /([A-z.]+\.)?(reddit(\.com)|redd(\.it))+(\/[ru]\/)/gm
+			const matchRegex2 = /([A-z.]+\.)?(reddit(\.com)|redd(\.it))+(\/user\/)/gm
+			const matchRegex3 = /([A-z.]+\.)?(reddit(\.com)|redd(\.it))+(\/)+([A-z0-9]){6}("|\s)/gm
 			// let youtubeRegex = /([A-z.]+\.)?youtu(be\.com|\.be)/gm;
 			// let twitterRegex = /([A-z.]+\.)?twitter\.com/gm;
 			// let instagramRegex = /([A-z.]+\.)?instagram.com/gm;
@@ -98,7 +97,7 @@ const useParseBodyHTML = ({ rawHTML, newTabLinks = false }) => {
 		if (newTabLinks) {
 			result = blankTargets(result)
 		}
-		let reactElement = parseHTML(result)
+		const reactElement = parseHTML(result)
 		setComponent(reactElement)
 	}, [rawHTML])
 
