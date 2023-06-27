@@ -1,39 +1,24 @@
 // import React from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from '@tanstack/react-query'
 
 interface UseHeightMap {
-  columnWidth: number;
-  cardStyle: string;
-  mediaOnly: boolean;
-  compactLinkPics: boolean;
-  uniformMediaMode: boolean;
-  windowHeight: number;
+	columnWidth: number
+	cardStyle: string
+	mediaOnly: boolean
+	compactLinkPics: boolean
+	uniformMediaMode: boolean
+	windowHeight: number
 }
 
 const useHeightMap = (args: UseHeightMap) => {
-  const {
-    columnWidth,
-    cardStyle,
-    mediaOnly,
-    compactLinkPics,
-    uniformMediaMode,
-    windowHeight,
-  } = args;
-  const card = cardStyle === "default" ? "card1" : cardStyle;
-  const queryKeyHeights = [
-    "heightMap",
-    columnWidth,
-    card,
-    mediaOnly,
-    compactLinkPics,
-    uniformMediaMode,
-    windowHeight,
-  ];
+	const { columnWidth, cardStyle, mediaOnly, compactLinkPics, uniformMediaMode, windowHeight } = args
+	const card = cardStyle === 'default' ? 'card1' : cardStyle
+	const queryKeyHeights = ['heightMap', columnWidth, card, mediaOnly, compactLinkPics, uniformMediaMode, windowHeight]
 
-  const queryClient = useQueryClient();
+	const queryClient = useQueryClient()
 
-  //todo: persist heightmaps outside of memory
-  /* const checkAndClearLargeStorage = () => {
+	//todo: persist heightmaps outside of memory
+	/* const checkAndClearLargeStorage = () => {
     const MAXSTORE = 250_000_000; //~256mb
     const savedMaps = localStorage.getItem("heightMaps");
     if (savedMaps?.length && savedMaps.length >= MAXSTORE) {
@@ -74,45 +59,42 @@ const useHeightMap = (args: UseHeightMap) => {
     checkAndClearLargeStorage();
   }; */
 
-  const getHeights = () => {
-    const heights = queryClient.getQueryData(queryKeyHeights) as any;
-    return heights;
-  };
+	const getHeights = () => {
+		const heights = queryClient.getQueryData(queryKeyHeights) as any
+		return heights
+	}
 
-  const createMaps = () => {
-    queryClient.fetchQuery(queryKeyHeights, () => new Map<string, number>(), {
-      staleTime: Infinity,
-      cacheTime: Infinity,
-    });
-  };
+	const createMaps = () => {
+		queryClient.fetchQuery(queryKeyHeights, () => new Map<string, number>(), {
+			staleTime: Infinity,
+			cacheTime: Infinity
+		})
+	}
 
-  const setHeight = (key, value) => {
-    const p = getHeights();
-    if (!p) {
-      createMaps(); 
-    }
-    queryClient.setQueryData(
-      queryKeyHeights,
-      (pData: Map<string, number> | undefined) => {
-        if (!pData) {
-          let heightMap = new Map(); //restoreSavedHeightMap();
-          heightMap.set(key, value);
-          return heightMap; //{ heightMap: heightMap };
-        } else {
-          pData?.set(key, value);
-          // if (pData.size % 25 === 0) {
-          //   saveMapToLocalStorage(pData);
-          // }
-          return pData;
-        }
-      }
-    );
-  };
+	const setHeight = (key, value) => {
+		const p = getHeights()
+		if (!p) {
+			createMaps()
+		}
+		queryClient.setQueryData(queryKeyHeights, (pData: Map<string, number> | undefined) => {
+			if (!pData) {
+				let heightMap = new Map() //restoreSavedHeightMap();
+				heightMap.set(key, value)
+				return heightMap //{ heightMap: heightMap };
+			} else {
+				pData?.set(key, value)
+				// if (pData.size % 25 === 0) {
+				//   saveMapToLocalStorage(pData);
+				// }
+				return pData
+			}
+		})
+	}
 
-  return {
-    setHeight,
-    getHeights,
-  };
-};
+	return {
+		setHeight,
+		getHeights
+	}
+}
 
-export default useHeightMap;
+export default useHeightMap
