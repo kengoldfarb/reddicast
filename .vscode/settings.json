@@ -5,5 +5,5 @@
 		"quickfix.rome": true,
 		"source.organizeImports.rome": true,
 	},
-	"eslint.enable": false,
+	"eslint.enable": false
 }
