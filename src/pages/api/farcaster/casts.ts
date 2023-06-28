@@ -1,6 +1,7 @@
 import { Database, getDbClient } from '../../../server/db'
 import { UserDataType } from '@farcaster/hub-nodejs'
 import log from '@kengoldfarb/log'
+import { sql } from 'kysely'
 import uniq from 'lodash/uniq'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
@@ -18,12 +19,15 @@ export interface IGetCastsResponse {
 	})[]
 }
 
-const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
 		const db = getDbClient(process.env.DATABASE_URL ?? '')
+		const _parentHash = (req.query.parentHash as string) ?? null
+		const _parentUrl = (req.query.parentHash as string) ?? null
 		const casts = await db
 			.selectFrom('casts')
 			.selectAll(['casts'])
+			.select([sql<string>`ENCODE(hash::bytea, 'hex')`.as('hash')])
 			.where('casts.parentHash', 'is', null)
 			.where('casts.parentUrl', 'is not', null)
 			.orderBy('casts.timestamp', 'desc')
@@ -47,9 +51,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
 
 		const [userData, replies, reactions] = await Promise.all([
 			db.selectFrom('userData').selectAll().where('fid', 'in', fids).execute(),
-			parentHashes.length > 0
-				? db.selectFrom('casts').selectAll().where('parentHash', 'in', parentHashes).execute()
-				: Promise.resolve([]),
+			db.selectFrom('casts').selectAll().where('parentHash', 'in', castHashes).execute(),
 			db.selectFrom('reactions').selectAll().where('targetHash', 'in', castHashes).execute()
 		])
 		const users: {
@@ -97,6 +99,9 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
 		})
 	} catch (e) {
 		log.crit(e)
+		return res.status(500).json({
+			status: 'failure'
+		})
 	}
 }
 export default handler
