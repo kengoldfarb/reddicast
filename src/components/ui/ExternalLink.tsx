@@ -2,13 +2,13 @@ import { useTheme } from 'next-themes'
 import React, { useEffect, useState } from 'react'
 import { BsBoxArrowInUpRight } from 'react-icons/bs'
 
-const ExternalLink = ({ domain, url, shorten = false }) => {
+const ExternalLink = ({ url }) => {
 	const { theme, resolvedTheme } = useTheme()
 
-	let link = `${domain}/${url?.split('?')?.[0]?.replace('https://', '')?.split('/')?.splice(1)?.join('/')}`
-	if (shorten) {
-		link = link?.split('/')?.[0]
-	}
+	// let link = `${domain}/${url?.split('?')?.[0]?.replace('https://', '')?.split('/')?.splice(1)?.join('/')}`
+	// if (shorten) {
+	// 	link = link?.split('/')?.[0]
+	// }
 
 	return (
 		<a
@@ -22,7 +22,7 @@ const ExternalLink = ({ domain, url, shorten = false }) => {
 			href={url}
 			style={{ wordBreak: 'break-all' }}
 		>
-			<span className='opacity-100 '>{link}</span>
+			<span className='opacity-100 '>{url}</span>
 			<BsBoxArrowInUpRight
 				className={`flex-none w-6 h-6 ml-auto  group-hover:scale-110 ${
 					resolvedTheme === 'light' ? 'text-th-text' : ' text-white '

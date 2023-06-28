@@ -1,4 +1,6 @@
-import { loadFront, loadPost } from '../RedditAPI'
+import { loadFront } from '../FarcasterAPI'
+// import { loadFront } from '../RedditAPI'
+// import { loadPost } from '../RedditAPI'
 import Feed from '../components/Feed'
 import Card1 from '../components/cards/Card1'
 import Modal from '../components/ui/Modal'
@@ -75,16 +77,24 @@ index.getInitialProps = async ({ req, query, res }) => {
 			}
 			data = await loadFront(true, tokenData, undefined, undefined, undefined, undefined, undefined, true)
 		}
-		if (data?.children && data?.after) {
-			return {
-				user: session?.user?.name ?? '',
-				query: query,
-				postData: {
-					children: [...data.children.slice(0, 6)] //only send the first n posts to limit page size
-				}
+		// if (data?.children && data?.after) {
+		// 	return {
+		// 		user: session?.user?.name ?? '',
+		// 		query: query,
+		// 		postData: {
+		// 			children: [...data.children.slice(0, 6)] //only send the first n posts to limit page size
+		// 		}
+		// 	}
+		// }
+		// return { query: query, postData: {}, user: '' }
+		console.log({ data })
+		return {
+			user: session?.user?.name ?? '',
+			query: query,
+			postData: {
+				// children: [...data.children.slice(0, 6)] //only send the first n posts to limit page size
 			}
 		}
-		return { query: query, postData: {}, user: '' }
 	}
 	return { query }
 }

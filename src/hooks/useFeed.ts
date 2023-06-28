@@ -1,9 +1,10 @@
 import { filterPosts } from '../../lib/utils'
+import { loadFront } from '../FarcasterAPI'
 import { useMainContext } from '../MainContext'
 import {
 	getRedditSearch,
 	getUserMultiPosts,
-	loadFront,
+	// loadFront,
 	loadSubreddits,
 	loadUserPosts,
 	loadUserSelf

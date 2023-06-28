@@ -1,6 +1,8 @@
 import type { Route_Types } from '../types/logs'
+import type { IGetCastsResponse } from './pages/api/farcaster/casts'
 import axios from 'axios'
 import { getSession } from 'next-auth/react'
+import request from 'superagent'
 // let subUrl         = (sub == "" ) ? "" : "/r/"+sub;
 // let limitUrl     = "limit=" + limit;
 // let afterUrl     = (after == null) ? "" : "&after="+after;
@@ -44,7 +46,7 @@ const getToken = async () => {
 }
 
 //trim child data esp for initial SSG
-const filterPostChildren = (children) => {
+const _filterPostChildren = (children) => {
 	const c = children.map((child) => ({
 		kind: child?.kind,
 		data: {
@@ -150,83 +152,111 @@ const checkToken = async (loggedIn: boolean, token, skipCheck = false) => {
 }
 
 export const loadFront = async (
-	loggedIn = false,
-	token?,
-	sort = 'hot',
-	range?: string,
-	after?: string,
-	count?: number,
-	localSubs?: [string],
-	skipCheck = false
+	_loggedIn = false,
+	_token?,
+	_sort = 'hot',
+	_range?: string,
+	_after?: string,
+	_count?: number,
+	_localSubs?: [string],
+	_skipCheck = false
 ) => {
-	const { returnToken, accessToken } = await checkToken(loggedIn, token, skipCheck)
-	if (loggedIn && accessToken && ratelimit_remaining > 1) {
-		try {
-			logApiRequest('home', true)
-			const res1 = await axios.get(`https://oauth.reddit.com/${sort}`, {
-				headers: {
-					authorization: `bearer ${accessToken}`
-				},
-				params: {
-					raw_json: 1,
-					t: range,
-					after: after,
-					count: count,
-					sr_detail: true
-				}
-			})
-			const res = await res1.data
-			ratelimit_remaining = parseInt(res1.headers['x-ratelimit-remaining'])
+	try {
+		const result = await request.get('/api/farcaster/casts')
+		const casts: IGetCastsResponse['casts'] = result.body.casts
 
-			return {
-				after: res.data.after,
-				before: res.data.before,
-				children: filterPostChildren(res.data.children),
-				token: returnToken
-			}
-		} catch (_err) {
-			//console.log(err);
-		}
-	} else {
-		const filteredsubs = localSubs?.filter((s) => s.substring(0, 2) !== 'u_')
-		if (filteredsubs?.length > 0) {
-			return loadSubreddits(loggedIn, token, filteredsubs.join('+'), sort, range, after, count, true)
-		} else {
-			try {
-				logApiRequest('home', false)
-				const res = await (
-					await axios.get(`${REDDIT}/${sort}/.json?`, {
-						params: {
-							raw_json: 1,
-							t: range,
-							after: after,
-							count: count,
-							sr_detail: true
-						}
-					})
-				).data
-
-				return {
-					after: res.data.after,
-					before: res.data.before,
-					children: filterPostChildren(res.data.children),
-					token: returnToken
+		const builtData = {
+			// after: casts[0] ? casts[0].timestamp : null,
+			// before: casts[casts.length - 1] ? casts[0].timestamp : null,
+			children: casts.map((c) => ({
+				kind: 't3',
+				data: {
+					id: c.id,
+					all_awardings: [],
+					author: c.user.fname,
+					title: c.text,
+					score: 42069,
+					created_utc: c.timestamp,
+					permalink: `/r/${c.parentUrl}/comments/${c.id}`,
+					domain: c.parentUrl,
+					subreddit: c.parentUrl
+					// url: c.parentUrl
 				}
-			} catch (_err) {
-				//console.log(err);
-			}
+			}))
 		}
+		console.log(builtData)
+		return builtData
+	} catch (e) {
+		console.log(e)
 	}
+	// const { returnToken, accessToken } = await checkToken(loggedIn, token, skipCheck)
+	// if (loggedIn && accessToken && ratelimit_remaining > 1) {
+	// 	try {
+	// 		logApiRequest('home', true)
+	// 		const res1 = await axios.get(`https://oauth.reddit.com/${sort}`, {
+	// 			headers: {
+	// 				authorization: `bearer ${accessToken}`
+	// 			},
+	// 			params: {
+	// 				raw_json: 1,
+	// 				t: range,
+	// 				after: after,
+	// 				count: count,
+	// 				sr_detail: true
+	// 			}
+	// 		})
+	// 		const res = await res1.data
+	// 		ratelimit_remaining = parseInt(res1.headers['x-ratelimit-remaining'])
+
+	// 		return {
+	// 			after: res.data.after,
+	// 			before: res.data.before,
+	// 			children: filterPostChildren(res.data.children),
+	// 			token: returnToken
+	// 		}
+	// 	} catch (_err) {
+	// 		//console.log(err);
+	// 	}
+	// } else {
+	// 	const filteredsubs = localSubs?.filter((s) => s.substring(0, 2) !== 'u_')
+	// 	if (filteredsubs?.length > 0) {
+	// 		return loadSubreddits(loggedIn, token, filteredsubs.join('+'), sort, range, after, count, true)
+	// 	} else {
+	// 		try {
+	// 			logApiRequest('home', false)
+	// 			const res = await (
+	// 				await axios.get(`${REDDIT}/${sort}/.json?`, {
+	// 					params: {
+	// 						raw_json: 1,
+	// 						t: range,
+	// 						after: after,
+	// 						count: count,
+	// 						sr_detail: true
+	// 					}
+	// 				})
+	// 			).data
+
+	// 			return {
+	// 				after: res.data.after,
+	// 				before: res.data.before,
+	// 				children: filterPostChildren(res.data.children),
+	// 				token: returnToken
+	// 			}
+	// 		} catch (_err) {
+	// 			//console.log(err);
+	// 		}
+	// 	}
+	// }
 }
 
 export const loadSubreddits = async (
 	loggedIn,
 	token,
 	subreddits: string,
-	sort: string,
-	range: string,
-	after = '',
-	count = 0,
+	_sort: string,
+	_range: string,
+	_after = '',
+	_count = 0,
 	sr_detail = false
 ) => {
 	let accessToken = token?.accessToken
@@ -236,64 +266,97 @@ export const loadSubreddits = async (
 		accessToken = await returnToken?.accessToken
 	}
 
-	const getSRDetail =
+	const _getSRDetail =
 		sr_detail ||
 		subreddits?.split('+')?.length > 1 ||
 		subreddits?.toUpperCase()?.includes('POPULAR') ||
 		subreddits?.toUpperCase()?.includes('ALL')
 
-	if (loggedIn && accessToken && ratelimit_remaining > 1) {
-		try {
-			//console.log("WITH LOGIN", token);
-			logApiRequest('r/', true)
-			const res1 = await axios.get(`https://oauth.reddit.com/r/${subreddits}/${sort}`, {
-				headers: {
-					authorization: `bearer ${accessToken}`
-				},
-				params: {
-					raw_json: 1,
-					t: range,
-					after: after,
-					count: count,
-					sr_detail: getSRDetail
-				}
-			})
-			const res = await res1.data
-			ratelimit_remaining = parseInt(res1.headers['x-ratelimit-remaining'])
+	try {
+		const result = await request.get('/api/farcaster/casts')
+		const casts: IGetCastsResponse['casts'] = result.body.casts
 
-			return {
-				after: res.data.after,
-				before: res.data.before,
-				children: filterPostChildren(res.data.children),
-				token: returnToken
-			}
-		} catch (_err) {
-			//console.log(err);
+		const builtData = {
+			// after: casts[0] ? casts[0].timestamp : null,
+			// before: casts[casts.length - 1] ? casts[0].timestamp : null,
+			children: casts.map((c) => ({
+				kind: 't3',
+				data: {
+					id: c.id,
+					all_awardings: [],
+					author: c.user.fname,
+					title: c.text,
+					score: 42069,
+					created_utc: c.timestamp,
+					permalink: `/r/${c.parentUrl}/comments/${c.id}`,
+					domain: c.parentUrl,
+					subreddit: c.parentUrl
+					// url: c.parentUrl
+				}
+			}))
 		}
-	} else {
-		try {
-			logApiRequest('r/', false)
-			const res = await (
-				await axios.get(`${REDDIT}/r/${subreddits}/${sort}/.json?`, {
-					params: {
-						raw_json: 1,
-						t: range,
-						after: after,
-						count: count,
-						sr_detail: getSRDetail
-					}
-				})
-			).data
-			return {
-				after: res.data.after,
-				before: res.data.before,
-				children: filterPostChildren(res.data.children),
-				token: returnToken
-			}
-		} catch (_err) {
-			return null
-		}
+		console.log(builtData)
+		return builtData
+	} catch (e) {
+		console.log(e)
 	}
+
+	// const result = await request.get('/api/farcaster/subreddit').query({
+	// 	subreddit
+	// })
+
+	// if (loggedIn && accessToken && ratelimit_remaining > 1) {
+	// 	try {
+	// 		//console.log("WITH LOGIN", token);
+	// 		logApiRequest('r/', true)
+	// 		const res1 = await axios.get(`https://oauth.reddit.com/r/${subreddits}/${sort}`, {
+	// 			headers: {
+	// 				authorization: `bearer ${accessToken}`
+	// 			},
+	// 			params: {
+	// 				raw_json: 1,
+	// 				t: range,
+	// 				after: after,
+	// 				count: count,
+	// 				sr_detail: getSRDetail
+	// 			}
+	// 		})
+	// 		const res = await res1.data
+	// 		ratelimit_remaining = parseInt(res1.headers['x-ratelimit-remaining'])
+
+	// 		return {
+	// 			after: res.data.after,
+	// 			before: res.data.before,
+	// 			children: filterPostChildren(res.data.children),
+	// 			token: returnToken
+	// 		}
+	// 	} catch (_err) {
+	// 		//console.log(err);
+	// 	}
+	// } else {
+	// 	try {
+	// 		logApiRequest('r/', false)
+	// 		const res = await (
+	// 			await axios.get(`${REDDIT}/r/${subreddits}/${sort}/.json?`, {
+	// 				params: {
+	// 					raw_json: 1,
+	// 					t: range,
+	// 					after: after,
+	// 					count: count,
+	// 					sr_detail: getSRDetail
+	// 				}
+	// 			})
+	// 		).data
+	// 		return {
+	// 			after: res.data.after,
+	// 			before: res.data.before,
+	// 			children: filterPostChildren(res.data.children),
+	// 			token: returnToken
+	// 		}
+	// 	} catch (_err) {
+	// 		return null
+	// 	}
+	// }
 }
 
 export const getRedditSearch = async (
@@ -513,25 +576,25 @@ export const loadSubInfo = async (subreddit) => {
 	return false
 }
 //search request no auth required
-export const loadSubredditInfo = async (query, loaduser = false) => {
+export const loadSubredditInfo = async (query, _loaduser = false) => {
 	if (query) {
 		try {
-			logApiRequest(loaduser ? 'u/' : 'r/', false)
+			// logApiRequest(loaduser ? 'u/' : 'r/', false)
 
-			const res = await (
-				await axios.get(`${REDDIT}/${loaduser ? 'user' : 'r'}/${query}/about.json`, {
-					///search/.json?q=${query}&type=sr&include_over_18=on`, {
-					params: {
-						raw_json: 1
-					}
-				})
-			).data
+			// const res = await (
+			// 	await axios.get(`${REDDIT}/${loaduser ? 'user' : 'r'}/${query}/about.json`, {
+			// 		///search/.json?q=${query}&type=sr&include_over_18=on`, {
+			// 		params: {
+			// 			raw_json: 1
+			// 		}
+			// 	})
+			// ).data
 			//console.log(query, res);
 			// for (let i = 0; i < res?.data?.children?.length - 1; i++){
 			//   if (res?.data?.children?.[i]?.data?.display_name?.toUpperCase() === query.toUpperCase()) return res?.data?.children?.[i]?.data
 			// }
 
-			return res
+			return {}
 		} catch (err) {
 			console.log(err)
 			return undefined

@@ -69,6 +69,7 @@ const Feed = ({ initialData = {} as any }) => {
 		toast.remove('not_found')
 		toast.remove('feed_error')
 	}
+
 	return (
 		<>
 			<LoginModal />

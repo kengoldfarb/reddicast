@@ -338,7 +338,7 @@ const Card1 = ({
 							</div>
 							{linkMode && (
 								<div className='mt-1 -ml-1 overflow-hidden rounded-md'>
-									<ExternalLink domain={post?.domain} url={post?.url} />
+									<ExternalLink url={post?.domain} />
 								</div>
 							)}
 						</div>

@@ -3,7 +3,7 @@
   "version": "0.18.0",
   "private": true,
   "scripts": {
-    "local": "next dev -p 3000",
+    "local": "NODE_OPTIONS='--inspect=4005' next dev -p 3000",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -13,6 +13,7 @@
     "lint:fix": "rome format --write --max-diagnostics=200 ./src && rome check ./src --apply-unsafe"
   },
   "dependencies": {
+    "@farcaster/hub-nodejs": "^0.8.1",
     "@farsign/hooks": "^1.2.1",
     "@headlessui/react": "1.5",
     "@kengoldfarb/log": "^1.0.5",
@@ -34,6 +35,7 @@
     "kysely": "^0.25.0",
     "kysely-postgres-js": "^1.1.1",
     "localforage": "^1.10.0",
+    "lodash": "^4.17.21",
     "markdown-draft-js": "^2.4.0",
     "masonic": "^3.6.4",
     "next": "^13.4.4",
@@ -43,6 +45,7 @@
     "next-pwa": "^5.6.0",
     "next-themes": "^0.1.1",
     "nuka-carousel": "^5.4.0",
+    "postgres": "^3.3.5",
     "qrcodejs2": "^0.0.2",
     "react": "^18.2.0",
     "react-autosuggest": "^10.1.0",
@@ -66,6 +69,7 @@
     "@types/node": "^16.7.1",
     "@types/react": "^17.0.14",
     "@types/react-lazyload": "^3.1.1",
+    "@types/superagent": "^4.1.18",
     "autoprefixer": "^10.4.2",
     "eslint": "7.31.0",
     "eslint-config-next": "^13.4.4",

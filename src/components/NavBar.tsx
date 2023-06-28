@@ -119,7 +119,7 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 					hidden ? '-translate-y-full' : ' translate-y-0 '
 				} z-50 fixed top-0 transition ease-in-out transform  w-screen  ${hidden ? ' duration-500' : ' duration-200'}`}
 			>
-				<NavMessage hide={router.asPath?.includes('/comments/')} timeSinceNav={timeSinceNav} />
+				{/* <NavMessage hide={router.asPath?.includes('/comments/')} timeSinceNav={timeSinceNav} /> */}
 				<SideNav visible={sidebarVisible} toggle={setSidebarVisible} />
 				<nav className='relative flex flex-row items-center flex-grow h-12 shadow-lg bg-th-background2 md:justify-between '>
 					<CgMenu

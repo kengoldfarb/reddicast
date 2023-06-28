@@ -1,4 +1,5 @@
 import { findMediaInfo } from '../../../lib/utils'
+// import { loadSubredditInfo, loadSubreddits } from '../../FarcasterAPI'
 import { getWikiContent, loadPost, loadSubredditInfo, loadSubreddits } from '../../RedditAPI'
 import Feed from '../../components/Feed'
 import LoginModal from '../../components/LoginModal'
@@ -22,6 +23,15 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 	const [commentThread, setCommentThread] = useState(false)
 	const [postThread, setPostThread] = useState(false)
 	const [withCommentContext, setWithCommentContext] = useState(false)
+	console.log(
+		'SUBREDDIT!!!' >
+			{
+				query,
+				metaTags,
+				post,
+				postData
+			}
+	)
 	useEffect(() => {
 		const getWiki = async (wikiquery) => {
 			const data = await getWikiContent(wikiquery)

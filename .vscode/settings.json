@@ -5,5 +5,21 @@
 		"quickfix.rome": true,
 		"source.organizeImports.rome": true,
 	},
+	"[javascript]": {
+		"editor.defaultFormatter": "rome.rome",
+		"editor.formatOnSave": true
+	},
+	"[javascriptreact]": {
+		"editor.defaultFormatter": "rome.rome",
+		"editor.formatOnSave": true
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "rome.rome",
+		"editor.formatOnSave": true
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "rome.rome",
+		"editor.formatOnSave": true
+	},
 	"eslint.enable": false
 }

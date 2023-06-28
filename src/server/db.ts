@@ -1,4 +1,3 @@
-import { Logger } from './log'
 import { HashScheme, MessageType, ReactionType, SignatureScheme, UserDataType } from '@farcaster/hub-nodejs'
 import { promises as fs } from 'fs'
 import { CamelCasePlugin, FileMigrationProvider, Generated, GeneratedAlways, Kysely, Migrator } from 'kysely'
@@ -152,33 +151,4 @@ export const getDbClient = (connectionString: string) => {
 		}),
 		plugins: [new CamelCasePlugin()]
 	})
-}
-
-export const migrateToLatest = async (db: Kysely<any>, log: Logger): Promise<Result<void, unknown>> => {
-	const migrator = new Migrator({
-		db,
-		provider: new FileMigrationProvider({
-			fs,
-			path,
-			migrationFolder: path.join(path.dirname(fileURLToPath(import.meta.url)), 'migrations')
-		})
-	})
-
-	const { error, results } = await migrator.migrateToLatest()
-
-	results?.forEach((it) => {
-		if (it.status === 'Success') {
-			log.info(`migration "${it.migrationName}" was executed successfully`)
-		} else if (it.status === 'Error') {
-			log.error(`failed to execute migration "${it.migrationName}"`)
-		}
-	})
-
-	if (error) {
-		log.error('failed to migrate')
-		log.error(error)
-		return err(error)
-	}
-
-	return ok(undefined)
 }
