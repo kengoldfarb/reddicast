@@ -1,4 +1,4 @@
-import { Database, getDbClient } from '../../../server/db'
+import db, { Database } from '../../../server/db'
 import { UserDataType } from '@farcaster/hub-nodejs'
 import log from '@kengoldfarb/log'
 import { sql } from 'kysely'
@@ -21,18 +21,25 @@ export interface IGetCastsResponse {
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
-		const db = getDbClient(process.env.DATABASE_URL ?? '')
+		// const db = getDbClient(process.env.DATABASE_URL ?? '')
 		const _parentHash = (req.query.parentHash as string) ?? null
-		const _parentUrl = (req.query.parentHash as string) ?? null
+		const parentUrl = (req.query.parentUrl as string) ?? null
+		console.log({ parentUrl, query: req.query })
 		const casts = await db
 			.selectFrom('casts')
 			.selectAll(['casts'])
 			.select([sql<string>`ENCODE(hash::bytea, 'hex')`.as('hash')])
-			.where('casts.parentHash', 'is', null)
-			.where('casts.parentUrl', 'is not', null)
+			.select([sql<string>`ENCODE(parent_hash::bytea, 'hex')`.as('parentHash')])
+			// .where('casts.parentHash', 'is', null)
+			.where('casts.parentUrl', parentUrl ? '=' : 'is not', parentUrl ?? null)
+			// .where('casts.parentUrl', '=', parentUrl)
 			.orderBy('casts.timestamp', 'desc')
 			.limit(25)
 			.execute()
+
+		if (casts.length === 0) {
+			return res.json({ casts: [] })
+		}
 
 		let fids: number[] = []
 		let parentHashes: Uint8Array[] = []

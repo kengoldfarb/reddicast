@@ -140,6 +140,8 @@ const Card1 = ({
 		//post?.mediaInfo?.imageInfo?.[0]?.src &&
 		!(post?.mediaInfo?.isIframe && (context.embedsEverywhere || (columns === 1 && !context.disableEmbeds)))
 
+	console.log({ post })
+
 	return (
 		<>
 			{showCardMediaOverlay && (
@@ -177,7 +179,7 @@ const Card1 = ({
 										linkMode ? ' w-2/3 pr-2' : ' '
 									}`}
 								>
-									<Link legacyBehavior href={`/r/${post?.subreddit}`}>
+									<Link legacyBehavior href={`/r/${encodeURIComponent(post?.subreddit)}`}>
 										<a
 											title={`go to r/${post?.subreddit}`}
 											className={'flex flex-row items-center mr-1 font-semibold text-th-text hover:underline '}

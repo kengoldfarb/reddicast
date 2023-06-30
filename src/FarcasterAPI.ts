@@ -162,7 +162,7 @@ export const loadFront = async (
 	_skipCheck = false
 ) => {
 	try {
-		const result = await request.get('/api/farcaster/casts')
+		const result = await request.get(`${process.env.NEXT_PUBLIC_HOST}/api/farcaster/casts`)
 		const casts: IGetCastsResponse['casts'] = result.body.casts
 
 		const builtData = {
@@ -177,7 +177,7 @@ export const loadFront = async (
 					title: c.text,
 					score: 42069,
 					created_utc: c.timestamp,
-					permalink: `/r/${c.parentUrl}/comments/${c.id}`,
+					permalink: `/r/${encodeURIComponent(c.parentUrl)}/comments/${c.id}`,
 					domain: c.parentUrl,
 					subreddit: c.parentUrl
 					// url: c.parentUrl
@@ -250,8 +250,8 @@ export const loadFront = async (
 }
 
 export const loadSubreddits = async (
-	loggedIn,
-	token,
+	_loggedIn,
+	_token,
 	subreddits: string,
 	_sort: string,
 	_range: string,
@@ -259,12 +259,12 @@ export const loadSubreddits = async (
 	_count = 0,
 	sr_detail = false
 ) => {
-	let accessToken = token?.accessToken
-	let returnToken = token
-	if (loggedIn && (!token?.expires || Math.floor(Date.now() / 1000) > token?.expires)) {
-		returnToken = await getToken()
-		accessToken = await returnToken?.accessToken
-	}
+	// let accessToken = token?.accessToken
+	// let returnToken = token
+	// if (loggedIn && (!token?.expires || Math.floor(Date.now() / 1000) > token?.expires)) {
+	// 	returnToken = await getToken()
+	// 	accessToken = await returnToken?.accessToken
+	// }
 
 	const _getSRDetail =
 		sr_detail ||
@@ -273,7 +273,9 @@ export const loadSubreddits = async (
 		subreddits?.toUpperCase()?.includes('ALL')
 
 	try {
-		const result = await request.get('/api/farcaster/casts')
+		const result = await request.get(`${process.env.NEXT_PUBLIC_HOST}/api/farcaster/casts`).query({
+			parentUrl: subreddits
+		})
 		const casts: IGetCastsResponse['casts'] = result.body.casts
 
 		const builtData = {
@@ -288,7 +290,7 @@ export const loadSubreddits = async (
 					title: c.text,
 					score: 42069,
 					created_utc: c.timestamp,
-					permalink: `/r/${c.parentUrl}/comments/${c.id}`,
+					permalink: `/r/${encodeURIComponent(c.parentUrl)}/comments/${c.id}`,
 					domain: c.parentUrl,
 					subreddit: c.parentUrl
 					// url: c.parentUrl
@@ -298,7 +300,7 @@ export const loadSubreddits = async (
 		console.log(builtData)
 		return builtData
 	} catch (e) {
-		console.log(e)
+		console.log('loadSubreddits error', e)
 	}
 
 	// const result = await request.get('/api/farcaster/subreddit').query({
@@ -594,7 +596,22 @@ export const loadSubredditInfo = async (query, _loaduser = false) => {
 			//   if (res?.data?.children?.[i]?.data?.display_name?.toUpperCase() === query.toUpperCase()) return res?.data?.children?.[i]?.data
 			// }
 
-			return {}
+			const { body } = await request.get(`${process.env.NEXT_PUBLIC_HOST}/api/farcaster/topic`).query({
+				parentUrl: query
+			})
+
+			console.log(body)
+
+			return {
+				kind: 't5',
+				data: {
+					title: query,
+					display_name: query,
+					description_html: query,
+					description: query,
+					header_title: query
+				}
+			}
 		} catch (err) {
 			console.log(err)
 			return undefined

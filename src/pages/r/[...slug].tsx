@@ -1,6 +1,6 @@
 import { findMediaInfo } from '../../../lib/utils'
-// import { loadSubredditInfo, loadSubreddits } from '../../FarcasterAPI'
-import { getWikiContent, loadPost, loadSubredditInfo, loadSubreddits } from '../../RedditAPI'
+import { loadSubredditInfo, loadSubreddits } from '../../FarcasterAPI'
+import { getWikiContent, loadPost } from '../../RedditAPI'
 import Feed from '../../components/Feed'
 import LoginModal from '../../components/LoginModal'
 import NavBar from '../../components/NavBar'
@@ -23,15 +23,7 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 	const [commentThread, setCommentThread] = useState(false)
 	const [postThread, setPostThread] = useState(false)
 	const [withCommentContext, setWithCommentContext] = useState(false)
-	console.log(
-		'SUBREDDIT!!!' >
-			{
-				query,
-				metaTags,
-				post,
-				postData
-			}
-	)
+	console.log({ query, metaTags, post, postData })
 	useEffect(() => {
 		const getWiki = async (wikiquery) => {
 			const data = await getWikiContent(wikiquery)
@@ -57,6 +49,9 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 			setSubsArray([])
 		}
 	}, [query])
+
+	console.log({ subsArray, wikiMode, postThread })
+
 	return (
 		<div
 			className={`${
@@ -126,6 +121,7 @@ SubredditPage.getInitialProps = async (d) => {
 	const { query, req, res } = d
 	let subreddits = query?.slug?.[0]
 	subreddits = query?.slug?.[0]?.split(' ')?.join('+')?.split('%2b')?.join('+')
+	console.log('GET INITIAL PROPS', subreddits)
 	if (
 		query?.slug?.length < 3 &&
 		req &&
@@ -146,6 +142,10 @@ SubredditPage.getInitialProps = async (d) => {
 		}
 		let posts
 		let subInfo
+		console.log({
+			subreddits,
+			query
+		})
 		const loadPosts = async () => {
 			const data = await loadSubreddits(
 				session?.user?.name ? true : false,
@@ -161,7 +161,7 @@ SubredditPage.getInitialProps = async (d) => {
 		}
 		const loadSub = async () => {
 			const data = await loadSubredditInfo(subreddits?.split('+')?.[0])
-			subInfo = data?.data
+			subInfo = data
 		}
 		await Promise.all([loadPosts(), loadSub()])
 		const metaTags = {

@@ -30,8 +30,10 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 	}, [])
 
 	useEffect(() => {
-		setCurrSubData(currSubInfo?.data?.subreddit ?? currSubInfo?.data)
+		setCurrSubData(currSubInfo)
 	}, [currSubInfo])
+
+	console.log(subsContext)
 
 	//entry point
 	useEffect(() => {
@@ -174,6 +176,8 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 			router.push(`${subreddits.join('+')}`)
 		}
 	}, [myMultis, myLocalMultis])
+
+	console.log({ subreddits, subArray })
 
 	return (
 		<div

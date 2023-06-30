@@ -1,4 +1,4 @@
-import { loadSubredditInfo } from '../RedditAPI'
+import { loadSubredditInfo } from '../FarcasterAPI'
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 

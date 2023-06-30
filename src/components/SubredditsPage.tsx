@@ -1,5 +1,5 @@
+import { getSubreddits, loadSubredditInfo } from '../FarcasterAPI'
 import { useSubsContext } from '../MySubs'
-import { getSubreddits, loadSubredditInfo } from '../RedditAPI'
 import SubCard from './cards/SubCard'
 import SubCardPlaceHolder from './cards/SubCardPlaceHolder'
 import React, { Fragment, useEffect, useState } from 'react'
@@ -38,6 +38,8 @@ const SubredditsPage = ({ query = undefined }) => {
 		tryLoadAll,
 		addToSubCache
 	} = subsContext
+
+	console.log('subreddit', subsContext)
 
 	const [categories] = useState(['mine', 'follows', 'feeds', 'popular']) //"New"
 

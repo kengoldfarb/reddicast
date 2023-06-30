@@ -1,4 +1,3 @@
-import { localSubInfoCache, useMainContext } from './MainContext'
 import {
 	addToMulti,
 	createMulti,
@@ -11,7 +10,8 @@ import {
 	loadSubInfo,
 	loadSubredditInfo,
 	subToSub
-} from './RedditAPI'
+} from './FarcasterAPI'
+import { localSubInfoCache, useMainContext } from './MainContext'
 import localForage from 'localforage'
 import { getSession, useSession } from 'next-auth/react'
 import { useRouter } from 'next/dist/client/router'
