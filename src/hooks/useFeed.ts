@@ -212,7 +212,7 @@ const useFeed = (params?: Params) => {
 			filterCount: filtercount
 		}
 
-		//console.log("returnData?", returnData);
+		console.log('returnData?', returnData)
 
 		return returnData
 	}
@@ -228,9 +228,13 @@ const useFeed = (params?: Params) => {
 				? context?.fastRefreshInterval ?? 10 * 1000
 				: context?.slowRefreshInterval ?? 30 * 60 * 1000
 			: Infinity,
+		// refetchInterval: 10000,
 		getNextPageParam: lastPage => {
-			//console.log('lastPage?ß', lastPage)
-			if (lastPage.after || lastPage.after === '') {
+			console.log('lastPage?', lastPage)
+			if (
+				(lastPage.after || lastPage.after === '') &&
+				lastPage.filtered.length > 0
+			) {
 				return {
 					after: lastPage?.after ?? '',
 					count: lastPage?.count ?? 0,

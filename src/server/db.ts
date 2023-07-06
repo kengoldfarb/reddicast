@@ -149,7 +149,7 @@ export const getDbClient = (connectionString: string) => {
 			connectionString,
 			options: {
 				max: 10,
-				// ssl: true,
+				ssl: true,
 				types: {
 					// BigInts will not exceed Number.MAX_SAFE_INTEGER for our use case.
 					// Return as JavaScript's `number` type so it's easier to work with.
@@ -163,10 +163,10 @@ export const getDbClient = (connectionString: string) => {
 			},
 			postgres
 		}),
-		plugins: [new CamelCasePlugin()]
-		// log: (e) => {
-		// 	console.log(e)
-		// }
+		plugins: [new CamelCasePlugin()],
+		log: e => {
+			console.log(e)
+		}
 	})
 }
 

@@ -1,9 +1,13 @@
+import {
+	QueryFunctionContext,
+	useInfiniteQuery,
+	useQueryClient
+} from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
+import React from 'react'
 import { fixCommentFormat } from '../../lib/utils'
 import { loadMoreComments, loadPost } from '../FarcasterAPI'
 import { useMainContext } from '../MainContext'
-import { QueryFunctionContext, useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
-import React from 'react'
 
 const useThread = (permalink, sort, _initialData?, withContext = false) => {
 	const { data: session, status } = useSession()
@@ -11,23 +15,34 @@ const useThread = (permalink, sort, _initialData?, withContext = false) => {
 	const context: any = useMainContext()
 	const loading = status === 'loading'
 	const splitPermalink = permalink?.split('/')
-	const threadId = splitPermalink?.[3] === 'comments' && splitPermalink?.[4] ? splitPermalink?.[4] : permalink
+	const threadId =
+		splitPermalink?.[3] === 'comments' && splitPermalink?.[4]
+			? splitPermalink?.[4]
+			: permalink
 	const commentId =
-		splitPermalink?.[3] === 'comments' && splitPermalink?.[4] && splitPermalink?.[6] ? splitPermalink?.[6] : '' //for direct comments
+		splitPermalink?.[3] === 'comments' &&
+		splitPermalink?.[4] &&
+		splitPermalink?.[6]
+			? splitPermalink?.[6]
+			: '' //for direct comments
 
 	const updateComments = (prevComments, newComments) => {
 		// let update = queryClient.setQueryData(["thread", threadId, sort, commentId, withContext], (newData:any) => {
-		const getPrevState = (prevComments) => {
+		const getPrevState = prevComments => {
 			const prevState = new Map()
-			const checkCommentChildren = (comment) => {
+			const checkCommentChildren = comment => {
 				if (comment?.kind === 't1') {
 					prevState.set(comment?.data?.name, comment)
-					for (let i = 0; i < comment?.data?.replies?.data?.children?.length ?? 0; i++) {
+					for (
+						let i = 0;
+						i < comment?.data?.replies?.data?.children?.length ?? 0;
+						i++
+					) {
 						checkCommentChildren(comment.data.replies.data.children[i])
 					}
 				}
 			}
-			prevComments.forEach((comment) => checkCommentChildren(comment))
+			prevComments.forEach(comment => checkCommentChildren(comment))
 			return prevState
 		}
 
@@ -40,11 +55,11 @@ const useThread = (permalink, sort, _initialData?, withContext = false) => {
 					if (children?.length > 0) {
 						let newChildren = prevComment?.data?.replies?.data?.children
 						newChildren = Array.from(
-							[...newChildren, ...children?.filter((c) => c?.kind === 't1')]
+							[...newChildren, ...children?.filter(c => c?.kind === 't1')]
 								.reduce((m, o) => m.set(o?.data?.name, o), new Map())
 								.values()
 						)
-						repliesData['data']['children'] = newChildren
+						repliesData.data.children = newChildren
 					}
 				}
 			}
@@ -54,19 +69,28 @@ const useThread = (permalink, sort, _initialData?, withContext = false) => {
 				data: {
 					...newComment.data,
 					replies: repliesData,
-					collapsed: prevComment?.data?.collapsed ? true : newComment?.data?.collapsed
+					collapsed: prevComment?.data?.collapsed
+						? true
+						: newComment?.data?.collapsed
 				}
 			}
 			if (comment?.data?.replies?.data?.children?.length > 0 && prevComment) {
-				for (let i = 0; i < comment?.data?.replies?.data?.children?.length; i++) {
-					comment.data.replies.data.children[i] = processChildren(prevState, comment?.data?.replies?.data?.children[i])
+				for (
+					let i = 0;
+					i < comment?.data?.replies?.data?.children?.length;
+					i++
+				) {
+					comment.data.replies.data.children[i] = processChildren(
+						prevState,
+						comment?.data?.replies?.data?.children[i]
+					)
 				}
 			}
 			return comment
 		}
 
 		const prevState = getPrevState(prevComments)
-		const newCommentsEdit = newComments.map((comment) => {
+		const newCommentsEdit = newComments.map(comment => {
 			return processChildren(prevState, comment)
 		})
 
@@ -85,6 +109,7 @@ const useThread = (permalink, sort, _initialData?, withContext = false) => {
 				sort
 			)
 			const morecomments = await fixCommentFormat(data?.data)
+			console.log({ comments: data, morecomments })
 			return {
 				post_comments: morecomments,
 				token: data?.token
@@ -94,7 +119,7 @@ const useThread = (permalink, sort, _initialData?, withContext = false) => {
 		}
 	}
 
-	const processComments = (newComments) => {
+	const processComments = newComments => {
 		const prevQueryData: any = queryClient.getQueryData([
 			'thread',
 			threadId,
@@ -103,7 +128,7 @@ const useThread = (permalink, sort, _initialData?, withContext = false) => {
 			withContext,
 			session?.user?.name
 		])
-		const prevComments = prevQueryData?.pages?.flatMap((page) => page.comments)
+		const prevComments = prevQueryData?.pages?.flatMap(page => page.comments)
 		let comments = newComments
 		if (newComments?.length > 0 && prevComments?.length > 0) {
 			comments = updateComments(prevComments, newComments)
@@ -112,13 +137,14 @@ const useThread = (permalink, sort, _initialData?, withContext = false) => {
 	}
 
 	const fetchThread = async (feedParams: QueryFunctionContext) => {
+		console.log('fetching thread', feedParams)
 		if (feedParams?.pageParam?.children?.length > 0) {
 			const { post_comments, token } = await loadChildComments(
 				feedParams.pageParam.children,
 				feedParams?.pageParam?.link_id
 			)
-			token && context.setToken(token)
-			const comments = processComments(post_comments)?.map((c) => ({
+
+			const comments = processComments(post_comments)?.map(c => ({
 				...c,
 				data: { ...c?.data }
 			}))

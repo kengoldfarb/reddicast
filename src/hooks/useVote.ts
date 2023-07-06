@@ -71,6 +71,17 @@ const useVote = ({ name, likes, score, postTime, scoreHideMins }: VoteArgs) => {
 		voteMutation.mutate({ vote: postv, id: name, increment })
 	}
 
+	console.log({
+		name,
+		likes,
+		score,
+		postTime,
+		voteDisplay,
+		castVote,
+		liked,
+		loading: voteMutation.isLoading
+	})
+
 	return {
 		voteDisplay,
 		castVote,

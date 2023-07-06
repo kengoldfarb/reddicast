@@ -1,7 +1,7 @@
-import { useMainContext } from '../MainContext'
-import ChildComments from './ChildComments'
 import { useSession } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
+import { useMainContext } from '../MainContext'
+import ChildComments from './ChildComments'
 
 const Comments = ({
 	comments,
@@ -36,18 +36,20 @@ const Comments = ({
 		}
 	}
 
+	console.log({ comments })
+
 	return (
-		<div className=''>
+		<div className="">
 			{commentsData?.map((comment, i) => (
-				<div key={`${i}_${comment?.data?.id}`} className='py-1 '>
+				<div key={`${i}_${comment?.data?.id}`} className="py-1 ">
 					{comment?.kind === 'more' ? (
 						<button
-							aria-label='load more'
+							aria-label="load more"
 							className={`text-sm pl-2 text-semibold flex hover:font-semibold w-full ${
 								thread.isFetching ? ' animate-pulse' : ' '
 							}`}
 							disabled={thread.isFetching}
-							onClick={(e) => {
+							onClick={e => {
 								e.preventDefault()
 								e.stopPropagation()
 								loadChildComments()

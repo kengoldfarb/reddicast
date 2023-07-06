@@ -1,18 +1,17 @@
-import { useMainContext } from '../MainContext'
-import { useKeyPress } from '../hooks/KeyPress'
-import useFeedGallery from '../hooks/useFeedGallery'
-import MediaModal from './MediaModal'
-import Thread from './Thread'
+import { useWindowWidth } from '@react-hook/window-size'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai'
 import { BiPause, BiPlay } from 'react-icons/bi'
-import { RiArrowGoBackLine } from 'react-icons/ri'
-
-import useGlobalState from '../hooks/useGlobalState'
-import PostOptButton from './PostOptButton'
-import { useWindowWidth } from '@react-hook/window-size'
 import { CgSpinnerTwo } from 'react-icons/cg'
+import { RiArrowGoBackLine } from 'react-icons/ri'
+import { useKeyPress } from '../hooks/KeyPress'
+import useFeedGallery from '../hooks/useFeedGallery'
+import useGlobalState from '../hooks/useGlobalState'
+import { useMainContext } from '../MainContext'
+import MediaModal from './MediaModal'
+import PostOptButton from './PostOptButton'
+import Thread from './Thread'
 
 const PostModal = ({
 	setSelect,
@@ -40,7 +39,9 @@ const PostModal = ({
 	// );
 	const [autoPlay, setAutoPlay] = useState(false)
 	const [useMediaMode, setUseMediaMode] = useState(mediaMode)
-	const [sort, setSort] = useState<string>((router?.query?.sort as string) ?? context.defaultSortComments)
+	const [sort, setSort] = useState<string>(
+		(router?.query?.sort as string) ?? context.defaultSortComments
+	)
 	const [curPost, setCurPost] = useState<any>(postData)
 	const [curPostNum, setCurPostNum] = useState(postNum)
 	const [showUI, setShowUI] = useState(true)
@@ -50,7 +51,7 @@ const PostModal = ({
 		const params = new Proxy(new URLSearchParams(window.location.search), {
 			get: (searchParams, prop) => searchParams.get(prop as string)
 		})
-		if (router?.query?.slug?.[1] === 'duplicates' || params?.['duplicates']) {
+		if (router?.query?.slug?.[1] === 'duplicates' || params?.duplicates) {
 			setShowDuplicates(true)
 		} else {
 			setShowDuplicates(false)
@@ -63,7 +64,9 @@ const PostModal = ({
 		} else {
 			router.replace(
 				'',
-				router.asPath.includes('/duplicates/') ? router.asPath.replace('/duplicates/', '/comments/') : '',
+				router.asPath.includes('/duplicates/')
+					? router.asPath.replace('/duplicates/', '/comments/')
+					: '',
 				{ shallow: true }
 			)
 		}
@@ -142,7 +145,10 @@ const PostModal = ({
 						//do nothing
 					} else if (returnRoute) {
 						//console.log("last route", returnRoute);
-						if (router.asPath.includes('?duplicates') || router.asPath.includes('&duplicates')) {
+						if (
+							router.asPath.includes('?duplicates') ||
+							router.asPath.includes('&duplicates')
+						) {
 							router.replace(returnRoute, returnRoute, { shallow: true })
 						} else {
 							router.replace(returnRoute, returnRoute, {
@@ -172,7 +178,7 @@ const PostModal = ({
 		const params = new Proxy(new URLSearchParams(window.location.search), {
 			get: (searchParams, prop) => searchParams.get(prop as string)
 		})
-		const multi = params?.['m'] ?? ''
+		const multi = params?.m ?? ''
 		const queryParams = `${multi ? `?m=${multi}` : ''}`
 
 		if (flattenedPosts?.[curPostNum + move]?.data) {
@@ -190,22 +196,28 @@ const PostModal = ({
 					shallow: true
 				}
 			)
-			setCurPostNum((p) => p + move)
+			setCurPostNum(p => p + move)
 		}
 	}
 
-	const { getGlobalData, setGlobalData, clearGlobalState } = useGlobalState(['videoLoadData'])
+	const { getGlobalData, setGlobalData, clearGlobalState } = useGlobalState([
+		'videoLoadData'
+	])
 
 	const hasPrevPost = flattenedPosts?.[curPostNum - 1]?.data
 	const hasNextPost = flattenedPosts?.[curPostNum + 1]?.data
 	const innerInt = useRef<NodeJS.Timer | number | undefined>()
 	useEffect(() => {
 		let currNum = curPostNum
-		const changePostInterval = (move: 1 | -1, curPostNum, intervalFlatPosts) => {
+		const changePostInterval = (
+			move: 1 | -1,
+			curPostNum,
+			intervalFlatPosts
+		) => {
 			const params = new Proxy(new URLSearchParams(window.location.search), {
 				get: (searchParams, prop) => searchParams.get(prop as string)
 			})
-			const multi = params?.['m'] ?? ''
+			const multi = params?.m ?? ''
 			const queryParams = `${multi ? `?m=${multi}` : ''}`
 			if (intervalFlatPosts?.[curPostNum + move]?.data) {
 				const nextPost = intervalFlatPosts?.[curPostNum + move]?.data
@@ -224,7 +236,7 @@ const PostModal = ({
 				)
 			}
 			currNum = currNum + move
-			setCurPostNum((p) => p + move)
+			setCurPostNum(p => p + move)
 		}
 
 		let interval
@@ -244,15 +256,19 @@ const PostModal = ({
 					if (
 						isVideo &&
 						context.waitForVidInterval &&
-						!(context.preferEmbeds && feedData?.[currNum]?.data?.mediaInfo?.isIframe)
+						!(
+							context.preferEmbeds &&
+							feedData?.[currNum]?.data?.mediaInfo?.isIframe
+						)
 					) {
 						pause = true
 						const checkForVidComplete = async () => {
-							return await new Promise((resolve) => {
+							return new Promise(resolve => {
 								clearInterval(innerInt?.current as number)
 								innerInt.current = setInterval(() => {
 									const idToCheck =
-										feedData?.[currNum]?.data?.crosspost_parent_list?.[0]?.name ?? feedData?.[currNum]?.data?.name
+										feedData?.[currNum]?.data?.crosspost_parent_list?.[0]
+											?.name ?? feedData?.[currNum]?.data?.name
 									const check = getGlobalData()?.get(idToCheck)
 									//console.log("check", check, idToCheck);
 									if (check) {
@@ -306,7 +322,14 @@ const PostModal = ({
 			clearInterval(interval)
 			clearInterval(innerInt.current as number)
 		}
-	}, [autoPlay, context.waitForVidInterval, context.autoPlayInterval, context.preferEmbeds, curPostNum, hasNextPost])
+	}, [
+		autoPlay,
+		context.waitForVidInterval,
+		context.autoPlayInterval,
+		context.preferEmbeds,
+		curPostNum,
+		hasNextPost
+	])
 
 	const nextPress = useKeyPress('ArrowRight')
 	const backPress = useKeyPress('ArrowLeft')
@@ -329,14 +352,23 @@ const PostModal = ({
 			} else if (escapePress) {
 				handleBack()
 			} else if (pPress && useMediaMode) {
-				setAutoPlay((a) => !a)
+				setAutoPlay(a => !a)
 			} else if (fPress) {
-				setUseMediaMode((a) => !a)
+				setUseMediaMode(a => !a)
 			}
 		}
 
 		return () => {}
-	}, [fPress, pPress, nextPress, backPress, upPress, downPress, escapePress, context.replyFocus])
+	}, [
+		fPress,
+		pPress,
+		nextPress,
+		backPress,
+		upPress,
+		downPress,
+		escapePress,
+		context.replyFocus
+	])
 
 	const translateDiv = useRef<HTMLDivElement>(null)
 	const updateTranslateX = (x: number, smooth = windowWidth < 768) => {
@@ -344,14 +376,18 @@ const PostModal = ({
 			if (smooth) {
 				translateDiv.current.style.transitionProperty = 'transform'
 				translateDiv.current.style.transitionDuration = '200ms'
-				translateDiv.current.style.transitionTimingFunction = 'cubic-bezier(0.4, 0, 0.2, 1)'
+				translateDiv.current.style.transitionTimingFunction =
+					'cubic-bezier(0.4, 0, 0.2, 1)'
 			} else {
 				translateDiv.current.style.transitionProperty = ''
 				translateDiv.current.style.transitionDuration = ''
 				translateDiv.current.style.transitionTimingFunction = ''
 			}
 			// console.log(translateDiv.current.style.transform.split(",")?.[0]?.split("px")?.[0]?.split("translate3d(")?.[1] ?? "0")
-			translateDiv.current.style.setProperty('transform', `translate3d(${x}px, 0px, 0px)`)
+			translateDiv.current.style.setProperty(
+				'transform',
+				`translate3d(${x}px, 0px, 0px)`
+			)
 		}
 	}
 
@@ -368,7 +404,11 @@ const PostModal = ({
 				{useMediaMode ? (
 					<>
 						<MediaModal
-							flattenedPosts={flattenedPosts?.length > 0 ? flattenedPosts : [{ data: { ...curPost } }]}
+							flattenedPosts={
+								flattenedPosts?.length > 0
+									? flattenedPosts
+									: [{ data: { ...curPost } }]
+							}
 							hide={false}
 							setHideArrows={setHideArrows}
 							hideArrows={hideArrows}
@@ -382,11 +422,14 @@ const PostModal = ({
 						/>
 
 						<div
-							className={'fixed top-1 md:top-4 right-1.5 md:right-16 z-[98] ' + ' transition ease-in-out duration-200 '}
+							className={
+								'fixed top-1 md:top-4 right-1.5 md:right-16 z-[98] ' +
+								' transition ease-in-out duration-200 '
+							}
 						>
 							<PostOptButton
 								post={curPost}
-								mode='fullmedia'
+								mode="fullmedia"
 								showUI={showUI}
 								setShowUI={setShowUI}
 								buttonStyles={`md:text-opacity-50 md:hover:text-opacity-100 ${
@@ -398,7 +441,7 @@ const PostModal = ({
 						</div>
 					</>
 				) : (
-					<div className='relative flex min-h-screen'>
+					<div className="relative flex min-h-screen">
 						<Thread
 							key={curPost?.name ?? curPostNum}
 							permalink={direct ? permalink : curPost?.permalink}
@@ -421,9 +464,9 @@ const PostModal = ({
 			<>
 				{/* <div className="fixed top-0 left-0 w-screen h-full -z-10 bg-black/75 opacity-80 backdrop-filter overscroll-none"></div> */}
 				<button
-					aria-label='go back'
-					title='back (esc)'
-					onClick={(e) => {
+					aria-label="go back"
+					title="back (esc)"
+					onClick={e => {
 						e.preventDefault()
 						e.stopPropagation()
 						handleBack(windowWidth < 650 && useMediaMode, windowWidth >= 768)
@@ -435,18 +478,23 @@ const PostModal = ({
 										? ' text-white md:text-th-text '
 										: ' text-white '
 							  } transition ease-in-out duration-200 ${
-									showUI && !hideArrows ? ' opacity-100 ' : ' opacity-0 hover:opacity-100'
+									showUI && !hideArrows
+										? ' opacity-100 '
+										: ' opacity-0 hover:opacity-100'
 							  }`
 							: ' md:top-16 md:left-4 right-1.5 bottom-[2.5rem] text-white  '
 					}`}
 				>
-					<RiArrowGoBackLine title={'back (esc)'} className={'w-5 h-5 md:w-8 md:h-8   '} />
+					<RiArrowGoBackLine
+						title={'back (esc)'}
+						className={'w-5 h-5 md:w-8 md:h-8   '}
+					/>
 				</button>
 				{hasPrevPost && (
 					<button
-						aria-label='previous post'
+						aria-label="previous post"
 						title={'previous post (left arrow)'}
-						onClick={(e) => {
+						onClick={e => {
 							e.preventDefault()
 							e.stopPropagation()
 							changePost(-1)
@@ -458,26 +506,34 @@ const PostModal = ({
 											? ' text-white md:text-th-text '
 											: ' text-white '
 								  } transition ease-in-out duration-200 ${
-										showUI && !hideArrows ? ' opacity-100 ' : ' opacity-0 hover:opacity-100'
+										showUI && !hideArrows
+											? ' opacity-100 '
+											: ' opacity-0 hover:opacity-100'
 								  }`
 								: ' text-white md:top-1/2 md:left-4 md:-translate-y-1/2 md:bottom-auto md:rotate-0 right-1 bottom-[13rem] hidden md:flex '
 						}`}
 					>
-						<AiOutlineLeft className='w-4 h-4 md:w-10 md:h-10' />
+						<AiOutlineLeft className="w-4 h-4 md:w-10 md:h-10" />
 					</button>
 				)}
 				{(hasNextPost || feedLoading) && (
 					<button
 						disabled={feedLoading && !hasNextPost}
-						aria-label='next post'
-						title={feedLoading && !hasNextPost ? 'loading' : 'next post (right arrow)'}
-						onClick={(e) => {
+						aria-label="next post"
+						title={
+							feedLoading && !hasNextPost
+								? 'loading'
+								: 'next post (right arrow)'
+						}
+						onClick={e => {
 							e.preventDefault()
 							e.stopPropagation()
 							changePost(1)
 						}}
 						className={`fixed z-[98]  rotate-90 outline-none select-none text-white md:text-opacity-50 hover:text-opacity-100   md:p-2 flex items-center justify-center md:bg-transparent md:backdrop-blur-none bg-black/40 rounded-full md:hover:bg-black/20 md:rounded-md  border border-transparent  backdrop-blur-lg  w-10 h-10 md:w-12 md:h-12  ${
-							feedLoading && !hasNextPost ? '' : ' hover:border-th-borderHighlight hover:backdrop-blur-lg '
+							feedLoading && !hasNextPost
+								? ''
+								: ' hover:border-th-borderHighlight hover:backdrop-blur-lg '
 						}${
 							useMediaMode
 								? ` md:top-[10.5rem] md:right-2 right-1.5 md:left-auto bottom-[19rem] ${
@@ -493,35 +549,37 @@ const PostModal = ({
 						}`}
 					>
 						{feedLoading && !hasNextPost ? (
-							<CgSpinnerTwo className='w-4 h-4 md:w-10 md:h-10 animate-spin text-th-accent' />
+							<CgSpinnerTwo className="w-4 h-4 md:w-10 md:h-10 animate-spin text-th-accent" />
 						) : (
-							<AiOutlineRight className='w-4 h-4 md:w-10 md:h-10' />
+							<AiOutlineRight className="w-4 h-4 md:w-10 md:h-10" />
 						)}
 					</button>
 				)}
 				{hasNextPost && useMediaMode && (
 					<button
-						aria-label='autoplay'
-						title='auto play (p)'
+						aria-label="autoplay"
+						title="auto play (p)"
 						className={`fixed z-[99] right-1.5 top-14 md:right-2 md:top-[4.5rem] text-white md:text-opacity-50 hover:text-opacity-100 md:bg-transparent bg-black/40  md:hover:bg-black/20 rounded-full md:rounded-md  flex items-center justify-center border border-transparent hover:border-th-borderHighlight outline-none hover:backdrop-blur-lg w-10 h-10 md:w-12 md:h-12  transition ease-in-out duration-200 select-none ${
-							flattenedPosts?.[curPostNum]?.data?.mediaInfo?.isSelf ? ' text-white md:text-th-text ' : ' text-white '
+							flattenedPosts?.[curPostNum]?.data?.mediaInfo?.isSelf
+								? ' text-white md:text-th-text '
+								: ' text-white '
 						}${
 							showUI && (!hideArrows || autoPlay)
 								? ' opacity-100 backdrop-blur-lg md:backdrop-blur-none '
 								: ' opacity-0 hover:opacity-100'
 						}`}
 						style={{ textShadow: '0px 1px #00000020' }}
-						onClick={(e) => {
+						onClick={e => {
 							e.preventDefault()
 							e.stopPropagation()
-							setAutoPlay((a) => !a)
+							setAutoPlay(a => !a)
 						}}
 					>
 						{autoPlay ? (
-							<BiPause className='w-6 h-6 md:w-12 md:h-12 md:-m-2' />
+							<BiPause className="w-6 h-6 md:w-12 md:h-12 md:-m-2" />
 						) : (
 							<>
-								<BiPlay className='w-6 h-6 md:w-12 md:h-12 md:-m-2' />
+								<BiPlay className="w-6 h-6 md:w-12 md:h-12 md:-m-2" />
 							</>
 						)}
 					</button>

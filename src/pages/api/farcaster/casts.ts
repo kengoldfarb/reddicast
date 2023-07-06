@@ -2,6 +2,7 @@ import { UserDataType } from '@farcaster/hub-nodejs'
 import log from '@kengoldfarb/log'
 import { sql } from 'kysely'
 import uniq from 'lodash/uniq'
+import { DateTime } from 'luxon'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import db, { Database } from '../../../server/db'
 
@@ -25,11 +26,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		const hash = (req.query.hash as string) ?? null
 		const parentHash = (req.query.parentHash as string) ?? null
 		const parentUrl = (req.query.parentUrl as string) ?? null
-		console.log({ parentUrl, query: req.query })
+		const after = (req.query.after as string) ?? null
+		// console.log({ parentUrl, query: req.query })
 		let castsPromise = db
 			.selectFrom('casts')
 			.selectAll(['casts'])
 			.select([sql<string>`ENCODE(hash::bytea, 'hex')`.as('hash')])
+			.select([sql<string>`DATE_PART('epoch', timestamp)`.as('timestamp')])
 			.select([sql<string>`ENCODE(parent_hash::bytea, 'hex')`.as('parentHash')])
 
 		if (hash) {
@@ -48,8 +51,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			)
 		}
 
+		if (parentUrl) {
+			castsPromise = castsPromise.where('casts.parentUrl', '=', parentUrl)
+		}
+
+		if (!hash && !parentHash && !parentUrl) {
+			castsPromise = castsPromise.where('casts.parentUrl', 'is not', null)
+		}
+
+		if (after) {
+			const a = DateTime.fromSeconds(+after).toJSDate()
+			castsPromise = castsPromise.where('casts.timestamp', '<', a)
+		}
+
 		castsPromise = castsPromise
-			.where('casts.parentUrl', parentUrl ? '=' : 'is not', parentUrl ?? null)
+			// .where('casts.id', '=', 549206)
 			.orderBy('casts.timestamp', 'desc')
 			.limit(25)
 
@@ -63,7 +79,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		let parentHashes: Uint8Array[] = []
 		const castHashes: Uint8Array[] = []
 		casts.forEach(c => {
-			castHashes.push(c.hash)
+			castHashes.push(Uint8Array.from(Buffer.from(c.hash, 'hex')))
 			if (c.parentHash) {
 				parentHashes.push(c.parentHash)
 			}
@@ -72,21 +88,31 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		fids = uniq(fids)
 		parentHashes = uniq(parentHashes)
 
-		console.log({ fids, parentHashes })
+		// console.log({ fids, parentHashes, castHashes })
 
 		const [userData, replies, reactions] = await Promise.all([
 			db.selectFrom('userData').selectAll().where('fid', 'in', fids).execute(),
 			db
 				.selectFrom('casts')
 				.selectAll()
+				.select([sql<string>`ENCODE(hash::bytea, 'hex')`.as('hash')])
+				.select([
+					sql<string>`ENCODE(parent_hash::bytea, 'hex')`.as('parentHash')
+				])
 				.where('parentHash', 'in', castHashes)
+				.orderBy('casts.timestamp', 'desc')
 				.execute(),
 			db
 				.selectFrom('reactions')
 				.selectAll()
+				.select([
+					sql<string>`ENCODE(target_hash::bytea, 'hex')`.as('targetHash')
+				])
+				.select([sql<string>`ENCODE(hash::bytea, 'hex')`.as('hash')])
 				.where('targetHash', 'in', castHashes)
 				.execute()
 		])
+		// console.log({ userData, replies, reactions })
 		const users: {
 			[fid: number]: IUserData
 		} = {}

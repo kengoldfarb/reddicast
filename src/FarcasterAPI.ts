@@ -10,13 +10,22 @@ import type { IGetCastsResponse } from './pages/api/farcaster/casts'
 // let countUrl     = (count == 0) ? "" : "&count="+count;
 // let url = "https://www.reddit.com" + subUrl + "/" + sortType + "/.json?" + sortUrl + "&" + limitUrl + afterUrl + countUrl;
 
-let ratelimit_remaining = 600
-const LOG_REQUESTS = JSON.parse(
-	process?.env?.NEXT_PUBLIC_ENABLE_API_LOG ?? 'false'
-)
-const REDDIT = 'https://www.reddit.com'
-
 export const castToPost = (cast: Record<string, any>) => {
+	let score = 0
+	cast.reactions.forEach(r => {
+		switch (r.reactionType) {
+			case 1:
+				score += 1
+				break
+
+			case 2:
+				score += 10
+				break
+
+			default:
+				break
+		}
+	})
 	const post = {
 		kind: 't3',
 		data: {
@@ -24,183 +33,162 @@ export const castToPost = (cast: Record<string, any>) => {
 			all_awardings: [],
 			author: cast.user.fname,
 			title: cast.text,
-			name: cast.text,
-			score: 42069,
+			body_html: cast.text,
+			name: `t3_${cast.id}`,
+			score,
+			likes: score,
 			created_utc: DateTime.fromISO(cast.timestamp).toUnixInteger(),
 			permalink: `/r/${encodeURIComponent(cast.parentUrl)}/comments/${
 				cast.hash
 			}`,
 			domain: cast.parentUrl,
-			subreddit: cast.parentUrl
-
-			// url: c.parentUrl
+			subreddit: cast.parentUrl,
+			num_comments: cast.replies.length
 		}
 	}
-	console.log({ post })
 	return post
 }
 
-export const logApiRequest = async (type: Route_Types, isOauth?: boolean) => {
-	if (LOG_REQUESTS) {
-		try {
-			await fetch('/api/log/increment', {
-				method: 'POST',
-				body: JSON.stringify({ route_type: type, is_oauth: isOauth ?? false }),
-				headers: { 'Content-Type': 'application/json' }
-			})
-		} catch (err) {
-			console.error('log error?', err)
-		}
-	}
-}
+export const logApiRequest = async (type: Route_Types, isOauth?: boolean) => {}
 
 const getToken = async () => {
-	const session = await getSession()
-	if (session) {
-		try {
-			const tokendata = await (await axios.get('/api/reddit/mytoken')).data
-			return {
-				accessToken: tokendata.data.accessToken,
-				refreshToken: tokendata.data.refreshToken,
-				expires: tokendata.data.expires
-			}
-		} catch (_err) {
-			//console.log(err);
-			return undefined
-		}
-		return undefined
-	}
+	return undefined
 }
 
 //trim child data esp for initial SSG
-const _filterPostChildren = children => {
-	const c = children.map(child => ({
-		kind: child?.kind,
-		data: {
-			all_awardings: child?.data?.all_awardings,
-			archived: child?.data?.archived,
-			author: child?.data?.author,
-			created_utc: child?.data?.created_utc,
-			crosspost_parent_list: child?.data?.crosspost_parent_list,
-			distinguished: child?.data?.distinguished,
-			domain: child?.data?.domain,
-			downs: child?.data?.downs,
-			edited: child?.data?.edited,
-			gallery_data: child?.data?.gallery_data,
-			hidden: child?.data?.hidden,
-			hide_score: child?.data?.hide_score,
-			id: child?.data?.id,
-			is_self: child?.data?.is_self,
-			is_video: child?.data?.is_video,
-			likes: child?.data?.likes,
-			link_flair_richtext: child?.data?.link_flair_richtext,
-			link_flair_text: child?.data?.link_flair_text,
-			link_flair_text_color: child?.data?.link_flair_text_color,
-			link_flair_background_color: child?.data?.link_flair_background_color,
-			locked: child?.data?.locked,
-			media: child?.data?.media,
-			media_embed: child?.data?.media_embed,
-			media_only: child?.data?.media_only,
-			media_metadata: child?.data?.media_metadata,
-			name: child?.data?.name,
-			no_follow: child?.data?.no_follow,
-			num_comments: child?.data?.num_comments,
-			num_crossposts: child?.data?.num_crossposts,
-			over_18: child?.data?.over_18,
-			permalink: child?.data?.permalink,
-			pinned: child?.data?.pinned,
-			post_hint: child?.data?.post_hint,
-			preview: child?.data?.preview,
-			saved: child?.data?.saved,
-			score: child?.data?.score,
-			secure_media: child?.data?.secure_media,
-			secure_media_embed: child?.data?.secure_media_embed,
-			selftext: child?.data?.selftext,
-			selftext_html: child?.data?.selftext_html,
-			spoiler: child?.data?.spoiler,
-			sr_detail: {
-				accept_followers: child?.data?.sr_detail?.accept_followers,
-				banner_img: child?.data?.sr_detail?.banner_img,
-				community_icon: child?.data?.sr_detail?.community_icon,
-				created_utc: child?.data?.sr_detail?.created_utc,
-				display_name: child?.data?.sr_detail?.display_name,
-				header_img: child?.data?.sr_detail?.header_img,
-				icon_img: child?.data?.sr_detail?.icon_img,
-				key_color: child?.data?.sr_detail?.key_color,
-				link_flair_position: child?.data?.sr_detail?.link_flair_position,
-				name: child?.data?.sr_detail?.name,
-				over_18: child?.data?.sr_detail?.over_18,
-				primary_color: child?.data?.sr_detail?.primary_color,
-				public_description: child?.data?.sr_detail?.public_description,
-				quarantine: child?.data?.sr_detail?.quarantine,
-				subreddit_type: child?.data?.sr_detail?.subreddit_type,
-				subscribers: child?.data?.sr_detail?.subscribers,
-				title: child?.data?.sr_detail?.subscribers,
-				url: child?.data?.sr_detail?.url,
-				user_is_banned: child?.data?.sr_detail?.user_is_banned,
-				user_is_subscriber: child?.data?.sr_detail?.user_is_subscriber
-			},
-			stickied: child?.data?.stickied,
-			subreddit: child?.data?.subreddit,
-			subreddit_id: child?.data?.subreddit_id,
-			subreddit_name_prefixed: child?.data?.subreddit_name_prefixed,
-			subreddit_type: child?.data?.subreddit_type,
-			suggested_sort: child?.data?.suggested_sort,
-			thumbnail: child?.data?.thumbnail,
-			thumbnail_height: child?.data?.thumbnail_height,
-			thumbnail_width: child?.data?.thumbnail_width,
-			title: child?.data?.title,
-			total_awards_received: child?.data?.total_awards_received,
-			ups: child?.data?.ups,
-			upvote_ratio: child?.data?.upvote_ratio,
-			url: child?.data?.url,
-			url_overridden_by_dest: child?.data?.url_url_overridden_by_dest
-		}
-	}))
-	//~35k byte reduction
-	//console.log(new Blob([JSON.stringify(children)]).size,new Blob([JSON.stringify(c)]).size); // 38
-	//console.log(JSON.stringify(children).replace(/[\[\]\,\"]/g,'').length, JSON.stringify(c).replace(/[\[\]\,\"]/g,'').length)
+// const _filterPostChildren = children => {
+// 	const c = children.map(child => ({
+// 		kind: child?.kind,
+// 		data: {
+// 			all_awardings: child?.data?.all_awardings,
+// 			archived: child?.data?.archived,
+// 			author: child?.data?.author,
+// 			created_utc: child?.data?.created_utc,
+// 			crosspost_parent_list: child?.data?.crosspost_parent_list,
+// 			distinguished: child?.data?.distinguished,
+// 			domain: child?.data?.domain,
+// 			downs: child?.data?.downs,
+// 			edited: child?.data?.edited,
+// 			gallery_data: child?.data?.gallery_data,
+// 			hidden: child?.data?.hidden,
+// 			hide_score: child?.data?.hide_score,
+// 			id: child?.data?.id,
+// 			is_self: child?.data?.is_self,
+// 			is_video: child?.data?.is_video,
+// 			likes: child?.data?.likes,
+// 			link_flair_richtext: child?.data?.link_flair_richtext,
+// 			link_flair_text: child?.data?.link_flair_text,
+// 			link_flair_text_color: child?.data?.link_flair_text_color,
+// 			link_flair_background_color: child?.data?.link_flair_background_color,
+// 			locked: child?.data?.locked,
+// 			media: child?.data?.media,
+// 			media_embed: child?.data?.media_embed,
+// 			media_only: child?.data?.media_only,
+// 			media_metadata: child?.data?.media_metadata,
+// 			name: child?.data?.name,
+// 			no_follow: child?.data?.no_follow,
+// 			num_comments: child?.data?.num_comments,
+// 			num_crossposts: child?.data?.num_crossposts,
+// 			over_18: child?.data?.over_18,
+// 			permalink: child?.data?.permalink,
+// 			pinned: child?.data?.pinned,
+// 			post_hint: child?.data?.post_hint,
+// 			preview: child?.data?.preview,
+// 			saved: child?.data?.saved,
+// 			score: child?.data?.score,
+// 			secure_media: child?.data?.secure_media,
+// 			secure_media_embed: child?.data?.secure_media_embed,
+// 			selftext: child?.data?.selftext,
+// 			selftext_html: child?.data?.selftext_html,
+// 			spoiler: child?.data?.spoiler,
+// 			sr_detail: {
+// 				accept_followers: child?.data?.sr_detail?.accept_followers,
+// 				banner_img: child?.data?.sr_detail?.banner_img,
+// 				community_icon: child?.data?.sr_detail?.community_icon,
+// 				created_utc: child?.data?.sr_detail?.created_utc,
+// 				display_name: child?.data?.sr_detail?.display_name,
+// 				header_img: child?.data?.sr_detail?.header_img,
+// 				icon_img: child?.data?.sr_detail?.icon_img,
+// 				key_color: child?.data?.sr_detail?.key_color,
+// 				link_flair_position: child?.data?.sr_detail?.link_flair_position,
+// 				name: child?.data?.sr_detail?.name,
+// 				over_18: child?.data?.sr_detail?.over_18,
+// 				primary_color: child?.data?.sr_detail?.primary_color,
+// 				public_description: child?.data?.sr_detail?.public_description,
+// 				quarantine: child?.data?.sr_detail?.quarantine,
+// 				subreddit_type: child?.data?.sr_detail?.subreddit_type,
+// 				subscribers: child?.data?.sr_detail?.subscribers,
+// 				title: child?.data?.sr_detail?.subscribers,
+// 				url: child?.data?.sr_detail?.url,
+// 				user_is_banned: child?.data?.sr_detail?.user_is_banned,
+// 				user_is_subscriber: child?.data?.sr_detail?.user_is_subscriber
+// 			},
+// 			stickied: child?.data?.stickied,
+// 			subreddit: child?.data?.subreddit,
+// 			subreddit_id: child?.data?.subreddit_id,
+// 			subreddit_name_prefixed: child?.data?.subreddit_name_prefixed,
+// 			subreddit_type: child?.data?.subreddit_type,
+// 			suggested_sort: child?.data?.suggested_sort,
+// 			thumbnail: child?.data?.thumbnail,
+// 			thumbnail_height: child?.data?.thumbnail_height,
+// 			thumbnail_width: child?.data?.thumbnail_width,
+// 			title: child?.data?.title,
+// 			total_awards_received: child?.data?.total_awards_received,
+// 			ups: child?.data?.ups,
+// 			upvote_ratio: child?.data?.upvote_ratio,
+// 			url: child?.data?.url,
+// 			url_overridden_by_dest: child?.data?.url_url_overridden_by_dest
+// 		}
+// 	}))
+// 	//~35k byte reduction
+// 	//console.log(new Blob([JSON.stringify(children)]).size,new Blob([JSON.stringify(c)]).size); // 38
+// 	//console.log(JSON.stringify(children).replace(/[\[\]\,\"]/g,'').length, JSON.stringify(c).replace(/[\[\]\,\"]/g,'').length)
 
-	return c
-}
+// 	return c
+// }
 
 //to reduce serverless calls to refresh token
-const checkToken = async (loggedIn: boolean, token, skipCheck = false) => {
-	let accessToken = token?.accessToken
-	let returnToken = token
-	if (
-		loggedIn &&
-		(!token?.expires || Math.floor(Date.now() / 1000) > token?.expires) &&
-		!skipCheck
-	) {
-		returnToken = await getToken()
-		accessToken = await returnToken?.accessToken
-	}
-	return {
-		returnToken,
-		accessToken
-	}
-}
+// const checkToken = async (loggedIn: boolean, token, skipCheck = false) => {
+// 	let accessToken = token?.accessToken
+// 	let returnToken = token
+// 	if (
+// 		loggedIn &&
+// 		(!token?.expires || Math.floor(Date.now() / 1000) > token?.expires) &&
+// 		!skipCheck
+// 	) {
+// 		returnToken = await getToken()
+// 		accessToken = await returnToken?.accessToken
+// 	}
+// 	return {
+// 		returnToken,
+// 		accessToken
+// 	}
+// }
 
 export const loadFront = async (
 	_loggedIn = false,
 	_token?,
-	_sort = 'hot',
-	_range?: string,
-	_after?: string,
-	_count?: number,
+	sort = 'hot',
+	range?: string,
+	after?: string,
+	count?: number,
 	_localSubs?: [string],
 	_skipCheck = false
 ) => {
 	try {
-		const result = await request.get(
-			`${process.env.NEXT_PUBLIC_HOST}/api/farcaster/casts`
-		)
+		const result = await request
+			.get(`${process.env.NEXT_PUBLIC_HOST}/api/farcaster/casts`)
+			.query({
+				after,
+				sort,
+				count,
+				range
+			})
 		const casts: IGetCastsResponse['casts'] = result.body.casts
 
 		const builtData = {
-			// after: casts[0] ? casts[0].timestamp : null,
-			// before: casts[casts.length - 1] ? casts[0].timestamp : null,
+			before: casts[0] ? casts[0].timestamp : null,
+			after: casts[casts.length - 1] ? casts[casts.length - 1].timestamp : null,
 			children: casts.map(c => castToPost(c))
 		}
 		console.log(builtData)
@@ -208,64 +196,6 @@ export const loadFront = async (
 	} catch (e) {
 		console.log(e)
 	}
-	// const { returnToken, accessToken } = await checkToken(loggedIn, token, skipCheck)
-	// if (loggedIn && accessToken && ratelimit_remaining > 1) {
-	// 	try {
-	// 		logApiRequest('home', true)
-	// 		const res1 = await axios.get(`https://oauth.reddit.com/${sort}`, {
-	// 			headers: {
-	// 				authorization: `bearer ${accessToken}`
-	// 			},
-	// 			params: {
-	// 				raw_json: 1,
-	// 				t: range,
-	// 				after: after,
-	// 				count: count,
-	// 				sr_detail: true
-	// 			}
-	// 		})
-	// 		const res = await res1.data
-	// 		ratelimit_remaining = parseInt(res1.headers['x-ratelimit-remaining'])
-
-	// 		return {
-	// 			after: res.data.after,
-	// 			before: res.data.before,
-	// 			children: filterPostChildren(res.data.children),
-	// 			token: returnToken
-	// 		}
-	// 	} catch (_err) {
-	// 		//console.log(err);
-	// 	}
-	// } else {
-	// 	const filteredsubs = localSubs?.filter((s) => s.substring(0, 2) !== 'u_')
-	// 	if (filteredsubs?.length > 0) {
-	// 		return loadSubreddits(loggedIn, token, filteredsubs.join('+'), sort, range, after, count, true)
-	// 	} else {
-	// 		try {
-	// 			logApiRequest('home', false)
-	// 			const res = await (
-	// 				await axios.get(`${REDDIT}/${sort}/.json?`, {
-	// 					params: {
-	// 						raw_json: 1,
-	// 						t: range,
-	// 						after: after,
-	// 						count: count,
-	// 						sr_detail: true
-	// 					}
-	// 				})
-	// 			).data
-
-	// 			return {
-	// 				after: res.data.after,
-	// 				before: res.data.before,
-	// 				children: filterPostChildren(res.data.children),
-	// 				token: returnToken
-	// 			}
-	// 		} catch (_err) {
-	// 			//console.log(err);
-	// 		}
-	// 	}
-	// }
 }
 
 export const loadSubreddits = async (
@@ -278,13 +208,6 @@ export const loadSubreddits = async (
 	_count = 0,
 	sr_detail = false
 ) => {
-	// let accessToken = token?.accessToken
-	// let returnToken = token
-	// if (loggedIn && (!token?.expires || Math.floor(Date.now() / 1000) > token?.expires)) {
-	// 	returnToken = await getToken()
-	// 	accessToken = await returnToken?.accessToken
-	// }
-
 	const _getSRDetail =
 		sr_detail ||
 		subreddits?.split('+')?.length > 1 ||
@@ -309,63 +232,6 @@ export const loadSubreddits = async (
 	} catch (e) {
 		console.log('loadSubreddits error', e)
 	}
-
-	// const result = await request.get('/api/farcaster/subreddit').query({
-	// 	subreddit
-	// })
-
-	// if (loggedIn && accessToken && ratelimit_remaining > 1) {
-	// 	try {
-	// 		//console.log("WITH LOGIN", token);
-	// 		logApiRequest('r/', true)
-	// 		const res1 = await axios.get(`https://oauth.reddit.com/r/${subreddits}/${sort}`, {
-	// 			headers: {
-	// 				authorization: `bearer ${accessToken}`
-	// 			},
-	// 			params: {
-	// 				raw_json: 1,
-	// 				t: range,
-	// 				after: after,
-	// 				count: count,
-	// 				sr_detail: getSRDetail
-	// 			}
-	// 		})
-	// 		const res = await res1.data
-	// 		ratelimit_remaining = parseInt(res1.headers['x-ratelimit-remaining'])
-
-	// 		return {
-	// 			after: res.data.after,
-	// 			before: res.data.before,
-	// 			children: filterPostChildren(res.data.children),
-	// 			token: returnToken
-	// 		}
-	// 	} catch (_err) {
-	// 		//console.log(err);
-	// 	}
-	// } else {
-	// 	try {
-	// 		logApiRequest('r/', false)
-	// 		const res = await (
-	// 			await axios.get(`${REDDIT}/r/${subreddits}/${sort}/.json?`, {
-	// 				params: {
-	// 					raw_json: 1,
-	// 					t: range,
-	// 					after: after,
-	// 					count: count,
-	// 					sr_detail: getSRDetail
-	// 				}
-	// 			})
-	// 		).data
-	// 		return {
-	// 			after: res.data.after,
-	// 			before: res.data.before,
-	// 			children: filterPostChildren(res.data.children),
-	// 			token: returnToken
-	// 		}
-	// 	} catch (_err) {
-	// 		return null
-	// 	}
-	// }
 }
 
 export const getRedditSearch = async (
@@ -1200,18 +1066,23 @@ export const loadComments = async (permalink, _sort = 'top') => {
 		// //console.log(res?.[1]);
 		// return res?.[1]?.data?.children ?? null
 		const slug = permalink.match(/\/([^/]+)$/)
+		console.log({ slug })
 		const result = await request
 			.get(`${process.env.NEXT_PUBLIC_HOST}/api/farcaster/casts`)
 			.query({
-				parentHash: slug[1]
+				parentHash: slug[2]
 			})
 		const casts: IGetCastsResponse['casts'] = result.body.casts
 
-		const _builtData = {
+		const builtData = {
 			// after: casts[0] ? casts[0].timestamp : null,
 			// before: casts[casts.length - 1] ? casts[0].timestamp : null,
 			children: casts.map(c => castToPost(c))
 		}
+
+		console.log({ comments: builtData })
+
+		return builtData
 	} catch (_err) {
 		//console.log(err);
 	}
