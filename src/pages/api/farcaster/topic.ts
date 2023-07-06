@@ -1,10 +1,10 @@
-import db, { Database } from '../../../server/db'
-import { IUserData } from './casts'
 import { UserDataType } from '@farcaster/hub-nodejs'
 import log from '@kengoldfarb/log'
 import { sql } from 'kysely'
 import uniq from 'lodash/uniq'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import db, { Database } from '../../../server/db'
+import { IUserData } from './casts'
 
 export interface IGetSubredditResponse {
 	casts: (Database['casts'] & {
@@ -32,7 +32,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 				.orderBy('casts.timestamp', 'asc')
 				.selectAll(['casts'])
 				.select([sql<string>`ENCODE(hash::bytea, 'hex')`.as('hash')])
-				.select([sql<string>`ENCODE(parent_hash::bytea, 'hex')`.as('parentHash')])
+				.select([
+					sql<string>`ENCODE(parent_hash::bytea, 'hex')`.as('parentHash')
+				])
 				.executeTakeFirst()
 		])
 

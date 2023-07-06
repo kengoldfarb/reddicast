@@ -1,6 +1,6 @@
 import { findMediaInfo } from '../../../lib/utils'
-import { loadSubredditInfo, loadSubreddits } from '../../FarcasterAPI'
-import { getWikiContent, loadPost } from '../../RedditAPI'
+import { loadSubredditInfo, loadSubreddits, getWikiContent, loadPost } from '../../FarcasterAPI'
+// import { getWikiContent, loadPost } from '../../RedditAPI'
 import Feed from '../../components/Feed'
 import LoginModal from '../../components/LoginModal'
 import NavBar from '../../components/NavBar'

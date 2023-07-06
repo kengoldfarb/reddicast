@@ -1,12 +1,12 @@
-import { localRead, useMainContext } from '../MainContext'
 import { useEffect, useState } from 'react'
+import { localRead, useMainContext } from '../MainContext'
 
 interface Read {
 	numComments: number | undefined
 	time: number | undefined
 }
 
-export const useRead = (postID) => {
+export const useRead = postID => {
 	const context: any = useMainContext()
 	const [read, setRead] = useState<Read | false>()
 

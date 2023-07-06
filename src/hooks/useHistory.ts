@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-
 import { localRead, localSeen, useMainContext } from '../MainContext'
 
 const useHistory = () => {
@@ -16,10 +15,10 @@ const useHistory = () => {
 		}
 	}
 	const getReadCount = async () => {
-		return await localRead.length()
+		return localRead.length()
 	}
 	const getSeenCount = async () => {
-		return await localSeen.length()
+		return localSeen.length()
 	}
 	return {
 		clearRead,

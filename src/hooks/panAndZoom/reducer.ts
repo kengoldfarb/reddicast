@@ -28,7 +28,11 @@ const reducer = (state, action) => {
 		case types.ZOOM: {
 			const scaledTranslate = getScaledTranslate(state, action.zoomFactor)
 			const mousePositionOnScreen = { x: action.clientX, y: action.clientY }
-			const zoomOffset = getZoomOffset(action.containerRect, mousePositionOnScreen, action.zoomFactor)
+			const zoomOffset = getZoomOffset(
+				action.containerRect,
+				mousePositionOnScreen,
+				action.zoomFactor
+			)
 			if (state.scale * action.zoomFactor > 1) {
 				return {
 					...state,

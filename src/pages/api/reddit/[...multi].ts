@@ -11,14 +11,14 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
 	const uri = request.url?.split('/api/reddit')?.[1] //request.nextUrl?.pathname?.split("/api/reddit")?.[1];
 	//const search = request.nextUrl.searchParams.toString();
 	const method = request.method
-	const auth = request.headers?.['authorization'] //request.headers?.get("authorization");
+	const auth = request.headers?.authorization //request.headers?.get("authorization");
 	//console.log("R1?", { uri, method, auth });
 	if (!uri || !method || !auth) {
 		response.status(400).json({ Error: 'Missing data' })
 	} else {
 		try {
 			const r = await fetch(`${BASE_ROUTE}${uri}`, {
-				method: method,
+				method,
 				headers: {
 					Authorization: `${auth}`
 				}

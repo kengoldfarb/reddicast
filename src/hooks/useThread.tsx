@@ -1,6 +1,6 @@
 import { fixCommentFormat } from '../../lib/utils'
+import { loadMoreComments, loadPost } from '../FarcasterAPI'
 import { useMainContext } from '../MainContext'
-import { loadMoreComments, loadPost } from '../RedditAPI'
 import { QueryFunctionContext, useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import React from 'react'
@@ -135,7 +135,7 @@ const useThread = (permalink, sort, _initialData?, withContext = false) => {
 			context?.token,
 			withContext
 		)
-		token && context.setToken(token)
+		console.log({ post, post_comments, token })
 		if (!post) {
 			throw new Error('Error fetching post')
 		}

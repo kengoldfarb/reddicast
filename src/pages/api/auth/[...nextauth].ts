@@ -28,7 +28,11 @@ function b2a(a) {
 			(i = 63 & j),
 			(n[l++] = b.charAt(f) + b.charAt(g) + b.charAt(h) + b.charAt(i))
 	while (k < a.length)
-	return m === n.join(''), o === a.length % 3, (o ? m.slice(0, o - 3) : m) + '==='.slice(o || 3)
+	return (
+		m === n.join(''),
+		o === a.length % 3,
+		(o ? m.slice(0, o - 3) : m) + '==='.slice(o || 3)
+	)
 }
 
 async function refreshAccessToken(token) {
@@ -47,10 +51,12 @@ async function refreshAccessToken(token) {
 		const authvalue = `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`
 		//console.log(authvalue, refreshtoken);
 		try {
-			const url = `https://www.reddit.com/api/v1/access_token?${new URLSearchParams({
-				grant_type: 'refresh_token',
-				refresh_token: refreshtoken
-			})}`
+			const url = `https://www.reddit.com/api/v1/access_token?${new URLSearchParams(
+				{
+					grant_type: 'refresh_token',
+					refresh_token: refreshtoken
+				}
+			)}`
 
 			const response = await fetch(url, {
 				headers: {
@@ -69,7 +75,8 @@ async function refreshAccessToken(token) {
 				...token,
 				reddit: {
 					accessToken: refreshedTokens.access_token ?? token.reddit.accessToken, //fallback to old access token
-					refreshToken: refreshedTokens.refresh_token ?? token.reddit.refreshToken //fall back to old refresh token
+					refreshToken:
+						refreshedTokens.refresh_token ?? token.reddit.refreshToken //fall back to old refresh token
 				},
 				//iat: Math.floor(Date.now() / 1000),
 				expires: Math.floor(Date.now() / 1000) + refreshedTokens.expires_in
@@ -84,7 +91,8 @@ async function refreshAccessToken(token) {
 	return token
 }
 
-const redditScope = 'identity mysubreddits read edit vote submit report save subscribe history' //Check Reddit API Documentation for more. The identity scope is required.
+const redditScope =
+	'identity mysubreddits read edit vote submit report save subscribe history' //Check Reddit API Documentation for more. The identity scope is required.
 
 export const authOptions: NextAuthOptions = {
 	// Configure one or more authentication providers
@@ -100,7 +108,7 @@ export const authOptions: NextAuthOptions = {
 			accessTokenUrl: ' https://www.reddit.com/api/v1/access_token',
 			authorization: `https://www.reddit.com/api/v1/authorize?response_type=code&duration=permanent&scope=${redditScope}`,
 			userinfo: 'https://oauth.reddit.com/api/v1/me',
-			profile: (profile) => {
+			profile: profile => {
 				return {
 					id: profile.id,
 					name: profile.name,
@@ -138,7 +146,10 @@ export const authOptions: NextAuthOptions = {
 				;(token[account.provider] as any).expires = account.expires_at
 			}
 
-			if (!token.expires || Math.floor(Date.now() / 1000) > (token.expires as number)) {
+			if (
+				!token.expires ||
+				Math.floor(Date.now() / 1000) > (token.expires as number)
+			) {
 				token = await refreshAccessToken(token)
 				//console.log(token);
 			}

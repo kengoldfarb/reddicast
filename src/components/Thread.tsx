@@ -83,6 +83,8 @@ const Thread = ({
 	const { read } = useRead(post?.name)
 	const { sub } = useSubreddit(post?.subreddit)
 
+	console.log({ initialData })
+
 	const [postComments, setPostComments] = useState<any[]>([])
 	const [commentsReady, setCommentsReady] = useState(false)
 	const [origCommentCount, setOrigCommentCount] = useState<number>()
@@ -101,18 +103,18 @@ const Thread = ({
 	const [pWidth, setpWidth] = useState()
 
 	useEffect(() => {
-		if (thread?.data?.pages?.[0]?.post?.name) {
+		if (thread?.data?.pages?.[0]?.post) {
+			console.log('setting data...', { data: thread.data, post: thread?.data?.pages?.[0]?.post })
+			const p = thread?.data?.pages?.[0]?.post
 			//only set post if it's not already set from initialData or if it's overwriting another type of post eg. ("t1_" from direct opening a comment)
-			if (!initPost?.name?.includes('t3_')) {
-				setInitPost(thread?.data?.pages?.[0].post)
-			}
-			if (!origCommentCount) {
-				setOrigCommentCount(thread?.data?.pages?.[0].post?.num_comments ?? undefined)
-			}
+			setInitPost(p.data)
+			// if (!origCommentCount) {
+			// 	setOrigCommentCount(p?.num_comments ?? undefined)
+			// }
 
 			setNewReadTime(new Date().getTime())
-			setPost(thread?.data?.pages?.[0].post)
-			if (!initialData?.name) setCurPost(thread?.data?.pages?.[0].post)
+			setPost(p.data)
+			if (!initialData?.name) setCurPost(p.data)
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -282,6 +284,8 @@ const Thread = ({
 		),
 		[]
 	)
+
+	console.log({ data: thread.data, post })
 
 	if (thread.isError) {
 		toast.custom(

@@ -1,5 +1,5 @@
-import useMutate from './useMutate'
 import React, { useEffect, useMemo, useState } from 'react'
+import useMutate from './useMutate'
 interface VoteArgs {
 	name: string
 	likes: number | boolean
@@ -43,7 +43,7 @@ const useVote = ({ name, likes, score, postTime, scoreHideMins }: VoteArgs) => {
 		//update like changes or revert if theres an error liking
 	}, [likes, voteMutation.isError])
 
-	const castVote = async (v) => {
+	const castVote = async v => {
 		let postv
 		if (v === liked) {
 			postv = 0
@@ -67,8 +67,8 @@ const useVote = ({ name, likes, score, postTime, scoreHideMins }: VoteArgs) => {
 					: -1
 				: 0
 		setLiked(postv === 1 ? 1 : postv === -1 ? -1 : undefined)
-		setVoteScore((v) => v + increment)
-		voteMutation.mutate({ vote: postv, id: name, increment: increment })
+		setVoteScore(v => v + increment)
+		voteMutation.mutate({ vote: postv, id: name, increment })
 	}
 
 	return {

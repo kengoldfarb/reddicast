@@ -3,7 +3,8 @@ import { useQueryClient } from '@tanstack/react-query'
 const useGlobalState = (globalKey: string[], cacheTime = Infinity) => {
 	const queryClient = useQueryClient()
 
-	const getGlobalData = () => queryClient.getQueryData(globalKey) as Map<any, any>
+	const getGlobalData = () =>
+		queryClient.getQueryData(globalKey) as Map<any, any>
 	const setGlobalData = (key, value) => {
 		createGlobalState()
 		queryClient.setQueryData(globalKey, (prev: undefined | Map<any, any>) => {
@@ -20,14 +21,14 @@ const useGlobalState = (globalKey: string[], cacheTime = Infinity) => {
 		if (prev === undefined) {
 			queryClient.fetchQuery(globalKey, () => new Map(), {
 				staleTime: 0,
-				cacheTime: cacheTime
+				cacheTime
 			})
 		}
 	}
 	const clearGlobalState = () => {
 		queryClient.fetchQuery(globalKey, () => new Map(), {
 			staleTime: 0,
-			cacheTime: cacheTime
+			cacheTime
 		})
 	}
 	const getGlobalKey = () => {

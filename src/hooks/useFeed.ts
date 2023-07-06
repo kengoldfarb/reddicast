@@ -1,3 +1,7 @@
+import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query'
+import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
+import React, { useEffect, useState } from 'react'
 import { filterPosts } from '../../lib/utils'
 import { loadFront } from '../FarcasterAPI'
 import { useMainContext } from '../MainContext'
@@ -10,10 +14,6 @@ import {
 	loadUserSelf
 } from '../RedditAPI'
 import useLocation from './useLocation'
-import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
 
 interface Params {
 	initialPosts?: any
@@ -24,7 +24,17 @@ const useFeed = (params?: Params) => {
 	const _sessloading = status === 'loading'
 	const context: any = useMainContext()
 
-	const { key, ready, mode, sort, range, subreddits, userMode, searchQuery, domain } = useLocation(params)
+	const {
+		key,
+		ready,
+		mode,
+		sort,
+		range,
+		subreddits,
+		userMode,
+		searchQuery,
+		domain
+	} = useLocation(params)
 
 	interface FeedParams {
 		loggedIn: boolean
@@ -46,12 +56,12 @@ const useFeed = (params?: Params) => {
 			loggedIn: status === 'authenticated' ? true : false,
 			after: fetchParams.pageParam?.after ?? '',
 			count: fetchParams.pageParam?.count ?? 0,
-			mode: mode,
-			sort: sort,
-			range: range,
-			subreddits: subreddits,
-			userMode: userMode,
-			searchQuery: searchQuery,
+			mode,
+			sort,
+			range,
+			subreddits,
+			userMode,
+			searchQuery,
 			safeSearch: context?.safeSearch ? undefined : true,
 			prevPosts: fetchParams.pageParam?.prevPosts ?? {},
 			filters: fetchParams?.queryKey?.[fetchParams?.queryKey?.length - 1]
@@ -61,9 +71,12 @@ const useFeed = (params?: Params) => {
 
 		let data
 		//short circuiting with initialData here instead of using param in infinite query hook..
-		if (params?.initialPosts?.children?.length > 0 && fetchParams?.pageParam === undefined) {
+		if (
+			params?.initialPosts?.children?.length > 0 &&
+			fetchParams?.pageParam === undefined
+		) {
 			data = params?.initialPosts
-			data['after'] = ''
+			data.after = ''
 		} else if (feedParams.mode === 'HOME') {
 			data = await loadFront(
 				feedParams.loggedIn,
@@ -139,7 +152,12 @@ const useFeed = (params?: Params) => {
 			)
 		}
 
-		const manageData = async (data: any, filters, prevPosts, filterSubs: boolean) => {
+		const manageData = async (
+			data: any,
+			filters,
+			prevPosts,
+			filterSubs: boolean
+		) => {
 			data?.token && context.setToken(data?.token)
 
 			const { filtered, filtercount } = await filterPosts(
@@ -159,17 +177,31 @@ const useFeed = (params?: Params) => {
 
 		const filterSubs =
 			mode === 'HOME' ||
-			feedParams.subreddits?.split(' ')?.join('+')?.split(',')?.join('+')?.split('%20')?.join('+')?.split('+')?.length >
-				1 ||
+			feedParams.subreddits
+				?.split(' ')
+				?.join('+')
+				?.split(',')
+				?.join('+')
+				?.split('%20')
+				?.join('+')
+				?.split('+')?.length > 1 ||
 			feedParams.subreddits?.toUpperCase() === 'ALL' ||
 			feedParams.subreddits?.toUpperCase() === 'POPULAR'
 
-		const { filtered, filtercount } = await manageData(data, feedParams.filters, feedParams.prevPosts, filterSubs)
+		const { filtered, filtercount } = await manageData(
+			data,
+			feedParams.filters,
+			feedParams.prevPosts,
+			filterSubs
+		)
 
 		const returnData = {
 			filtered,
 			after: data.after,
-			count: fetchParams?.pageParam === undefined ? 0 : feedParams.count + data?.children?.length,
+			count:
+				fetchParams?.pageParam === undefined
+					? 0
+					: feedParams.count + data?.children?.length,
 			prevPosts: {
 				...feedParams.prevPosts,
 				...filtered.reduce((obj, post, _index) => {
@@ -196,7 +228,7 @@ const useFeed = (params?: Params) => {
 				? context?.fastRefreshInterval ?? 10 * 1000
 				: context?.slowRefreshInterval ?? 30 * 60 * 1000
 			: Infinity,
-		getNextPageParam: (lastPage) => {
+		getNextPageParam: lastPage => {
 			//console.log('lastPage?ß', lastPage)
 			if (lastPage.after || lastPage.after === '') {
 				return {

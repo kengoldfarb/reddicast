@@ -1,11 +1,11 @@
-export enum ROUTES_TYPES {
-  R = "r/",
-  U = "u/",
-  HOME = "home",
-  MEDIA = "media",
-  CUD = "cud",
-  THREAD = "thread",
-  SEARCH = "search"
+export enum RoutesTypes {
+	R = 'r/',
+	U = 'u/',
+	Home = 'home',
+	Media = 'media',
+	Cud = 'cud',
+	Thread = 'thread',
+	Search = 'search'
 }
 
-export type Route_Types = `${ROUTES_TYPES}`;
+export type Route_Types = `${ROUTES_TYPES}`

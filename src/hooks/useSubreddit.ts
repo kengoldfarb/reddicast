@@ -1,6 +1,6 @@
-import { loadSubredditInfo } from '../FarcasterAPI'
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
+import { loadSubredditInfo } from '../FarcasterAPI'
 
 const useSubreddit = (subreddit, isUser = false) => {
 	const subInfo = async () => {

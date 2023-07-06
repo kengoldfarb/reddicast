@@ -7,12 +7,12 @@ export const types = {
 	ZOOM: 'ZOOM',
 	RESET: 'RESET'
 }
-export const startPan = (event) => ({
+export const startPan = event => ({
 	type: types.PAN_START,
 	clientX: event.clientX,
 	clientY: event.clientY
 })
-export const pan = (event) => ({
+export const pan = event => ({
 	type: types.PAN,
 	clientX: event.clientX,
 	clientY: event.clientY
@@ -22,5 +22,5 @@ export const zoom = (event, containerRect) => ({
 	zoomFactor: event.deltaY < 0 ? ZOOM_FACTOR_IN : ZOOM_FACTOR_OUT,
 	clientX: event.clientX,
 	clientY: event.clientY,
-	containerRect: containerRect
+	containerRect
 })

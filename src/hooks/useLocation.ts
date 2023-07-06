@@ -1,7 +1,7 @@
-import { useMainContext } from '../MainContext'
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
+import { useMainContext } from '../MainContext'
 
 const useLocation = (_params?) => {
 	const [ready, setReady] = useState(false)
@@ -74,11 +74,25 @@ const useLocation = (_params?) => {
 	const [sort, setSort] = useState<string>('')
 	const [range, setRange] = useState<string>('')
 	const [subreddits, setSubreddits] = useState('')
-	const [mode, setMode] = useState<'HOME' | 'SUBREDDIT' | 'USER' | 'SELF' | 'SEARCH' | 'FLAIR' | 'MULTI' | 'NONE'>(
-		'NONE'
-	)
+	const [mode, setMode] = useState<
+		| 'HOME'
+		| 'SUBREDDIT'
+		| 'USER'
+		| 'SELF'
+		| 'SEARCH'
+		| 'FLAIR'
+		| 'MULTI'
+		| 'NONE'
+	>('NONE')
 	const [userMode, setUserMode] = useState<
-		string | 'overview' | 'posts' | 'comments' | 'upvoted' | 'downvoted' | 'hidden' | 'saved'
+		| string
+		| 'overview'
+		| 'posts'
+		| 'comments'
+		| 'upvoted'
+		| 'downvoted'
+		| 'hidden'
+		| 'saved'
 	>('')
 	const [searchQuery, setSearchQuery] = useState('')
 
@@ -108,7 +122,9 @@ const useLocation = (_params?) => {
 					setMode('MULTI')
 					setUserMode(query.slug[2])
 					setSort(query?.slug?.[3] ?? 'hot')
-				} else if (query?.slug?.[0]?.toUpperCase() === session?.user?.name?.toUpperCase()) {
+				} else if (
+					query?.slug?.[0]?.toUpperCase() === session?.user?.name?.toUpperCase()
+				) {
 					setMode('SELF')
 					setUserMode(query?.slug?.[1] ?? 'overview')
 					setSort((query?.sort as string) ?? 'hot')
@@ -188,7 +204,8 @@ const useLocation = (_params?) => {
 				context.filtersApplied
 			].join(',')
 
-			const sessStatus = status === 'authenticated' ? session.user?.name : status
+			const sessStatus =
+				status === 'authenticated' ? session.user?.name : status
 
 			if (mode === 'MULTI') {
 				setKey([
@@ -203,7 +220,17 @@ const useLocation = (_params?) => {
 					filters
 				])
 			} else if (mode === 'USER') {
-				setKey(['feed', mode, subreddits, userMode, sort, range, sessStatus, filtersString, filters])
+				setKey([
+					'feed',
+					mode,
+					subreddits,
+					userMode,
+					sort,
+					range,
+					sessStatus,
+					filtersString,
+					filters
+				])
 			} else if (mode === 'SELF') {
 				setKey([
 					'feed',
@@ -217,13 +244,51 @@ const useLocation = (_params?) => {
 					filters
 				])
 			} else if (mode === 'SEARCH') {
-				setKey(['feed', mode, searchQuery, context?.safeSearch, sort, range, sessStatus, filtersString, filters])
+				setKey([
+					'feed',
+					mode,
+					searchQuery,
+					context?.safeSearch,
+					sort,
+					range,
+					sessStatus,
+					filtersString,
+					filters
+				])
 			} else if (mode === 'FLAIR') {
-				setKey(['feed', mode, subreddits, searchQuery, sort, range, sessStatus, filtersString, filters])
+				setKey([
+					'feed',
+					mode,
+					subreddits,
+					searchQuery,
+					sort,
+					range,
+					sessStatus,
+					filtersString,
+					filters
+				])
 			} else if (mode === 'HOME') {
-				setKey(['feed', mode, '', sort, range, sessStatus, filtersString, filters])
+				setKey([
+					'feed',
+					mode,
+					'',
+					sort,
+					range,
+					sessStatus,
+					filtersString,
+					filters
+				])
 			} else {
-				setKey(['feed', mode, subreddits, sort, range, sessStatus, filtersString, filters])
+				setKey([
+					'feed',
+					mode,
+					subreddits,
+					sort,
+					range,
+					sessStatus,
+					filtersString,
+					filters
+				])
 			}
 			setReady(true)
 		}

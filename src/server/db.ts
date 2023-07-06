@@ -1,11 +1,24 @@
-import { HashScheme, MessageType, ReactionType, SignatureScheme, UserDataType } from '@farcaster/hub-nodejs'
 import { promises as fs } from 'fs'
-import { CamelCasePlugin, FileMigrationProvider, Generated, GeneratedAlways, Kysely, Migrator } from 'kysely'
+import * as path from 'path'
+import { fileURLToPath } from 'url'
+import {
+	HashScheme,
+	MessageType,
+	ReactionType,
+	SignatureScheme,
+	UserDataType
+} from '@farcaster/hub-nodejs'
+import {
+	CamelCasePlugin,
+	FileMigrationProvider,
+	Generated,
+	GeneratedAlways,
+	Kysely,
+	Migrator
+} from 'kysely'
 import { PostgresJSDialect } from 'kysely-postgres-js'
 import { Result, err, ok } from 'neverthrow'
-import * as path from 'path'
 import postgres from 'postgres'
-import { fileURLToPath } from 'url'
 
 export interface Database {
 	hubSubscriptions: {

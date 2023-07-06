@@ -1,7 +1,7 @@
-import { useMainContext } from '../MainContext'
 import { useEffect, useState } from 'react'
+import { useMainContext } from '../MainContext'
 
-export const useKeyPress = (targetKey) => {
+export const useKeyPress = targetKey => {
 	const context: any = useMainContext()
 	// State for keeping track of whether key is pressed
 	const [keyPressed, setKeyPressed] = useState<boolean>(false)

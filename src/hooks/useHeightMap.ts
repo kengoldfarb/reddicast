@@ -11,9 +11,24 @@ interface UseHeightMap {
 }
 
 const useHeightMap = (args: UseHeightMap) => {
-	const { columnWidth, cardStyle, mediaOnly, compactLinkPics, uniformMediaMode, windowHeight } = args
+	const {
+		columnWidth,
+		cardStyle,
+		mediaOnly,
+		compactLinkPics,
+		uniformMediaMode,
+		windowHeight
+	} = args
 	const card = cardStyle === 'default' ? 'card1' : cardStyle
-	const queryKeyHeights = ['heightMap', columnWidth, card, mediaOnly, compactLinkPics, uniformMediaMode, windowHeight]
+	const queryKeyHeights = [
+		'heightMap',
+		columnWidth,
+		card,
+		mediaOnly,
+		compactLinkPics,
+		uniformMediaMode,
+		windowHeight
+	]
 
 	const queryClient = useQueryClient()
 
@@ -76,19 +91,22 @@ const useHeightMap = (args: UseHeightMap) => {
 		if (!p) {
 			createMaps()
 		}
-		queryClient.setQueryData(queryKeyHeights, (pData: Map<string, number> | undefined) => {
-			if (!pData) {
-				const heightMap = new Map() //restoreSavedHeightMap();
-				heightMap.set(key, value)
-				return heightMap //{ heightMap: heightMap };
-			} else {
-				pData?.set(key, value)
-				// if (pData.size % 25 === 0) {
-				//   saveMapToLocalStorage(pData);
-				// }
-				return pData
+		queryClient.setQueryData(
+			queryKeyHeights,
+			(pData: Map<string, number> | undefined) => {
+				if (!pData) {
+					const heightMap = new Map() //restoreSavedHeightMap();
+					heightMap.set(key, value)
+					return heightMap //{ heightMap: heightMap };
+				} else {
+					pData?.set(key, value)
+					// if (pData.size % 25 === 0) {
+					//   saveMapToLocalStorage(pData);
+					// }
+					return pData
+				}
 			}
-		})
+		)
 	}
 
 	return {

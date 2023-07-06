@@ -1,11 +1,11 @@
 /**
- * useScroll React custom hook
+ * UseScroll React custom hook
  * Usage:
  *    const { scrollX, scrollY, scrollDirection } = useScroll();
  */
 
-import { debounce } from '../../lib/utils'
 import { useEffect, useState } from 'react'
+import { debounce } from '../../lib/utils'
 
 export function useScroll() {
 	// storing this to get the scroll direction
@@ -17,16 +17,19 @@ export function useScroll() {
 	// the horizontal direction
 	const [scrollX, setScrollX] = useState<number>()
 	// scroll direction would be either up or down
-	const [scrollDirection, setScrollDirection] = useState<'down' | 'up' | undefined>()
+	const [scrollDirection, setScrollDirection] = useState<
+		'down' | 'up' | undefined
+	>()
 
 	const listener = debounce(
-		(_e) => {
+		_e => {
 			const bodyOffset = document.body.getBoundingClientRect()
 			//setBodyOffset(document.body.getBoundingClientRect());
 			setScrollY(-(bodyOffset?.top ?? 0))
 			setScrollX(bodyOffset?.left)
 			setScrollDirection(
-				bodyOffset?.top === undefined || lastScrollTop === -(bodyOffset?.top ?? 0)
+				bodyOffset?.top === undefined ||
+					lastScrollTop === -(bodyOffset?.top ?? 0)
 					? undefined
 					: lastScrollTop > -(bodyOffset?.top ?? 0)
 					? 'down'

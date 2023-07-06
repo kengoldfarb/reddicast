@@ -1,7 +1,9 @@
-import { ROUTES_TYPES } from '../../../../types/logs'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-const LOG_REQUESTS = JSON.parse(process?.env?.NEXT_PUBLIC_ENABLE_API_LOG ?? 'false')
+import { ROUTES_TYPES } from '../../../../types/logs'
+const LOG_REQUESTS = JSON.parse(
+	process?.env?.NEXT_PUBLIC_ENABLE_API_LOG ?? 'false'
+)
 const SUPABASE_URL = process.env.SUPABASE_URL
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 export const config = {
@@ -12,7 +14,10 @@ const handler = async (request: NextRequest) => {
 	const body = await request.json()
 	//console.log("B?", body);
 	const route_type = body?.route_type
-	if (!Object.values(ROUTES_TYPES).includes(route_type) || !(typeof body?.is_oauth === 'boolean')) {
+	if (
+		!Object.values(ROUTES_TYPES).includes(route_type) ||
+		!(typeof body?.is_oauth === 'boolean')
+	) {
 		return new NextResponse(undefined, {
 			status: 400,
 			statusText: 'invalid body'
@@ -26,7 +31,7 @@ const handler = async (request: NextRequest) => {
 		const { data, error } = await supabase.rpc('increment_log', {
 			c_date: new Date(),
 			is_oauth: body?.is_oauth ?? false,
-			route_type: route_type
+			route_type
 		})
 
 		if (error) {
