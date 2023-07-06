@@ -644,6 +644,9 @@ export const filterPosts = async (
 		imgLandscapeFilter,
 		userPostType
 	} = filters
+
+	console.log('filterPosts', { posts, filters })
+
 	let filtercount = 0
 
 	async function filter(arr, callback) {

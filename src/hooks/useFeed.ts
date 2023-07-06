@@ -3,16 +3,16 @@ import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
 import { filterPosts } from '../../lib/utils'
-import { loadFront } from '../FarcasterAPI'
-import { useMainContext } from '../MainContext'
 import {
+	loadFront,
 	getRedditSearch,
 	getUserMultiPosts,
 	// loadFront,
 	loadSubreddits,
 	loadUserPosts,
 	loadUserSelf
-} from '../RedditAPI'
+} from '../FarcasterAPI'
+import { useMainContext } from '../MainContext'
 import useLocation from './useLocation'
 
 interface Params {
@@ -67,7 +67,7 @@ const useFeed = (params?: Params) => {
 			filters: fetchParams?.queryKey?.[fetchParams?.queryKey?.length - 1]
 		}
 		//console.log("fetchParams?", fetchParams);
-		//console.log("feedParms", feedParams);
+		console.log('feedParms', feedParams)
 
 		let data
 		//short circuiting with initialData here instead of using param in infinite query hook..
