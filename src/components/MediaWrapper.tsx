@@ -1,11 +1,11 @@
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+import { VscEye, VscEyeClosed } from 'react-icons/vsc'
 import { secondsToTime } from '../../lib/utils'
 import Awardings from './Awardings'
 import Media from './Media'
 import PostTitle from './PostTitle'
 import TitleFlair from './TitleFlair'
-import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
-import { VscEye, VscEyeClosed } from 'react-icons/vsc'
 const MediaWrapper = ({
 	hideNSFW,
 	post,
@@ -34,6 +34,13 @@ const MediaWrapper = ({
 	const [hideText, setHideText] = useState('')
 	const [postData, setPostData] = useState<any>()
 	const [isXPost, setIsXPost] = useState(false)
+
+	console.log({
+		hideText,
+		postData,
+		isXPost
+	})
+
 	useEffect(() => {
 		post?.over_18 && post?.spoiler
 			? setHideText('NSFW SPOILER')
@@ -58,7 +65,7 @@ const MediaWrapper = ({
 		}
 	}, [post])
 
-	const toggleHide = (e) => {
+	const toggleHide = e => {
 		if (hideText) {
 			e.preventDefault()
 			e.stopPropagation()
@@ -67,7 +74,10 @@ const MediaWrapper = ({
 	}
 
 	const NSFWWrapper = (
-		<div className={hideNSFW && hideText ? 'relative overflow-hidden ' : ' '} onClick={toggleHide}>
+		<div
+			className={hideNSFW && hideText ? 'relative overflow-hidden ' : ' '}
+			onClick={toggleHide}
+		>
 			<div
 				className={` ${hideNSFW && hideText ? ' blur-3xl' : ''}`}
 				style={
@@ -102,12 +112,14 @@ const MediaWrapper = ({
 				/>
 			</div>
 			{hideNSFW && hideText && (
-				<div className='absolute flex flex-col items-center justify-center w-full opacity-50 translate-x-[-1px] group -translate-y-11 top-1/2 text-white hover:cursor-pointer'>
-					<div className='flex flex-col items-center justify-center p-4 bg-opacity-50 rounded-lg bg-black/30 backdrop-blur-xl'>
-						<VscEyeClosed className='w-10 h-10 group-hover:hidden ' />
-						<VscEye className='hidden w-10 h-10 group-hover:block' />
-						<span className='hidden text-sm group-hover:block'>Click to Unhide</span>
-						<span className='group-hover:hidden'>{hideText}</span>
+				<div className="absolute flex flex-col items-center justify-center w-full opacity-50 translate-x-[-1px] group -translate-y-11 top-1/2 text-white hover:cursor-pointer">
+					<div className="flex flex-col items-center justify-center p-4 bg-opacity-50 rounded-lg bg-black/30 backdrop-blur-xl">
+						<VscEyeClosed className="w-10 h-10 group-hover:hidden " />
+						<VscEye className="hidden w-10 h-10 group-hover:block" />
+						<span className="hidden text-sm group-hover:block">
+							Click to Unhide
+						</span>
+						<span className="group-hover:hidden">{hideText}</span>
 					</div>
 				</div>
 			)}
@@ -115,67 +127,85 @@ const MediaWrapper = ({
 	)
 
 	const XPostData = (
-		<div className='p-2'>
-			<div className='py-0'>
-				<h2 className={' items-center   leading-none cursor-pointer pb-2 flex flex-row flex-wrap gap-2'}>
+		<div className="p-2">
+			<div className="py-0">
+				<h2
+					className={
+						' items-center   leading-none cursor-pointer pb-2 flex flex-row flex-wrap gap-2'
+					}
+				>
 					<a
 						aria-label={postData?.title}
 						href={postData?.permalink}
 						//onClick={(e) => e.preventDefault()}
-						className=''
+						className=""
 					>
 						<PostTitle post={postData} />
 					</a>
-					<span className='text-xs '>
+					<span className="text-xs ">
 						<TitleFlair post={postData} />
 					</span>
 				</h2>
 
 				{/* <div className="pb-1 text-xs">
-              
+
             </div> */}
 			</div>
-			<div className='flex flex-row items-start py-0 text-xs truncate select-auto text-th-textLight'>
-				<div className='flex flex-row flex-wrap items-start text-xs truncate select-auto text-th-textLight'>
+			<div className="flex flex-row items-start py-0 text-xs truncate select-auto text-th-textLight">
+				<div className="flex flex-row flex-wrap items-start text-xs truncate select-auto text-th-textLight">
 					<Link
 						href={`/r/${postData?.subreddit}`}
 						title={`go to r/${postData?.subreddit}`}
-						className='mr-1'
-						onClick={(e) => {
+						className="mr-1"
+						onClick={e => {
 							e.stopPropagation()
 						}}
 					>
-						<h2 className='font-semibold hover:underline text-th-text '>r/{postData?.subreddit ?? ''}</h2>
+						<h2 className="font-semibold hover:underline text-th-text ">
+							r/{postData?.subreddit ?? ''}
+						</h2>
 					</Link>
 					<p>•</p>
 					<Link
 						href={`/u/${postData?.author}`}
 						title={`see u/${postData?.author}'s posts`}
-						onClick={(e) => {
+						onClick={e => {
 							e.stopPropagation()
 						}}
 					>
-						<h2 className='ml-1 mr-1 hover:underline'>u/{postData?.author ?? ''}</h2>
+						<h2 className="ml-1 mr-1 hover:underline">
+							u/{postData?.author ?? ''}
+						</h2>
 					</Link>
 					<p>•</p>
-					<p className='ml-1 '>
-						{secondsToTime(postData?.created_utc, ['s ago', 'm ago', 'h ago', 'd ago', 'mo ago', 'yr ago'])}
+					<p className="ml-1 ">
+						{secondsToTime(postData?.created_utc, [
+							's ago',
+							'm ago',
+							'h ago',
+							'd ago',
+							'mo ago',
+							'yr ago'
+						])}
 					</p>
 					{postData?.over_18 && (
-						<div className='flex flex-row pl-1 space-x-1'>
+						<div className="flex flex-row pl-1 space-x-1">
 							<p>•</p>
-							<span className='text-th-red'>NSFW</span>
+							<span className="text-th-red">NSFW</span>
 						</div>
 					)}
 					{postData?.spoiler && (
-						<div className='flex flex-row pl-1 space-x-1'>
+						<div className="flex flex-row pl-1 space-x-1">
 							<p>•</p>
-							<span className='text-th-red'>SPOILER</span>
+							<span className="text-th-red">SPOILER</span>
 						</div>
 					)}
-					<div className='mx-1' />
+					<div className="mx-1" />
 					{postData?.all_awardings?.length > 0 && (
-						<Awardings all_awardings={postData?.all_awardings} truncate={false} />
+						<Awardings
+							all_awardings={postData?.all_awardings}
+							truncate={false}
+						/>
 					)}
 				</div>
 				{/* <div className="flex flex-row flex-none ml-auto hover:underline">
@@ -194,21 +224,32 @@ const MediaWrapper = ({
 		</div>
 	)
 
+	if (!post?.domain) {
+		return null
+	}
+
 	if (postData && (!isXPost || !showCrossPost)) return <>{NSFWWrapper}</>
 	if (postData && isXPost)
 		return (
 			<div
 				className={
-					(!mediaOnly || postMode ? 'flex flex-col overflow-hidden transition-colors  bg-th-post  ' : '') +
+					(!mediaOnly || postMode
+						? 'flex flex-col overflow-hidden transition-colors  bg-th-post  '
+						: '') +
 					(cardStyle === 'card2' && !postMode ? ' ' : '') +
 					((cardStyle !== 'card2' && !mediaOnly) || postMode
 						? ' border hover:bg-th-postHover border-th-border2 hover:border-th-borderHighlight2 rounded'
 						: '')
 				}
 			>
-				{(cardStyle === 'card1' || cardStyle === 'default' || cardStyle === 'row1' || postMode) &&
+				{(cardStyle === 'card1' ||
+					cardStyle === 'default' ||
+					cardStyle === 'row1' ||
+					postMode) &&
 					(!mediaOnly || postMode) && <>{XPostData}</>}
-				{showCrossPostMedia && <div className='relative w-full'>{NSFWWrapper}</div>}
+				{showCrossPostMedia && (
+					<div className="relative w-full">{NSFWWrapper}</div>
+				)}
 				{cardStyle === 'card2' && !postMode && <>{XPostData}</>}
 			</div>
 		)

@@ -1,18 +1,19 @@
+import { useWindowSize } from '@react-hook/window-size'
+import Image from 'next/legacy/image'
+import Link from 'next/link'
+import { useSession } from 'next-auth/react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { BsArrowRightShort } from 'react-icons/bs'
 import { secondsToTime } from '../../lib/utils'
-import { useMainContext } from '../MainContext'
 import useMutate from '../hooks/useMutate'
+import { useUser } from '../hooks/useUser'
+import { useMainContext } from '../MainContext'
 import Awardings from './Awardings'
 import CommentReply from './CommentReply'
 import ParseBodyHTML from './ParseBodyHTML'
 import SaveButton from './SaveButton'
 import UserFlair from './UserFlair'
 import Vote from './Vote'
-import { useWindowSize } from '@react-hook/window-size'
-import { useSession } from 'next-auth/react'
-import Image from 'next/legacy/image'
-import Link from 'next/link'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { BsArrowRightShort } from 'react-icons/bs'
 const ChildComments = ({
 	comment,
 	readTime,
@@ -25,18 +26,25 @@ const ChildComments = ({
 }) => {
 	const context: any = useMainContext()
 	const { commentCollapse, loadCommentsMutation, commentDelete } = useMutate()
-	const { data: session, status } = useSession()
-	const [commentRawBody, setCommentRawBody] = useState(() => comment?.data?.body)
-	const [commentBodyHTML, setCommentBodyHTML] = useState(() => comment?.data?.body_html)
+	// const { data: session, status } = useSession()
+	const { user } = useUser()
+	const [commentRawBody, setCommentRawBody] = useState(
+		() => comment?.data?.body
+	)
+	const [commentBodyHTML, setCommentBodyHTML] = useState(
+		() => comment?.data?.body_html
+	)
 	const [editTime, setEditTime] = useState(() => comment?.data?.edited)
 	const parentRef = useRef<HTMLDivElement | any>(null)
 	const [hovered, setHovered] = useState(false)
 	const [_moreLoaded, setMoreLoaded] = useState(false)
 	const [loadingComments, setLoadingComments] = useState(false)
-	const [hideChildren, setHideChildren] = useState((comment?.data?.collapsed ?? false) && context.autoCollapseComments)
+	const [hideChildren, setHideChildren] = useState(
+		(comment?.data?.collapsed ?? false) && context.autoCollapseComments
+	)
 
 	const toggleHidden = (override?) => {
-		setHideChildren((h) => {
+		setHideChildren(h => {
 			let collapsed = !h
 			if (override !== undefined) {
 				collapsed = override
@@ -50,7 +58,9 @@ const ChildComments = ({
 		})
 	}
 	const [tryDelete, setTryDelete] = useState(false)
-	const [deleted, setDeleted] = useState(() => (comment?.data?.deleted ? true : false))
+	const [deleted, setDeleted] = useState(() =>
+		comment?.data?.deleted ? true : false
+	)
 	const deleteComment = () => {
 		setDeleted(true)
 		commentDelete.mutate({
@@ -87,7 +97,10 @@ const ChildComments = ({
 	}, [context?.defaultCollapseChildren])
 
 	const executeScroll = () => {
-		if (parentRef.current && parentRef.current.getBoundingClientRect().top < 0) {
+		if (
+			parentRef.current &&
+			parentRef.current.getBoundingClientRect().top < 0
+		) {
 			return parentRef.current.scrollIntoView({
 				behavior: 'smooth',
 				block: 'start'
@@ -98,13 +111,13 @@ const ChildComments = ({
 	const [myReplies, setmyReplies] = useState<any[]>([])
 	const [openReply, setopenReply] = useState(false)
 	const [editReply, seteditReply] = useState(false)
-	const updateMyReplies = (resdata) => {
+	const updateMyReplies = resdata => {
 		const newreply = {
 			myreply: true,
 			kind: 't1',
 			data: resdata
 		}
-		setmyReplies((replies) => {
+		setmyReplies(replies => {
 			return [newreply, ...replies]
 		})
 		setopenReply(false)
@@ -116,14 +129,17 @@ const ChildComments = ({
 	useEffect(() => {
 		if (myReplies?.length > 0) {
 			if (childcomments?.length > 0) {
-				setchildcomments((p) => [...myReplies, ...p?.filter((pr: any) => pr?.myreply !== true)])
+				setchildcomments(p => [
+					...myReplies,
+					...p?.filter((pr: any) => pr?.myreply !== true)
+				])
 			} else {
 				setchildcomments(myReplies)
 			}
 		}
 	}, [myReplies])
 
-	const updateHTMLBody = (resdata) => {
+	const updateHTMLBody = resdata => {
 		resdata?.body && setCommentRawBody(resdata?.body)
 		resdata?.body_html && setCommentBodyHTML(resdata?.body_html)
 		resdata?.edited && setEditTime(resdata.edited)
@@ -132,7 +148,7 @@ const ChildComments = ({
 
 	const childCommentCount = useMemo(() => {
 		let count = -1
-		const counter = (c) => {
+		const counter = c => {
 			if (c?.data?.count) {
 				count += c?.data?.count
 			} else {
@@ -150,13 +166,16 @@ const ChildComments = ({
 	const loadChildComments = async (children, link_id) => {
 		const newComments = await loadCommentsMutation.mutateAsync({
 			parentName: comment?.data?.name,
-			children: children,
-			link_id: link_id,
+			children,
+			link_id,
 			permalink: comment?.data?.permalink,
-			childcomments: childcomments,
+			childcomments,
 			token: context?.token
 		})
-		setchildcomments((c) => [...c?.filter((k) => k?.kind !== 'more'), ...newComments?.newComments])
+		setchildcomments(c => [
+			...c?.filter(k => k?.kind !== 'more'),
+			...newComments?.newComments
+		])
 		newComments?.newToken && context?.setToken(newComments?.newToken)
 		setMoreLoaded(true)
 		setLoadingComments(false)
@@ -173,7 +192,12 @@ const ChildComments = ({
 	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const voteScore = useMemo(() => {
 		let x = comment?.data?.score ?? 0
-		if (scoreHideMins && comment?.data?.created_utc && scoreHideMins > 0 && comment.data.created_utc > 0) {
+		if (
+			scoreHideMins &&
+			comment?.data?.created_utc &&
+			scoreHideMins > 0 &&
+			comment.data.created_utc > 0
+		) {
 			const now = new Date().getTime() / 1000
 			if (comment?.data?.created_utc + scoreHideMins * 60 > now) {
 				x = '? pts'
@@ -207,7 +231,7 @@ const ChildComments = ({
 			{/* <h1 className="absolute top-0 right-0 z-50 text-lg">{new Date(readTime).toISOString()},{new Date(comment?.data?.created_utc * 1000).toISOString()}, {(readTime/1000)?.toFixed(0) > comment?.data?.created_utc ? "gr" : "ls"}</h1> */}
 			<div
 				className={'flex flex-row'}
-				onClick={(e) => {
+				onClick={e => {
 					e.stopPropagation()
 					if (!context.ribbonCollapseOnly) {
 						toggleHidden()
@@ -217,12 +241,14 @@ const ChildComments = ({
 			>
 				{/* Left Ribbon */}
 				<div
-					onClick={(e) => {
+					onClick={e => {
 						e.stopPropagation()
 						toggleHidden()
 						executeScroll()
 					}}
-					className={`min-h-full w-1  flex-none  cursor-pointer group${portraitMode ? ' w-2.5 ' : ' md:w-2  lg:w-4'}`}
+					className={`min-h-full w-1  flex-none  cursor-pointer group${
+						portraitMode ? ' w-2.5 ' : ' md:w-2  lg:w-4'
+					}`}
 				>
 					<div
 						className={`flex-none w-0.5  min-h-full  rounded-l-md bg-th-commentRibbon hover:bg-th-commentRibbonHover group-hover:bg-commentRibbonHover${
@@ -239,7 +265,7 @@ const ChildComments = ({
 							? ' mb-3 '
 							: ' '
 					}`}
-					onClick={(e) => {
+					onClick={e => {
 						e.stopPropagation()
 						if (!context.ribbonCollapseOnly) {
 							toggleHidden()
@@ -248,21 +274,24 @@ const ChildComments = ({
 					}}
 				>
 					{/* comment metadata*/}
-					<div className='flex flex-row items-start justify-between ml-3 space-x-1 text-sm md:ml-0 text-th-textLight'>
+					<div className="flex flex-row items-start justify-between ml-3 space-x-1 text-sm md:ml-0 text-th-textLight">
 						{/* Author */}
-						<div className='flex flex-row flex-wrap items-center gap-1 '>
+						<div className="flex flex-row flex-wrap items-center gap-1 ">
 							<Link legacyBehavior href={`/u/${comment?.data?.author}`}>
 								<a
-									onClick={(e) => {
+									onClick={e => {
 										e.stopPropagation()
 										if (comment?.data?.author === '[deleted]') {
 											e.preventDefault()
 										}
 									}}
-									className={'flex items-center group justify-start group gap-1'}
+									className={
+										'flex items-center group justify-start group gap-1'
+									}
 								>
-									{comment?.data?.profile_img?.includes('http') && context.showUserIcons ? (
-										<div className='w-6 h-6 rounded-full overflow-hidden mr-0.5'>
+									{comment?.data?.profile_img?.includes('http') &&
+									context.showUserIcons ? (
+										<div className="w-6 h-6 rounded-full overflow-hidden mr-0.5">
 											<Image
 												src={comment.data.profile_img}
 												height={'256'}
@@ -274,40 +303,50 @@ const ChildComments = ({
 										</div>
 									) : (
 										context.showUserIcons && (
-											<div className='flex items-center mr-0.5 justify-center w-6 h-6 border-2 rounded-full overflow-hidden bg-th-accent'>
-												<span className='text-xl ml-0.5 mb-1 text-white'>u/</span>
+											<div className="flex items-center mr-0.5 justify-center w-6 h-6 border-2 rounded-full overflow-hidden bg-th-accent">
+												<span className="text-xl ml-0.5 mb-1 text-white">
+													u/
+												</span>
 											</div>
 										)
 									)}
-									<h1 className={`group-hover:underline${!context.showUserIcons ? ' -ml-1 md:ml-2' : ''}`}>
+									<h1
+										className={`group-hover:underline${
+											!context.showUserIcons ? ' -ml-1 md:ml-2' : ''
+										}`}
+									>
 										{comment?.data?.author ?? ''}
-										{comment?.data?.author_flair_text?.length > 0 && context.showUserFlairs && (
-											<span className='ml-2 mr-0.5 text-xs'>
-												<UserFlair post={comment.data} />
-											</span>
-										)}
+										{comment?.data?.author_flair_text?.length > 0 &&
+											context.showUserFlairs && (
+												<span className="ml-2 mr-0.5 text-xs">
+													<UserFlair post={comment.data} />
+												</span>
+											)}
 									</h1>
 								</a>
 							</Link>
 
 							{comment?.data?.is_submitter && (
 								<>
-									<p className='px-0.5 font-medium text-th-accent '>{'OP'}</p>
+									<p className="px-0.5 font-medium text-th-accent ">{'OP'}</p>
 								</>
 							)}
 							{comment?.data?.distinguished === 'moderator' && (
 								<>
-									<p className='px-0.5 font-medium text-th-green '>{'MOD'}</p>
+									<p className="px-0.5 font-medium text-th-green ">{'MOD'}</p>
 								</>
 							)}
 							{comment?.data?.distinguished === 'admin' && (
 								<>
-									<p className='px-0.5 font-medium text-th-red '>{'ADMIN'}</p>
+									<p className="px-0.5 font-medium text-th-red ">{'ADMIN'}</p>
 								</>
 							)}
 
 							<p>•</p>
-							<p className='' title={new Date(comment?.data?.created_utc * 1000)?.toString()}>
+							<p
+								className=""
+								title={new Date(comment?.data?.created_utc * 1000)?.toString()}
+							>
 								{secondsToTime(comment?.data?.created_utc, [
 									's ago',
 									'min ago',
@@ -320,7 +359,7 @@ const ChildComments = ({
 
 							{comment?.data?.all_awardings?.length > 0 && (
 								<>
-									<div className='ml-0.5' />
+									<div className="ml-0.5" />
 									<Awardings
 										all_awardings={comment?.data?.all_awardings}
 										truncate={false}
@@ -329,24 +368,36 @@ const ChildComments = ({
 								</>
 							)}
 							{hideChildren && comment?.data?.collapsed_reason && (
-								<span className='text-xs italic '>[{comment.data.collapsed_reason}]</span>
+								<span className="text-xs italic ">
+									[{comment.data.collapsed_reason}]
+								</span>
 							)}
 						</div>
 
-						<div className='flex items-center gap-1 pr-4 mt-1'>
-							{isNew && <p className='text-xs italic'>{'(new)'}</p>}
+						<div className="flex items-center gap-1 pr-4 mt-1">
+							{isNew && <p className="text-xs italic">{'(new)'}</p>}
 							{editTime && (
-								<p className='text-xs italic '>
-									edited {secondsToTime(editTime, ['s ago', 'min ago', 'hr ago', 'dy ago', 'mo ago', 'yr ago'])}
+								<p className="text-xs italic ">
+									edited{' '}
+									{secondsToTime(editTime, [
+										's ago',
+										'min ago',
+										'hr ago',
+										'dy ago',
+										'mo ago',
+										'yr ago'
+									])}
 								</p>
 							)}
 							{(hideChildren || windowWidth <= 640) && (
 								<>
 									<span
 										className={`text-xs ${
-											comment?.data?.likes === true || comment?.data?.likes === 1
+											comment?.data?.likes === true ||
+											comment?.data?.likes === 1
 												? ' text-th-upvote '
-												: comment?.data?.likes === false || comment?.data?.likes === -1
+												: comment?.data?.likes === false ||
+												  comment?.data?.likes === -1
 												? ' text-th-downvote '
 												: ''
 										}`}
@@ -356,25 +407,35 @@ const ChildComments = ({
 								</>
 							)}
 
-							{hideChildren && !context.collapseChildrenOnly && childcomments?.length > 0 && (
-								<div className='text-xs cursor-pointer select-none opacity-70'>+{childCommentCount}</div>
-							)}
+							{hideChildren &&
+								!context.collapseChildrenOnly &&
+								childcomments?.length > 0 && (
+									<div className="text-xs cursor-pointer select-none opacity-70">
+										+{childCommentCount}
+									</div>
+								)}
 						</div>
 					</div>
 
 					{/* Main Comment Body */}
-					<div className={`${hideChildren && !context.collapseChildrenOnly ? ' hidden ' : ' '} `}>
-						<div className=''>
+					<div
+						className={`${
+							hideChildren && !context.collapseChildrenOnly ? ' hidden ' : ' '
+						} `}
+					>
+						<div className="">
 							{/* Comment Text */}
-							{comment?.data?.author && comment.data.author === session?.user?.name && editReply ? (
+							{comment?.data?.author &&
+							comment.data.author === user?.displayName &&
+							editReply ? (
 								<>
 									<CommentReply
-										mode='EDIT'
+										mode="EDIT"
 										initialValue={decodeURIComponent(commentRawBody)}
 										parent={comment?.data?.name}
 										getResponse={updateHTMLBody}
 										postName={comment?.data?.link_id?.substring(3)}
-										onCancel={(e) => {
+										onCancel={e => {
 											e.preventDefault()
 											e.stopPropagation()
 											seteditReply(false)
@@ -394,7 +455,7 @@ const ChildComments = ({
 											e.stopPropagation()
 										}
 									}}
-									className='py-2 ml-2 mr-4 '
+									className="py-2 ml-2 mr-4 "
 								>
 									<ParseBodyHTML html={commentBodyHTML} />
 								</div>
@@ -414,7 +475,7 @@ const ChildComments = ({
 											} flex flex-row items-center justify-center sm:p-0.5 md:p-0 gap-2 border border-transparent rounded-full   `}
 										>
 											{(windowWidth > 640 || showOpts) && (
-												<div className='flex flex-row items-center gap-1 text-sm'>
+												<div className="flex flex-row items-center gap-1 text-sm">
 													<Vote
 														name={comment?.data?.name}
 														likes={comment?.data?.likes}
@@ -426,27 +487,33 @@ const ChildComments = ({
 												</div>
 											)}
 											{/* chrome struggles with svgs.. hiding on low end devices */}
-											{!showOpts && windowWidth <= 640 && comment?.data?.author !== '[deleted]' && (
-												<button
-													aria-label='vote'
-													className='text-sm hover:underline'
-													onClick={(e) => {
-														e.preventDefault()
-														e.stopPropagation()
-														if (!session?.user?.name) {
-															context.setLoginModal(true)
-														} else {
-															setShowOpts(true)
-														}
-													}}
-												>
-													Vote
-												</button>
-											)}
+											{!showOpts &&
+												windowWidth <= 640 &&
+												comment?.data?.author !== '[deleted]' && (
+													<button
+														aria-label="vote"
+														className="text-sm hover:underline"
+														onClick={e => {
+															e.preventDefault()
+															e.stopPropagation()
+															if (!user?.displayName) {
+																context.setLoginModal(true)
+															} else {
+																setShowOpts(true)
+															}
+														}}
+													>
+														Vote
+													</button>
+												)}
 										</div>
 										<button
-											aria-label='reply'
-											disabled={comment?.data?.archived || locked || comment?.data?.author === '[deleted]'}
+											aria-label="reply"
+											disabled={
+												comment?.data?.archived ||
+												locked ||
+												comment?.data?.author === '[deleted]'
+											}
 											className={`text-sm ${
 												(hideChildren && !context.collapseChildrenOnly) ||
 												//comment?.myreply ||
@@ -456,102 +523,119 @@ const ChildComments = ({
 													? 'hidden'
 													: 'block hover:underline'
 											}`}
-											onClick={(e) => {
+											onClick={e => {
 												e.preventDefault()
 												e.stopPropagation()
-												session && !comment?.data?.archived ? setopenReply((p) => !p) : context.toggleLoginModal()
+												user && !comment?.data?.archived
+													? setopenReply(p => !p)
+													: context.toggleLoginModal()
 											}}
 										>
 											Reply
 										</button>
-										<div className='text-sm cursor-pointer hover:underline'>
-											<SaveButton id={comment?.data?.name} saved={comment?.data?.saved} />
+										<div className="text-sm cursor-pointer hover:underline">
+											<SaveButton
+												id={comment?.data?.name}
+												saved={comment?.data?.saved}
+											/>
 										</div>
 
-										{comment?.data?.author && comment.data.author === session?.user?.name && (
-											<div className='flex items-center'>
-												{tryDelete ? (
-													<div className='flex items-center gap-1 text-sm'>
-														Are you Sure?
-														<div className='flex items-center gap-2'>
-															<button
-																onClick={(e) => {
-																	e.preventDefault()
-																	e.stopPropagation()
-																	deleteComment()
-																	setTryDelete(false)
-																}}
-																className='hover:underline'
-															>
-																Yes
-															</button>
-															<span>/</span>
-															<button
-																onClick={(e) => {
-																	e.preventDefault()
-																	e.stopPropagation()
-																	setTryDelete(false)
-																}}
-																className='mr-2 hover:underline'
-															>
-																No
-															</button>
+										{comment?.data?.author &&
+											comment.data.author === user?.displayName && (
+												<div className="flex items-center">
+													{tryDelete ? (
+														<div className="flex items-center gap-1 text-sm">
+															Are you Sure?
+															<div className="flex items-center gap-2">
+																<button
+																	onClick={e => {
+																		e.preventDefault()
+																		e.stopPropagation()
+																		deleteComment()
+																		setTryDelete(false)
+																	}}
+																	className="hover:underline"
+																>
+																	Yes
+																</button>
+																<span>/</span>
+																<button
+																	onClick={e => {
+																		e.preventDefault()
+																		e.stopPropagation()
+																		setTryDelete(false)
+																	}}
+																	className="mr-2 hover:underline"
+																>
+																	No
+																</button>
+															</div>
 														</div>
-													</div>
-												) : (
+													) : (
+														<button
+															disabled={deleted}
+															onClick={e => {
+																e.preventDefault()
+																e.stopPropagation()
+																setTryDelete(true)
+															}}
+															className={`block mr-2 text-sm ${
+																deleted ? ' font-semibold ' : ' hover:underline'
+															}`}
+														>
+															{deleted ? 'Deleted' : 'Delete'}
+														</button>
+													)}
 													<button
-														disabled={deleted}
-														onClick={(e) => {
+														onClick={e => {
 															e.preventDefault()
 															e.stopPropagation()
-															setTryDelete(true)
+															seteditReply(e => !e)
 														}}
-														className={`block mr-2 text-sm ${deleted ? ' font-semibold ' : ' hover:underline'}`}
+														className={'text-sm block hover:underline'}
 													>
-														{deleted ? 'Deleted' : 'Delete'}
+														Edit
 													</button>
-												)}
-												<button
-													onClick={(e) => {
-														e.preventDefault()
-														e.stopPropagation()
-														seteditReply((e) => !e)
-													}}
-													className={'text-sm block hover:underline'}
-												>
-													Edit
-												</button>
-											</div>
-										)}
+												</div>
+											)}
 										<button
-											onClick={(e) => {
+											onClick={e => {
 												e.preventDefault()
 												e.stopPropagation()
 												copyPermalink()
 											}}
-											className='block text-sm hover:underline'
+											className="block text-sm hover:underline"
 										>
 											{copied ? 'Copied!' : 'Permalink'}
 										</button>
 									</>
 								) : (
-									<div className='py-2.5' />
+									<div className="py-2.5" />
 								)}
 
-								{hideChildren && context.collapseChildrenOnly && childcomments?.length > 0 && (
-									<div className='ml-auto mr-4 text-xs cursor-pointer select-none opacity-70'>+{childCommentCount}</div>
-								)}
+								{hideChildren &&
+									context.collapseChildrenOnly &&
+									childcomments?.length > 0 && (
+										<div className="ml-auto mr-4 text-xs cursor-pointer select-none opacity-70">
+											+{childCommentCount}
+										</div>
+									)}
 							</div>
 
 							{/* Comment Reply */}
-							{hideChildren && context.collapseChildrenOnly && childcomments?.length > 0 && <div className='py-1' />}
+							{hideChildren &&
+								context.collapseChildrenOnly &&
+								childcomments?.length > 0 && <div className="py-1" />}
 							{openReply && (
-								<div className={openReply ? 'block mr-2 ml-4 md:ml-0' : 'hidden'} onClick={(e) => e.stopPropagation()}>
+								<div
+									className={openReply ? 'block mr-2 ml-4 md:ml-0' : 'hidden'}
+									onClick={e => e.stopPropagation()}
+								>
 									<CommentReply
 										parent={comment?.data?.name}
 										getResponse={updateMyReplies}
 										postName={comment?.data?.link_id?.substring(3)}
-										onCancel={(e) => {
+										onCancel={e => {
 											e.preventDefault()
 											e.stopPropagation()
 											setopenReply(false)
@@ -565,7 +649,11 @@ const ChildComments = ({
 								onMouseEnter={() => setHovered(false)}
 								onMouseLeave={() => setHovered(true)}
 								className={`min-w-full py-2${
-									hideChildren && context.collapseChildrenOnly && childcomments?.length > 0 ? ' hidden ' : ''
+									hideChildren &&
+									context.collapseChildrenOnly &&
+									childcomments?.length > 0
+										? ' hidden '
+										: ''
 								}`}
 							>
 								{childcomments && (
@@ -589,29 +677,35 @@ const ChildComments = ({
 															<>
 																{childcomment.data?.count > 0 ? (
 																	<button
-																		aria-label='load more'
+																		aria-label="load more"
 																		disabled={loadingComments}
 																		onMouseEnter={() => setHovered(true)}
 																		onMouseLeave={() => setHovered(false)}
 																		className={`${portraitMode ? '' : ''}${
 																			loadingComments ? ' animate-pulse ' : ''
 																		} pt-2  w-full text-left hover:font-semibold ml-3 md:pl-0 select-none outline-none text-sm`}
-																		onClick={(e) => {
+																		onClick={e => {
 																			e.preventDefault()
 																			e.stopPropagation()
 																			setLoadingComments(true)
-																			loadChildComments(childcomment?.data?.children, comment?.data?.link_id)
+																			loadChildComments(
+																				childcomment?.data?.children,
+																				comment?.data?.link_id
+																			)
 																		}}
 																	>
 																		{`Load ${childcomment.data?.count} More... `}
 																	</button>
 																) : (
-																	<Link legacyBehavior href={comment?.data?.permalink}>
+																	<Link
+																		legacyBehavior
+																		href={comment?.data?.permalink}
+																	>
 																		<a
-																			className='flex items-center w-full ml-3 text-sm select-none hover:font-semibold md:pl-0'
+																			className="flex items-center w-full ml-3 text-sm select-none hover:font-semibold md:pl-0"
 																			onMouseEnter={() => setHovered(true)}
 																			onMouseLeave={() => setHovered(false)}
-																			onClick={(e) => e.stopPropagation()}
+																			onClick={e => e.stopPropagation()}
 																		>
 																			Continue thread <BsArrowRightShort />
 																		</a>

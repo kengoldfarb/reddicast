@@ -1,21 +1,29 @@
-import SubInfoModal from './SubInfoModal'
-
+import Link from 'next/link'
+import router, { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
+import React, { useEffect, useState } from 'react'
+import { useUser } from '../hooks/useUser'
 import { useSubsContext } from '../MySubs'
-import SubPills from './SubPills'
 import SubCard from './cards/SubCard'
 import Collection from './collections/Collection'
 import Toggles from './settings/Toggles'
-import { useSession } from 'next-auth/react'
-import Link from 'next/link'
-import router, { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import SubInfoModal from './SubInfoModal'
+import SubPills from './SubPills'
 
-const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', isSelf = false }) => {
+const SubredditBanner = ({
+	subreddits,
+	userMode,
+	userPostMode = '',
+	name = '',
+	isSelf = false
+}) => {
 	const router = useRouter()
-	const { data: session, status } = useSession()
+	// const { data: session, status } = useSession()
+	const { user } = useUser()
 	const loading = status === 'loading'
 	const subsContext: any = useSubsContext()
-	const { currSubInfo, multi, myMultis, myLocalMultis, loadedSubs } = subsContext
+	const { currSubInfo, multi, myMultis, myLocalMultis, loadedSubs } =
+		subsContext
 	const [currSubData, setCurrSubData] = useState<any>({})
 	const [_subreddit, setSubreddit] = useState('')
 	const [multiSub, setMultiSub] = useState('')
@@ -45,7 +53,11 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 			return 0
 		})
 		setSubreddit(s?.[0])
-		if (!keepInMultiArray || subreddits?.length > 1 || subreddits?.[0].toUpperCase() !== multiSub.toUpperCase()) {
+		if (
+			!keepInMultiArray ||
+			subreddits?.length > 1 ||
+			subreddits?.[0].toUpperCase() !== multiSub.toUpperCase()
+		) {
 			setSubArray(s)
 			setCurrMulti(multi)
 			setKeepInMultiArray(false)
@@ -60,7 +72,7 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 		}
 	}, [multi])
 
-	const goToMulti = (e) => {
+	const goToMulti = e => {
 		e.preventDefault()
 		e.stopPropagation()
 		setMultiSub('')
@@ -86,14 +98,16 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 		}
 	}
 
-	const removeSub = (s) => {
+	const removeSub = s => {
 		if (router.route === '/r/[...slug]') {
 			setMultiSub('')
 			const curr: string = router.query.slug[0]
 			const currsubs = curr.split('+')
-			const filtered = currsubs.filter((c) => c.toUpperCase() !== s.toUpperCase())
-			const filteredSubAry = subArray.filter((c) => c.toUpperCase() !== s.toUpperCase())
-			setSubArray((c) => c.filter((sub) => sub.toUpperCase() !== s.toUpperCase()))
+			const filtered = currsubs.filter(c => c.toUpperCase() !== s.toUpperCase())
+			const filteredSubAry = subArray.filter(
+				c => c.toUpperCase() !== s.toUpperCase()
+			)
+			setSubArray(c => c.filter(sub => sub.toUpperCase() !== s.toUpperCase()))
 			//console.log(currsubs);
 			if (filtered.length > 1) {
 				router.push(`/r/${filtered.join('+')}`)
@@ -106,17 +120,20 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 	}
 
 	const toggleOpenDescription = () => {
-		setOpenDescription((p) => p + 1)
+		setOpenDescription(p => p + 1)
 	}
 
 	const [myMultiInfo, setMyMultiInfo] = useState<any>()
 
 	useEffect(() => {
 		const matchMulti = (myMulti, currSubs, currMulti) => {
-			if (myMulti?.data?.name?.toUpperCase() !== currMulti?.toUpperCase()) return false
+			if (myMulti?.data?.name?.toUpperCase() !== currMulti?.toUpperCase())
+				return false
 			if (myMulti?.data?.subreddits?.length !== currSubs?.length) return false
 
-			const multiSubs: string[] = myMulti?.data?.subreddits?.map((sub) => sub?.name?.toUpperCase())
+			const multiSubs: string[] = myMulti?.data?.subreddits?.map(sub =>
+				sub?.name?.toUpperCase()
+			)
 
 			let allFound = true
 			for (const multiSub of multiSubs) {
@@ -150,10 +167,13 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 
 		if (!loading && subreddits && multi && loadedSubs) {
 			const currSubs: string[] = multiSub
-				? subArray?.map((s) => s?.toUpperCase())
-				: subreddits?.map((s) => s?.toUpperCase())
+				? subArray?.map(s => s?.toUpperCase())
+				: subreddits?.map(s => s?.toUpperCase())
 			const matched = checkIsMyMulti(currSubs, multi)
-			if (((!matched || matched?.[0] === false) && !multi) || multi === 'Feed') {
+			if (
+				((!matched || matched?.[0] === false) && !multi) ||
+				multi === 'Feed'
+			) {
 				setMyMultiInfo(undefined)
 			}
 			// if (
@@ -201,7 +221,9 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 					over_18={myMultiInfo?.data?.over_18}
 					key_color={myMultiInfo?.data?.key_color}
 					isOwner={
-						router?.query?.m && myMultiInfo?.data?.name?.toUpperCase() === router?.query?.m?.toString()?.toUpperCase()
+						router?.query?.m &&
+						myMultiInfo?.data?.name?.toUpperCase() ===
+							router?.query?.m?.toString()?.toUpperCase()
 					}
 					bannerMode={true}
 					goToMultiSub={goToMultiSub}
@@ -220,12 +242,14 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 			)}
 
 			{name && (
-				<div className='flex flex-row w-full mt-2 mb-2 md:justify-center '>
-					<div className='flex flex-row flex-wrap gap-4 mx-2 text-xl md:w-11/12'>
+				<div className="flex flex-row w-full mt-2 mb-2 md:justify-center ">
+					<div className="flex flex-row flex-wrap gap-4 mx-2 text-xl md:w-11/12">
 						<Link href={`/u/${name}/overview`}>
 							<div
 								className={` cursor-pointer font-bold${
-									userPostMode === '' || userPostMode === 'OVERVIEW' ? ' font-bold  ' : ' opacity-50 hover:opacity-70'
+									userPostMode === '' || userPostMode === 'OVERVIEW'
+										? ' font-bold  '
+										: ' opacity-50 hover:opacity-70'
 								}`}
 							>
 								Overview
@@ -234,7 +258,9 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 						<Link href={`/u/${name}/submitted`}>
 							<div
 								className={` cursor-pointer font-bold${
-									userPostMode === 'SUBMITTED' ? ' font-bold  ' : ' opacity-50 hover:opacity-70'
+									userPostMode === 'SUBMITTED'
+										? ' font-bold  '
+										: ' opacity-50 hover:opacity-70'
 								}`}
 							>
 								Posts
@@ -243,7 +269,9 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 						<Link href={`/u/${name}/comments`}>
 							<div
 								className={` cursor-pointer font-bold${
-									userPostMode === 'COMMENTS' ? ' font-bold  ' : ' opacity-50 hover:opacity-70'
+									userPostMode === 'COMMENTS'
+										? ' font-bold  '
+										: ' opacity-50 hover:opacity-70'
 								}`}
 							>
 								Comments
@@ -254,7 +282,9 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 								<Link href={`/u/${name}/upvoted`}>
 									<div
 										className={` cursor-pointer font-bold${
-											userPostMode === 'UPVOTED' ? ' font-bold  ' : ' opacity-50 hover:opacity-70'
+											userPostMode === 'UPVOTED'
+												? ' font-bold  '
+												: ' opacity-50 hover:opacity-70'
 										}`}
 									>
 										Upvoted
@@ -263,7 +293,9 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 								<Link href={`/u/${name}/downvoted`}>
 									<div
 										className={` cursor-pointer font-bold${
-											userPostMode === 'DOWNVOTED' ? ' font-bold  ' : ' opacity-50 hover:opacity-70'
+											userPostMode === 'DOWNVOTED'
+												? ' font-bold  '
+												: ' opacity-50 hover:opacity-70'
 										}`}
 									>
 										Downvoted
@@ -272,7 +304,9 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 								<Link href={`/u/${name}/hidden`}>
 									<div
 										className={` cursor-pointer font-bold${
-											userPostMode === 'HIDDEN' ? ' font-bold  ' : ' opacity-50 hover:opacity-70'
+											userPostMode === 'HIDDEN'
+												? ' font-bold  '
+												: ' opacity-50 hover:opacity-70'
 										}`}
 									>
 										Hidden
@@ -281,7 +315,9 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 								<Link href={`/u/${name}/saved`}>
 									<div
 										className={` cursor-pointer font-bold${
-											userPostMode === 'SAVED' ? ' font-bold  ' : ' opacity-50 hover:opacity-70'
+											userPostMode === 'SAVED'
+												? ' font-bold  '
+												: ' opacity-50 hover:opacity-70'
 										}`}
 									>
 										Saved
@@ -290,26 +326,27 @@ const SubredditBanner = ({ subreddits, userMode, userPostMode = '', name = '', i
 							</>
 						)}
 						{userPostMode === 'SAVED' && (
-							<div className='ml-auto text-sm'>
-								<Toggles externalStyles='gap-2' setting='userPostType' />
+							<div className="ml-auto text-sm">
+								<Toggles externalStyles="gap-2" setting="userPostType" />
 							</div>
 						)}
 					</div>
 				</div>
 			)}
 
-			{(multi || subArray.length > 1 || currMulti) && !currSubInfo?.data?.subreddit && (
-				<div className={'mx-auto  md:w-11/12'}>
-					<SubPills
-						subArray={subArray}
-						currMulti={currMulti}
-						multiSub={multiSub}
-						goToMulti={goToMulti}
-						goToMultiSub={goToMultiSub}
-						removeSub={removeSub}
-					/>
-				</div>
-			)}
+			{(multi || subArray.length > 1 || currMulti) &&
+				!currSubInfo?.data?.subreddit && (
+					<div className={'mx-auto  md:w-11/12'}>
+						<SubPills
+							subArray={subArray}
+							currMulti={currMulti}
+							multiSub={multiSub}
+							goToMulti={goToMulti}
+							goToMultiSub={goToMultiSub}
+							removeSub={removeSub}
+						/>
+					</div>
+				)}
 		</div>
 	)
 }

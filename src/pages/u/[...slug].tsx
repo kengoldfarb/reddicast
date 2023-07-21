@@ -1,17 +1,17 @@
-import { getUserMultiSubs } from '../../RedditAPI'
+import Head from 'next/head'
+import router, { useRouter } from 'next/router'
+import { getSession, useSession } from 'next-auth/react'
+import React, { useEffect, useState } from 'react'
 import Feed from '../../components/Feed'
 import NavBar from '../../components/NavBar'
 import SubredditBanner from '../../components/SubredditBanner'
-import { getSession } from 'next-auth/react'
-import { useSession } from 'next-auth/react'
-import Head from 'next/head'
-import router, { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import React from 'react'
+import { getUserMultiSubs } from '../../FarcasterAPI'
+import { useUser } from '../../hooks/useUser'
 const Sort = ({ query }) => {
 	const router = useRouter()
-	const { data: session, status } = useSession()
-	const loading = status === 'loading'
+	// const { data: session, status } = useSession()
+	const { user } = useUser()
+	const loading = !user
 	const [loaded, setLoaded] = useState(false)
 	const [_isUser, setIsUser] = useState(false)
 	const [forbidden, setForbidden] = useState(false)
@@ -44,8 +44,11 @@ const Sort = ({ query }) => {
 	useEffect(() => {
 		const sessionLoad = async (user, mode) => {
 			if (
-				(!session || session?.user?.name?.toUpperCase() !== user.toUpperCase()) &&
-				(mode === 'SAVED' || mode === 'UPVOTED' || mode === 'DOWNVOTED' || mode === 'HIDDEN')
+				(!user || session?.user?.name?.toUpperCase() !== user.toUpperCase()) &&
+				(mode === 'SAVED' ||
+					mode === 'UPVOTED' ||
+					mode === 'DOWNVOTED' ||
+					mode === 'HIDDEN')
 			) {
 				router.push(`/u/${user}`)
 				setForbidden(true)
@@ -72,6 +75,7 @@ const Sort = ({ query }) => {
 			sessionLoad(query?.slug?.[0], query?.slug?.[1]?.toUpperCase())
 		} else {
 			setIsUser(true)
+			console.log({ feedQuery: query })
 			setFeedQuery(query)
 			if (query?.slug?.[1] === 'm' && query?.slug?.[2]?.length > 0) {
 				setIsMulti(true)
@@ -91,46 +95,51 @@ const Sort = ({ query }) => {
 			setMode('')
 			setFeedQuery('')
 		}
-	}, [query, session, loading])
+	}, [query, user, loading])
 
 	return (
-		<div className='-mt-2 overflow-x-hidden overflow-y-auto'>
+		<div className="-mt-2 overflow-x-hidden overflow-y-auto">
 			<Head>
-				<title>{query?.slug?.[0] ? `troddit · ${query?.slug?.[0]}` : 'troddit'}</title>
+				<title>
+					{query?.slug?.[0] ? `troddit · ${query?.slug?.[0]}` : 'troddit'}
+				</title>
 			</Head>
-			<main className=''>
+			<main className="">
 				{forbidden ? (
-					<div className='flex items-center justify-center w-screen h-screen'>Access Forbidden</div>
+					<div className="flex items-center justify-center w-screen h-screen">
+						Access Forbidden
+					</div>
 				) : (
 					loaded && (
-						<div className=''>
-							{true ? (
-								<div className='w-screen'>
-									<SubredditBanner
-										subreddits={[`u_${query?.slug?.[0]}`]}
-										userMode={true}
-										userPostMode={mode}
-										name={username}
-										isSelf={username?.toUpperCase() === session?.user?.name?.toUpperCase()}
-									/>
-									{isMulti && (
-										<div className='flex justify-center w-full '>{`Viewing multi "${query?.slug?.[2]}" by u/${query?.slug?.[0]}`}</div>
-									)}
-									{isMulti && !session && (
-										<div className='flex justify-center w-full pb-2'>{'Login to save this multi'}</div>
-									)}
-									{isMulti && session && (
-										<div
-											className='flex justify-center w-full pb-2 hover:cursor-pointer hover:font-semibold'
-											onClick={getSubsArray}
-										>
-											Click to Extract Subreddits
-										</div>
-									)}
-								</div>
-							) : (
-								<div />
-							)}
+						<div className="">
+							<div className="w-screen">
+								<SubredditBanner
+									subreddits={[`u_${query?.slug?.[0]}`]}
+									userMode={true}
+									userPostMode={mode}
+									name={username}
+									isSelf={
+										username?.toUpperCase() === user?.displayName?.toUpperCase()
+									}
+								/>
+								{isMulti && (
+									<div className="flex justify-center w-full ">{`Viewing multi "${query?.slug?.[2]}" by u/${query?.slug?.[0]}`}</div>
+								)}
+								{isMulti && !user && (
+									<div className="flex justify-center w-full pb-2">
+										{'Login to save this multi'}
+									</div>
+								)}
+								{isMulti && user && (
+									<div
+										className="flex justify-center w-full pb-2 hover:cursor-pointer hover:font-semibold"
+										onClick={getSubsArray}
+									>
+										Click to Extract Subreddits
+									</div>
+								)}
+							</div>
+							)
 							<Feed />
 						</div>
 					)

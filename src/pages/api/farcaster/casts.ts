@@ -22,11 +22,27 @@ export interface IGetCastsResponse {
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
-		// const db = getDbClient(process.env.DATABASE_URL ?? '')
 		const hash = (req.query.hash as string) ?? null
 		const parentHash = (req.query.parentHash as string) ?? null
 		const parentUrl = (req.query.parentUrl as string) ?? null
 		const after = (req.query.after as string) ?? null
+		const fname = (req.query.fname as string) ?? null
+		let fid: number | undefined
+		if (fname) {
+			const ud = await db
+				.selectFrom('userData')
+				.select(['fid'])
+				.where('value', '=', fname)
+				.where('type', '=', UserDataType.FNAME)
+				.execute()
+
+			if (!ud || !ud[0]) {
+				throw new Error('USER_NOT_FOUND')
+			}
+
+			fid = ud[0].fid
+		}
+
 		// console.log({ parentUrl, query: req.query })
 		let castsPromise = db
 			.selectFrom('casts')
@@ -34,6 +50,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			.select([sql<string>`ENCODE(hash::bytea, 'hex')`.as('hash')])
 			.select([sql<string>`DATE_PART('epoch', timestamp)`.as('timestamp')])
 			.select([sql<string>`ENCODE(parent_hash::bytea, 'hex')`.as('parentHash')])
+
+		if (fid) {
+			castsPromise = castsPromise.where('casts.fid', '=', fid)
+		}
 
 		if (hash) {
 			castsPromise = castsPromise.where(
@@ -55,7 +75,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			castsPromise = castsPromise.where('casts.parentUrl', '=', parentUrl)
 		}
 
-		if (!hash && !parentHash && !parentUrl) {
+		if (!hash && !parentHash && !parentUrl && !fid) {
 			castsPromise = castsPromise.where('casts.parentUrl', 'is not', null)
 		}
 

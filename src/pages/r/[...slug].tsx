@@ -1,21 +1,25 @@
-import { findMediaInfo } from '../../../lib/utils'
-import { loadSubredditInfo, loadSubreddits, getWikiContent, loadPost } from '../../FarcasterAPI'
 // import { getWikiContent, loadPost } from '../../RedditAPI'
+import Head from 'next/head'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { getToken } from 'next-auth/jwt'
+import { getSession } from 'next-auth/react'
+import React, { useEffect, useState } from 'react'
+import { findMediaInfo } from '../../../lib/utils'
+import Collection from '../../components/collections/Collection'
 import Feed from '../../components/Feed'
 import LoginModal from '../../components/LoginModal'
 import NavBar from '../../components/NavBar'
 import ParseBodyHTML from '../../components/ParseBodyHTML'
 import PostModal from '../../components/PostModal'
 import SubredditBanner from '../../components/SubredditBanner'
-import Collection from '../../components/collections/Collection'
+import {
+	loadSubredditInfo,
+	loadSubreddits,
+	getWikiContent,
+	loadPost
+} from '../../FarcasterAPI'
 import useThread from '../../hooks/useThread'
-import { getToken } from 'next-auth/jwt'
-import { getSession } from 'next-auth/react'
-import Head from 'next/head'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import React from 'react'
 const SubredditPage = ({ query, metaTags, post, postData }) => {
 	const [subsArray, setSubsArray] = useState<string[]>([])
 	const [wikiContent, setWikiContent] = useState('')
@@ -25,12 +29,21 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 	const [withCommentContext, setWithCommentContext] = useState(false)
 	console.log({ query, metaTags, post, postData })
 	useEffect(() => {
-		const getWiki = async (wikiquery) => {
+		const getWiki = async wikiquery => {
 			const data = await getWikiContent(wikiquery)
 			setWikiContent(data?.data?.content_html ?? 'nothing found')
 		}
 
-		setSubsArray(query?.slug?.[0].split(' ').join('+').split(',').join('+').split('%20').join('+').split('+'))
+		setSubsArray(
+			query?.slug?.[0]
+				.split(' ')
+				.join('+')
+				.split(',')
+				.join('+')
+				.split('%20')
+				.join('+')
+				.split('+')
+		)
 		if (query?.slug?.[1]?.toUpperCase() === 'COMMENTS') {
 			setPostThread(true)
 			query?.context && setWithCommentContext(true)
@@ -55,21 +68,43 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 	return (
 		<div
 			className={`${
-				subsArray?.[0]?.toUpperCase() !== 'ALL' && subsArray?.[0]?.toUpperCase() !== 'POPULAR' ? ' -mt-2 ' : ''
+				subsArray?.[0]?.toUpperCase() !== 'ALL' &&
+				subsArray?.[0]?.toUpperCase() !== 'POPULAR'
+					? ' -mt-2 '
+					: ''
 			} overflow-x-hidden overflow-y-auto `}
 		>
 			<Head>
-				<title>{query?.slug?.[0] ? `troddit · ${query?.slug?.[0]}` : 'troddit'}</title>
-				{metaTags?.ogDescription && <meta name='description' content={metaTags.ogDescription} />}
+				<title>
+					{query?.slug?.[0] ? `troddit · ${query?.slug?.[0]}` : 'troddit'}
+				</title>
+				{metaTags?.ogDescription && (
+					<meta name="description" content={metaTags.ogDescription} />
+				)}
 				{metaTags?.ogSiteName && (
 					<>
-						<meta property='og:site_name' content={metaTags?.ogSiteName} />
-						{metaTags?.ogDescription && <meta property='og:description' content={metaTags?.ogDescription} />}
-						{metaTags?.ogTitle && <meta property='og:title' content={metaTags?.ogTitle} />}
-						{metaTags?.ogImage && <meta property='og:image' content={metaTags?.ogImage} />}
-						{metaTags?.ogHeight && <meta property='og:image:height' content={metaTags?.ogHeight} />}
-						{metaTags?.ogWidth && <meta property='og:image:width' content={metaTags?.ogWidth} />}
-						{metaTags?.ogType && <meta property='og:type' content={metaTags?.ogType} />}
+						<meta property="og:site_name" content={metaTags?.ogSiteName} />
+						{metaTags?.ogDescription && (
+							<meta
+								property="og:description"
+								content={metaTags?.ogDescription}
+							/>
+						)}
+						{metaTags?.ogTitle && (
+							<meta property="og:title" content={metaTags?.ogTitle} />
+						)}
+						{metaTags?.ogImage && (
+							<meta property="og:image" content={metaTags?.ogImage} />
+						)}
+						{metaTags?.ogHeight && (
+							<meta property="og:image:height" content={metaTags?.ogHeight} />
+						)}
+						{metaTags?.ogWidth && (
+							<meta property="og:image:width" content={metaTags?.ogWidth} />
+						)}
+						{metaTags?.ogType && (
+							<meta property="og:type" content={metaTags?.ogType} />
+						)}
 					</>
 				)}
 			</Head>
@@ -77,25 +112,25 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 				{subsArray?.[0]?.toUpperCase() !== 'ALL' &&
 				subsArray?.[0]?.toUpperCase() !== 'POPULAR' &&
 				subsArray?.length > 0 ? (
-					<div className='w-screen '>
+					<div className="w-screen ">
 						<SubredditBanner subreddits={subsArray} userMode={false} />
 					</div>
 				) : (
-					<div className='' />
+					<div className="" />
 				)}
 				{wikiMode ? (
-					<div className='flex flex-col flex-wrap mb-10 md:mx-10 lg:mx-20'>
+					<div className="flex flex-col flex-wrap mb-10 md:mx-10 lg:mx-20">
 						<Link href={`/r/${subsArray[0]}/wiki`}>
-							<h1 className='text-lg font-bold'>Wiki</h1>
+							<h1 className="text-lg font-bold">Wiki</h1>
 						</Link>
 						{wikiContent ? (
 							<ParseBodyHTML html={wikiContent} newTabLinks={false} />
 						) : (
-							<div className='w-full rounded-md h-96 bg-th-highlight animate-pulse' />
+							<div className="w-full rounded-md h-96 bg-th-highlight animate-pulse" />
 						)}
 					</div>
 				) : postThread ? (
-					<div className='mt-10'>
+					<div className="mt-10">
 						<LoginModal />
 						<PostModal
 							permalink={`/r/${query?.slug.join('/')}`}
@@ -117,15 +152,17 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 	)
 }
 
-SubredditPage.getInitialProps = async (d) => {
+SubredditPage.getInitialProps = async d => {
 	const { query, req, res } = d
 	let subreddits = query?.slug?.[0]
 	subreddits = query?.slug?.[0]?.split(' ')?.join('+')?.split('%2b')?.join('+')
-	console.log('GET INITIAL PROPS', subreddits)
+	// console.log('GET INITIAL PROPS', subreddits)
 	if (
 		query?.slug?.length < 3 &&
 		req &&
-		!res?.['req']?.['rawHeaders']?.includes(`https://${res?.['req']?.['rawHeaders']?.[1]}/r/${subreddits}`)
+		!res?.req?.rawHeaders?.includes(
+			`https://${res?.req?.rawHeaders?.[1]}/r/${subreddits}`
+		)
 	) {
 		const session = await getSession({ req })
 		let tokenData
@@ -142,10 +179,10 @@ SubredditPage.getInitialProps = async (d) => {
 		}
 		let posts
 		let subInfo
-		console.log({
-			subreddits,
-			query
-		})
+		// console.log({
+		// 	subreddits,
+		// 	query
+		// })
 		const loadPosts = async () => {
 			const data = await loadSubreddits(
 				session?.user?.name ? true : false,
@@ -173,7 +210,10 @@ SubredditPage.getInitialProps = async (d) => {
 			ogWidth: subInfo?.icon_size?.[1]
 		}
 		if (!session?.user?.name) {
-			res.setHeader('Cache-Control', 'max-age=0, s-maxage=1200, stale-while-revalidate=30')
+			res.setHeader(
+				'Cache-Control',
+				'max-age=0, s-maxage=1200, stale-while-revalidate=30'
+			)
 		}
 
 		return {
@@ -192,11 +232,15 @@ SubredditPage.getInitialProps = async (d) => {
 				const media = await findMediaInfo(
 					post,
 					true,
-					d?.req?.headers?.host?.includes(':') ? d?.req?.headers?.host?.split(':')?.[0] : d?.req?.headers?.host
+					d?.req?.headers?.host?.includes(':')
+						? d?.req?.headers?.host?.split(':')?.[0]
+						: d?.req?.headers?.host
 				)
 				const metaTags = {
 					ogSiteName: 'troddit',
-					ogDescription: `Post on r/${post.subreddit} by u/${post.author} • ${post.score?.toLocaleString(
+					ogDescription: `Post on r/${post.subreddit} by u/${
+						post.author
+					} • ${post.score?.toLocaleString(
 						'en-US'
 					)} points and ${post.num_comments?.toLocaleString('en-US')} comments`,
 					ogTitle: post.title,
@@ -205,7 +249,10 @@ SubredditPage.getInitialProps = async (d) => {
 					ogWidth: media?.dimensions?.[0],
 					ogType: 'image'
 				}
-				res.setHeader('Cache-Control', 'max-age=0, s-maxage=3600, stale-while-revalidate=30')
+				res.setHeader(
+					'Cache-Control',
+					'max-age=0, s-maxage=3600, stale-while-revalidate=30'
+				)
 				return { query, metaTags, post: post?.preview ? post : undefined }
 			} catch (_err) {
 				return { query }

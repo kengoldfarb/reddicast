@@ -163,10 +163,10 @@ export const getDbClient = (connectionString: string) => {
 			},
 			postgres
 		}),
-		plugins: [new CamelCasePlugin()],
-		log: e => {
-			console.log(e)
-		}
+		plugins: [new CamelCasePlugin()]
+		// log: e => {
+		// 	console.log(e)
+		// }
 	})
 }
 

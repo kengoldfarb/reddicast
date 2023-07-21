@@ -9,6 +9,7 @@ import type { IGetCastsResponse } from './pages/api/farcaster/casts'
 // let afterUrl     = (after == null) ? "" : "&after="+after;
 // let countUrl     = (count == 0) ? "" : "&count="+count;
 // let url = "https://www.reddit.com" + subUrl + "/" + sortType + "/.json?" + sortUrl + "&" + limitUrl + afterUrl + countUrl;
+// chain://eip155:1/erc721:0xa45662638e9f3bbb7a6fecb4b17853b7ba0f3a60
 
 export const castToPost = (cast: Record<string, any>) => {
 	let score = 0
@@ -26,6 +27,56 @@ export const castToPost = (cast: Record<string, any>) => {
 				break
 		}
 	})
+
+	const matches = cast.parentUrl
+		? cast.parentUrl.match(/chain:\/\/eip155:(\d+)\/erc\d+:([0-9a-fx]+)/)
+		: null
+
+	let domain = cast.parentUrl
+	let domainLink = cast.parentUrl
+	let chain = null
+
+	let highlight = null
+
+	if (matches && matches[1] && matches[2]) {
+		chain = matches[1]
+		domain = matches[2]
+		switch (chain) {
+			case '1':
+				domainLink = `https://etherscan.io/address/${domain}`
+				break
+
+			case '5':
+				domainLink = `https://goerli.etherscan.io/address/${domain}`
+				break
+
+			case '137':
+				domainLink = `https://polygonscan.com/address/${domain}`
+				break
+
+			default:
+				break
+		}
+	}
+
+	switch (domain) {
+		case '0xa45662638e9f3bbb7a6fecb4b17853b7ba0f3a60':
+			domain = 'Purple'
+			highlight = '#8A63D2'
+			domainLink =
+				'https://nouns.build/dao/ethereum/0xa45662638e9f3bbb7a6fecb4b17853b7ba0f3a60'
+			break
+
+		case '0xc18f6a34019f5ba0fc5bc8cb6fe52e898d6bbbee':
+			domain = 'Books ($BKS)'
+			break
+
+		default:
+			break
+	}
+
+	console.log({ cast })
+
 	const post = {
 		kind: 't3',
 		data: {
@@ -37,15 +88,22 @@ export const castToPost = (cast: Record<string, any>) => {
 			name: `t3_${cast.id}`,
 			score,
 			likes: score,
-			created_utc: DateTime.fromISO(cast.timestamp).toUnixInteger(),
+			created_utc: cast.timestamp,
 			permalink: `/r/${encodeURIComponent(cast.parentUrl)}/comments/${
 				cast.hash
 			}`,
-			domain: cast.parentUrl,
+			domain,
+			domain_link: domainLink,
+			highlight,
 			subreddit: cast.parentUrl,
-			num_comments: cast.replies.length
+			subreddit_display_name: domain ?? cast.parentUrl,
+			num_comments: cast.replies.length,
+			user: cast.user,
+			embeds: cast.embeds,
+			parentHash: cast.parentHash
 		}
 	}
+	// console.log({ cast, post })
 	return post
 }
 
@@ -191,7 +249,7 @@ export const loadFront = async (
 			after: casts[casts.length - 1] ? casts[casts.length - 1].timestamp : null,
 			children: casts.map(c => castToPost(c))
 		}
-		console.log(builtData)
+		// console.log(builtData)
 		return builtData
 	} catch (e) {
 		console.log(e)
@@ -227,7 +285,7 @@ export const loadSubreddits = async (
 			// before: casts[casts.length - 1] ? casts[0].timestamp : null,
 			children: casts.map(c => castToPost(c))
 		}
-		console.log(builtData)
+		// console.log(builtData)
 		return builtData
 	} catch (e) {
 		console.log('loadSubreddits error', e)
@@ -496,7 +554,7 @@ export const loadSubredditInfo = async (query, _loaduser = false) => {
 					parentUrl: query
 				})
 
-			console.log(body)
+			// console.log(body)
 
 			return {
 				kind: 't5',
@@ -594,56 +652,77 @@ export const loadUserPosts = async (
 	count = 0,
 	type?
 ) => {
-	const { returnToken, accessToken } = await checkToken(loggedIn, token)
+	// const { returnToken, accessToken } = await checkToken(loggedIn, token)
 	try {
-		let res
-		if (loggedIn && accessToken) {
-			logApiRequest('u/', true)
-			res = await (
-				await axios.get(
-					`https://oauth.reddit.com/user/${username}/${
-						type ? type.toLowerCase() : ''
-					}?sort=${sort}`,
-					{
-						headers: {
-							authorization: `bearer ${accessToken}`
-						},
-						params: {
-							raw_json: 1,
-							t: range,
-							after,
-							count,
-							sr_detail: true
-						}
-					}
-				)
-			).data
-		} else {
-			logApiRequest('u/', false)
-			res = await (
-				await axios.get(
-					`${REDDIT}/user/${username}/${
-						type ? type.toLowerCase() : ''
-					}.json?sort=${sort}`,
-					{
-						params: {
-							raw_json: 1,
-							t: range,
-							after,
-							count,
-							sr_detail: true
-						}
-					}
-				)
-			).data
+		// const slug = permalink.match(/\/([^/]+)$/)
+		// console.log({ slug })
+		const result = await request
+			.get(`${process.env.NEXT_PUBLIC_HOST}/api/farcaster/casts`)
+			.query({
+				fname: username,
+				after,
+				count,
+				sort
+			})
+		const casts: IGetCastsResponse['casts'] = result.body.casts
+
+		const builtData = {
+			// after: casts[0] ? casts[0].timestamp : null,
+			// before: casts[casts.length - 1] ? casts[0].timestamp : null,
+			children: casts.map(c => castToPost(c))
 		}
-		return {
-			count: count + res?.data?.children?.length ?? 0,
-			after: res.data?.after ?? null,
-			before: res.data?.before,
-			children: res?.data?.children ?? [],
-			token: returnToken
-		}
+
+		// console.log({ comments: builtData })
+
+		return builtData
+		// let res
+		// if (loggedIn && accessToken) {
+		// 	logApiRequest('u/', true)
+		// 	res = await (
+		// 		await axios.get(
+		// 			`https://oauth.reddit.com/user/${username}/${
+		// 				type ? type.toLowerCase() : ''
+		// 			}?sort=${sort}`,
+		// 			{
+		// 				headers: {
+		// 					authorization: `bearer ${accessToken}`
+		// 				},
+		// 				params: {
+		// 					raw_json: 1,
+		// 					t: range,
+		// 					after,
+		// 					count,
+		// 					sr_detail: true
+		// 				}
+		// 			}
+		// 		)
+		// 	).data
+		// } else {
+		// 	logApiRequest('u/', false)
+		// 	res = await (
+		// 		await axios.get(
+		// 			`${REDDIT}/user/${username}/${
+		// 				type ? type.toLowerCase() : ''
+		// 			}.json?sort=${sort}`,
+		// 			{
+		// 				params: {
+		// 					raw_json: 1,
+		// 					t: range,
+		// 					after,
+		// 					count,
+		// 					sr_detail: true
+		// 				}
+		// 			}
+		// 		)
+		// 	).data
+		// }
+		// return {
+		// 	count: count + res?.data?.children?.length ?? 0,
+		// 	after: res.data?.after ?? null,
+		// 	before: res.data?.before,
+		// 	children: res?.data?.children ?? [],
+		// 	token: returnToken
+		// }
 	} catch (_err) {
 		//console.log(err);
 		return { after: null }
@@ -1066,7 +1145,7 @@ export const loadComments = async (permalink, _sort = 'top') => {
 		// //console.log(res?.[1]);
 		// return res?.[1]?.data?.children ?? null
 		const slug = permalink.match(/\/([^/]+)$/)
-		console.log({ slug })
+		// console.log({ slug })
 		const result = await request
 			.get(`${process.env.NEXT_PUBLIC_HOST}/api/farcaster/casts`)
 			.query({
@@ -1080,7 +1159,7 @@ export const loadComments = async (permalink, _sort = 'top') => {
 			children: casts.map(c => castToPost(c))
 		}
 
-		console.log({ comments: builtData })
+		// console.log({ comments: builtData })
 
 		return builtData
 	} catch (_err) {

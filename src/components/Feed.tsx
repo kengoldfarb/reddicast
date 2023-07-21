@@ -6,6 +6,7 @@ import { IoMdRefresh } from 'react-icons/io'
 import useFeed from '../hooks/useFeed'
 import useLocation from '../hooks/useLocation'
 import useRefresh from '../hooks/useRefresh'
+import { useUser } from '../hooks/useUser'
 import { useMainContext } from '../MainContext'
 import ErrMessage from './ErrMessage'
 import FeedMasonry from './FeedMasonry'
@@ -22,6 +23,8 @@ const Feed = ({ initialData = {} as any }) => {
 
 	const context: any = useMainContext()
 	const router = useRouter()
+
+	// const { signer } = useUser()
 
 	useEffect(() => {
 		if (

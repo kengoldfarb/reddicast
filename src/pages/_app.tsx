@@ -1,23 +1,23 @@
 import '../../styles/globals.css'
-import { MainProvider, localSeen } from '../MainContext'
-import { MySubsProvider } from '../MySubs'
-import { MyCollectionsProvider } from '../components/collections/CollectionContext'
 import log, { LogLevel } from '@kengoldfarb/log'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { Analytics } from '@vercel/analytics/react'
-import { SessionProvider } from 'next-auth/react'
-import { ThemeProvider } from 'next-themes'
 import Head from 'next/head'
 import Script from 'next/script'
-
-import { checkVersion } from '../../lib/utils'
-import packageInfo from '../../package.json'
-import NavBar from '../components/NavBar'
-import ToastCustom from '../components/toast/ToastCustom'
+import { SessionProvider } from 'next-auth/react'
 import { usePlausible } from 'next-plausible'
+import { ThemeProvider } from 'next-themes'
 import React, { useEffect, useRef } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
+import { checkVersion } from '../../lib/utils'
+import packageInfo from '../../package.json'
+import { MyCollectionsProvider } from '../components/collections/CollectionContext'
+import NavBar from '../components/NavBar'
+import ToastCustom from '../components/toast/ToastCustom'
+import { UserProvider } from '../hooks/useUser'
+import { MainProvider, localSeen } from '../MainContext'
+import { MySubsProvider } from '../MySubs'
 
 const VERSION = packageInfo.version
 const queryClient = new QueryClient()
@@ -30,7 +30,13 @@ function MyApp({ Component, pageProps }) {
 			const compare = checkVersion(curVersion, prevVersion)
 			if (compare === 1) {
 				const _toastId = toast.custom(
-					(t) => <ToastCustom t={t} message={'Troddit updated! Click to see changelog'} mode={'version'} />,
+					t => (
+						<ToastCustom
+							t={t}
+							message={'Troddit updated! Click to see changelog'}
+							mode={'version'}
+						/>
+					),
 					{ position: 'bottom-center', duration: 8000 }
 				)
 			}
@@ -44,32 +50,34 @@ function MyApp({ Component, pageProps }) {
 	}, [])
 	return (
 		<>
-			<Script defer data-domain={'troddit.com'} src='/js/script.js' />
+			<Script defer data-domain={'troddit.com'} src="/js/script.js" />
 
 			<Head>
 				<meta
-					name='viewport'
-					content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover' //user-scalable="no"
+					name="viewport"
+					content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover" //user-scalable="no"
 				/>
-				<link rel='shortcut icon' href='/favicon.ico' />
+				<link rel="shortcut icon" href="/favicon.ico" />
 			</Head>
-			<SessionProvider session={pageProps.session}>
-				<ThemeProvider defaultTheme='system'>
-					<MainProvider>
-						<MySubsProvider>
-							<MyCollectionsProvider>
-								<QueryClientProvider client={queryClient}>
-									<NavBar />
-									<Component {...pageProps} />
-									<Toaster position='bottom-center' />
-									<Analytics />
-									<ReactQueryDevtools initialIsOpen={false} />
-								</QueryClientProvider>
-							</MyCollectionsProvider>
-						</MySubsProvider>
-					</MainProvider>
-				</ThemeProvider>
-			</SessionProvider>
+			<UserProvider>
+				<SessionProvider session={pageProps.session}>
+					<ThemeProvider defaultTheme="system">
+						<MainProvider>
+							<MySubsProvider>
+								<MyCollectionsProvider>
+									<QueryClientProvider client={queryClient}>
+										<NavBar />
+										<Component {...pageProps} />
+										<Toaster position="bottom-center" />
+										<Analytics />
+										<ReactQueryDevtools initialIsOpen={false} />
+									</QueryClientProvider>
+								</MyCollectionsProvider>
+							</MySubsProvider>
+						</MainProvider>
+					</ThemeProvider>
+				</SessionProvider>
+			</UserProvider>
 		</>
 	)
 }

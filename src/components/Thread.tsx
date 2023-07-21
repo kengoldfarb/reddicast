@@ -35,12 +35,14 @@ import useDuplicates from '../hooks/useDuplicates'
 import { useRead } from '../hooks/useRead'
 import useSubreddit from '../hooks/useSubreddit'
 import useThread from '../hooks/useThread'
+import { useUser } from '../hooks/useUser'
 import { localSeen, useMainContext } from '../MainContext'
+import Awardings from './Awardings'
+import MiniCard from './cards/MiniCard'
+import CommentReply from './CommentReply'
 import Comments from './Comments'
 // import { usePlausible } from "next-plausible";
 
-import Awardings from './Awardings'
-import CommentReply from './CommentReply'
 import CommentSort from './CommentSort'
 import ErrMessage from './ErrMessage'
 import MediaWrapper from './MediaWrapper'
@@ -53,7 +55,6 @@ import TitleFlair from './TitleFlair'
 import ToastCustom from './toast/ToastCustom'
 import UserFlair from './UserFlair'
 import Vote from './Vote'
-import MiniCard from './cards/MiniCard'
 
 const SIDEBYSIDE_THRESHOLD = 1000
 
@@ -97,6 +98,7 @@ const Thread = ({
 	)
 	const { read } = useRead(post?.name)
 	const { sub } = useSubreddit(post?.subreddit)
+	const { signer } = useUser()
 
 	console.log({ initialData })
 
@@ -502,21 +504,22 @@ const Thread = ({
 														</h2>
 													</a>
 												</Link>
-
-												<Link legacyBehavior href={`/r/${post?.subreddit}`}>
-													<a
-														title={`go to r/${post?.subreddit}`}
-														className="mr-1 -translate-y-0.5"
-														onClick={e => {
-															e.stopPropagation()
-														}}
-													>
-														on{' '}
-														<span className="font-semibold hover:underline">
-															r/{post?.subreddit ?? 'unknown'}
-														</span>
-													</a>
-												</Link>
+												{post?.subreddit && (
+													<Link legacyBehavior href={`/r/${post?.subreddit}`}>
+														<a
+															title={`go to r/${post?.subreddit}`}
+															className="mr-1 -translate-y-0.5"
+															onClick={e => {
+																e.stopPropagation()
+															}}
+														>
+															on{' '}
+															<span className="font-semibold hover:underline">
+																r/{post?.subreddit ?? 'unknown'}
+															</span>
+														</a>
+													</Link>
+												)}
 
 												<p
 													className="-translate-y-0.5"
@@ -524,11 +527,11 @@ const Thread = ({
 												>
 													{secondsToTime(post?.created_utc)}
 												</p>
-												<p className="-translate-y-0.5 mx-1">•</p>
+												{/* <p className="-translate-y-0.5 mx-1">•</p> */}
 
-												<p className="text-xs translate-y-[0.05rem] text-th-textLight select-none  ">
+												{/* <p className="text-xs translate-y-[0.05rem] text-th-textLight select-none  ">
 													{post?.upvote_ratio * 100}% upvoted
-												</p>
+												</p> */}
 												{post?.over_18 && (
 													<div className="flex flex-row pl-1 space-x-1 -translate-y-0.5">
 														<p>•</p>
@@ -550,17 +553,19 @@ const Thread = ({
 													/>
 												)}
 											</div>
-											<div className="flex flex-col items-end justify-center flex-none ml-auto text-xs text-th-textLight">
-												<a
-													title="open source"
-													href={`${post?.url}`}
-													target="_blank"
-													rel="noreferrer"
-													onClick={e => e.stopPropagation()}
-												>
-													<p className=" hover:underline">{`(${post?.domain})`}</p>
-												</a>
-											</div>
+											{post?.domain && (
+												<div className="flex flex-col items-end justify-center flex-none ml-auto text-xs text-th-textLight">
+													<a
+														title="open source"
+														href={`${post?.url}`}
+														target="_blank"
+														rel="noreferrer"
+														onClick={e => e.stopPropagation()}
+													>
+														<p className=" hover:underline">{`(${post?.domain})`}</p>
+													</a>
+												</div>
+											)}
 										</div>
 
 										<span className="flex flex-row flex-wrap items-center justify-start py-2 md:pl-3">
@@ -726,7 +731,7 @@ const Thread = ({
 														}
 														onClick={e => {
 															e.preventDefault()
-															session &&
+															signer &&
 															!(post?.archived === true) &&
 															!post?.locked
 																? setopenReply(r => !r)
@@ -1113,7 +1118,7 @@ const Thread = ({
 												<div className="p-2 mb-3 border rounded-lg bg-th-background2 border-th-border2">
 													<p className="flex flex-col mx-3 text-sm font-normal ">
 														<span>
-															You are viewing a single comment's thread
+															You are viewing a single comment&apos;s thread
 														</span>
 														<span className="text-xs">
 															<Link

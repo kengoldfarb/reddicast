@@ -645,8 +645,6 @@ export const filterPosts = async (
 		userPostType
 	} = filters
 
-	console.log('filterPosts', { posts, filters })
-
 	let filtercount = 0
 
 	async function filter(arr, callback) {

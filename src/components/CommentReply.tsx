@@ -1,16 +1,20 @@
 import { useSession } from '../../node_modules/next-auth/react'
 import { useMainContext } from '../MainContext'
-import { postComment } from '../RedditAPI'
 import useMutate from '../hooks/useMutate'
+import { runMain } from 'module'
 import { EditorState, convertToRaw } from 'draft-js'
 import { draftToMarkdown } from 'markdown-draft-js' // import { usePlausible } from "next-plausible";
-import { runMain } from 'module'
 import dynamic from 'next/dynamic'
 import React, { Component, useEffect, useRef, useState } from 'react'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { ImSpinner2 } from 'react-icons/im'
+import { useUser } from '../hooks/useUser'
+import { postComment } from '../RedditAPI'
 
-const _Editor: any = dynamic(() => import('react-draft-wysiwyg').then((mod) => mod.Editor), { ssr: false })
+const _Editor: any = dynamic(
+	() => import('react-draft-wysiwyg').then(mod => mod.Editor),
+	{ ssr: false }
+)
 
 const _editor = {
 	options: ['inline', 'blockType', 'list', 'link'],
@@ -56,7 +60,7 @@ const CommentReply = ({
 	parent,
 	postName,
 	getResponse,
-	onCancel = (_e) => {},
+	onCancel = _e => {},
 	initialValue = '',
 	mode = 'REPLY'
 }: {
@@ -71,13 +75,14 @@ const CommentReply = ({
 	const { replyFocus, setReplyFocus } = maincontext
 	//const [editorState, setEditorState] = useState(EditorState.createEmpty());
 	//const [html, setHtml] = useState("");
-	const { data: session, status } = useSession()
+	// const { data: session, status } = useSession()
+	const { user } = useUser()
 	const [err, setErr] = useState(false)
 	//const [loading, setLoading] = useState(false);
 	const EditorRef = useRef<HTMLTextAreaElement>(null)
 
 	const [textValue, setTextValue] = useState(() => initialValue)
-	const handleTextChange = (e) => {
+	const handleTextChange = e => {
 		setTextValue(e.target.value)
 	}
 	// const plausible = usePlausible();
@@ -88,7 +93,7 @@ const CommentReply = ({
 
 	const { postCommentMutation, editCommentMutation } = useMutate()
 
-	const submit = (e) => {
+	const submit = e => {
 		e.preventDefault()
 		e.stopPropagation()
 		//for use with WYSIWYG editor
@@ -135,17 +140,17 @@ const CommentReply = ({
 			// }
 			if (parent.substring(0, 3) === 't3_') {
 				postCommentMutation.mutate({
-					parent: parent,
-					textValue: textValue,
-					postName: postName
+					parent,
+					textValue,
+					postName
 				})
 			} else {
 				try {
 					setErr(false)
 					const res = await postCommentMutation.mutateAsync({
-						parent: parent,
-						textValue: textValue,
-						postName: postName
+						parent,
+						textValue,
+						postName
 					})
 					res && getResponse(res)
 				} catch (_err) {
@@ -153,16 +158,19 @@ const CommentReply = ({
 				}
 			}
 		}
-		const submitEditComment = async () => {
-			const res = await editCommentMutation.mutateAsync({ parent: parent, text: textValue })
-			if (res?.body_html) {
-				getResponse(res)
-			} else {
-				setErr(true)
-			}
-		}
-		session && mode === 'REPLY' && submitComment()
-		session && mode === 'EDIT' && submitEditComment()
+		// const submitEditComment = async () => {
+		// 	const res = await editCommentMutation.mutateAsync({
+		// 		parent,
+		// 		text: textValue
+		// 	})
+		// 	if (res?.body_html) {
+		// 		getResponse(res)
+		// 	} else {
+		// 		setErr(true)
+		// 	}
+		// }
+		user && mode === 'REPLY' && submitComment()
+		// user && mode === 'EDIT' && submitEditComment()
 	}
 
 	useEffect(() => {
@@ -179,14 +187,22 @@ const CommentReply = ({
 		}
 	}, [])
 
+	console.log({ user })
+
 	return (
-		<div className='relative '>
-			{session?.user?.name && (
+		<div className="relative ">
+			{user?.displayName && (
 				<>
-					<div className='flex flex-row justify-between w-full select-none text-th-textLight'>
-						{mode === 'REPLY' ? <h1>Commenting as {session.user.name}</h1> : <div className='py-2' />}
-						{(postCommentMutation.isError || editCommentMutation.isError || err) && (
-							<h1 className='text-xs text-th-red'>Something went wrong</h1>
+					<div className="flex flex-row justify-between w-full select-none text-th-textLight">
+						{mode === 'REPLY' ? (
+							<h1>Commenting as {user.displayName}</h1>
+						) : (
+							<div className="py-2" />
+						)}
+						{(postCommentMutation.isError ||
+							editCommentMutation.isError ||
+							err) && (
+							<h1 className="text-xs text-th-red">Something went wrong</h1>
 						)}
 					</div>
 					{/* Retiring this until reddit markdown can be fully properly supported */}
@@ -210,7 +226,7 @@ const CommentReply = ({
             onEditorStateChange={editorStateChange}
           /> */}
 					<textarea
-						onClick={(e) => {
+						onClick={e => {
 							e.stopPropagation()
 						}}
 						onFocus={() => {
@@ -220,44 +236,58 @@ const CommentReply = ({
 							setReplyFocus(false)
 						}}
 						ref={EditorRef}
-						className='flex-wrap w-full px-3 pt-3 pb-8 font-mono text-sm leading-tight border rounded-lg outline-none scrollbar-thin scrollbar-thumb-th-scrollbar scrollbar-thumb-rounded-full bg-th-postHover hover:cursor-text border-th-border focus-within:border-th-borderHighlight focus-within:brightness-100 brightness-80 '
+						className="flex-wrap w-full px-3 pt-3 pb-8 font-mono text-sm leading-tight border rounded-lg outline-none scrollbar-thin scrollbar-thumb-th-scrollbar scrollbar-thumb-rounded-full bg-th-postHover hover:cursor-text border-th-border focus-within:border-th-borderHighlight focus-within:brightness-100 brightness-80 "
 						value={textValue}
 						onChange={handleTextChange}
 					/>
-					<div className='flex flex-wrap items-end justify-between w-full mt-2'>
-						<p className='mb-1 ml-1 text-xs italic select-none text-th-textLight'>using markdown editor</p>
-						<div className='flex items-end justify-end gap-2 ml-auto'>
+					<div className="flex flex-wrap items-end justify-between w-full mt-2">
+						<p className="mb-1 ml-1 text-xs italic select-none text-th-textLight">
+							using markdown editor
+						</p>
+						<div className="flex items-end justify-end gap-2 ml-auto">
 							<button
-								aria-label='cancel'
-								disabled={postCommentMutation.isLoading || editCommentMutation.isLoading}
-								onClick={(e) => onCancel(e)}
+								aria-label="cancel"
+								disabled={
+									postCommentMutation.isLoading || editCommentMutation.isLoading
+								}
+								onClick={e => onCancel(e)}
 								className={
 									'flex items-center relative justify-center w-32 px-4 py-1.5 ml-auto text-center border border-th-border hover:border-th-borderHighlight hover:bg-th-highlight rounded-md cursor-pointer  '
 								}
 							>
 								<span
-									className={postCommentMutation.isLoading || editCommentMutation.isLoading ? ' opacity-50 ' : ' mx-3 '}
+									className={
+										postCommentMutation.isLoading ||
+										editCommentMutation.isLoading
+											? ' opacity-50 '
+											: ' mx-3 '
+									}
 								>
 									Cancel
 								</span>
 							</button>
 							<button
-								aria-label='post comment'
+								aria-label="post comment"
 								disabled={postCommentMutation.isLoading}
-								onClick={(e) => submit(e)}
+								onClick={e => submit(e)}
 								className={
 									'flex items-center relative justify-center w-32 px-4 py-1.5 ml-auto text-center border border-th-border hover:border-th-borderHighlight hover:bg-th-highlight rounded-md cursor-pointer  '
 								}
 							>
 								<span
-									className={postCommentMutation.isLoading || editCommentMutation.isLoading ? ' opacity-50 ' : ' mx-3 '}
+									className={
+										postCommentMutation.isLoading ||
+										editCommentMutation.isLoading
+											? ' opacity-50 '
+											: ' mx-3 '
+									}
 								>
 									{mode === 'EDIT' ? 'Edit' : 'Comment'}
 								</span>
 								{postCommentMutation.isLoading ||
 									(editCommentMutation.isLoading && (
-										<div className='flex flex-none '>
-											<ImSpinner2 className='ml-2 animate-spin' />
+										<div className="flex flex-none ">
+											<ImSpinner2 className="ml-2 animate-spin" />
 										</div>
 									))}
 							</button>

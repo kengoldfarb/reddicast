@@ -109,7 +109,7 @@ const useThread = (permalink, sort, _initialData?, withContext = false) => {
 				sort
 			)
 			const morecomments = await fixCommentFormat(data?.data)
-			console.log({ comments: data, morecomments })
+			// console.log({ comments: data, morecomments })
 			return {
 				post_comments: morecomments,
 				token: data?.token
@@ -137,7 +137,7 @@ const useThread = (permalink, sort, _initialData?, withContext = false) => {
 	}
 
 	const fetchThread = async (feedParams: QueryFunctionContext) => {
-		console.log('fetching thread', feedParams)
+		// console.log('fetching thread', feedParams)
 		if (feedParams?.pageParam?.children?.length > 0) {
 			const { post_comments, token } = await loadChildComments(
 				feedParams.pageParam.children,
@@ -161,7 +161,7 @@ const useThread = (permalink, sort, _initialData?, withContext = false) => {
 			context?.token,
 			withContext
 		)
-		console.log({ post, post_comments, token })
+		// console.log({ post, post_comments, token })
 		if (!post) {
 			throw new Error('Error fetching post')
 		}

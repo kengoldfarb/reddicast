@@ -63,29 +63,30 @@ export const MainProvider = ({ children }) => {
 
 	const [compactLinkPics, setCompactLinkPics] = useState<boolean>()
 	const toggleCompactLinkPics = () => {
-		setCompactLinkPics((c) => !c)
+		setCompactLinkPics(c => !c)
 	}
 	const [preferSideBySide, setPreferSideBySide] = useState<boolean>()
 	const [disableSideBySide, setDisableSideBySide] = useState<boolean>()
 	const togglePreferSideBySide = () => {
-		setPreferSideBySide((p) => {
+		setPreferSideBySide(p => {
 			if (!p) setDisableSideBySide(false)
 			return !p
 		})
 	}
 	const toggleDisableSideBySide = () => {
-		setDisableSideBySide((p) => {
+		setDisableSideBySide(p => {
 			if (!p) setPreferSideBySide(false)
 			return !p
 		})
 	}
 	const [autoCollapseComments, setAutoCollapseComments] = useState<boolean>()
 	const toggleAutoCollapseComments = () => {
-		setAutoCollapseComments((a) => !a)
+		setAutoCollapseComments(a => !a)
 	}
 
 	const [collapseChildrenOnly, setCollapseChildrenOnly] = useState<boolean>()
-	const [defaultCollapseChildren, setDefaultCollapseChildren] = useState<boolean>()
+	const [defaultCollapseChildren, setDefaultCollapseChildren] =
+		useState<boolean>()
 	const [ribbonCollapseOnly, setRibbonCollapseOnly] = useState<boolean>()
 	const [showUserIcons, setShowUserIcons] = useState<boolean>()
 	const [showAwardings, setShowAwardings] = useState<boolean>()
@@ -112,48 +113,48 @@ export const MainProvider = ({ children }) => {
 	const [autoPlayMode, setAutoPlayMode] = useState<boolean>()
 	const [defaultSortComments, setDefaultSortComments] = useState<string>()
 	const toggleRibbonCollapseOnly = () => {
-		setRibbonCollapseOnly((c) => !c)
+		setRibbonCollapseOnly(c => !c)
 	}
 	const toggleDefaultCollapseChildren = () => {
-		setDefaultCollapseChildren((d) => !d)
+		setDefaultCollapseChildren(d => !d)
 	}
 	const toggleCollapseChildrenOnly = () => {
 		if (!defaultCollapseChildren) {
-			setCollapseChildrenOnly((d) => !d)
+			setCollapseChildrenOnly(d => !d)
 		}
 	}
 	useEffect(() => {
 		defaultCollapseChildren && setCollapseChildrenOnly(true)
 	}, [defaultCollapseChildren])
 	const toggleShowUserIcons = () => {
-		setShowUserIcons((s) => !s)
+		setShowUserIcons(s => !s)
 	}
 	const toggleShowAwardings = () => {
-		setShowAwardings((s) => !s)
+		setShowAwardings(s => !s)
 	}
 	const toggleShowFlairs = () => {
-		setShowFlairs((s) => !s)
+		setShowFlairs(s => !s)
 	}
 	const toggleShowUserFlairs = () => {
-		setShowUserFlairs((s) => !s)
+		setShowUserFlairs(s => !s)
 	}
 	const toggleExpandedSubPane = () => {
-		setExpandedSubPane((e) => !e)
+		setExpandedSubPane(e => !e)
 	}
 	const toggleInfiniteLoading = () => {
-		setInfinitLoading((i) => !i)
+		setInfinitLoading(i => !i)
 	}
 	const toggleDimRead = () => {
-		setDimRead((d) => !d)
+		setDimRead(d => !d)
 	}
 	const toggleAutoRead = () => {
-		setAutoRead((r) => !r)
+		setAutoRead(r => !r)
 	}
 	const toggleAutoSeen = () => {
-		setAutoSeen((r) => !r)
+		setAutoSeen(r => !r)
 	}
 	const toggleDisableEmbeds = () => {
-		setDisableEmbeds((d) => {
+		setDisableEmbeds(d => {
 			if (!d) {
 				setPreferEmbeds(false)
 				setEmbedsEveryWhere(false)
@@ -162,7 +163,7 @@ export const MainProvider = ({ children }) => {
 		})
 	}
 	const togglePreferEmbeds = () => {
-		setPreferEmbeds((p) => {
+		setPreferEmbeds(p => {
 			if (!p) {
 				setDisableEmbeds(false)
 			}
@@ -170,7 +171,7 @@ export const MainProvider = ({ children }) => {
 		})
 	}
 	const toggleEmbedsEverywhere = () => {
-		setEmbedsEveryWhere((e) => {
+		setEmbedsEveryWhere(e => {
 			if (!e) {
 				setDisableEmbeds(false)
 			}
@@ -178,13 +179,13 @@ export const MainProvider = ({ children }) => {
 		})
 	}
 	const toggleAutoHideNav = () => {
-		setAutoHideNav((p) => !p)
+		setAutoHideNav(p => !p)
 	}
 
 	//toggle for type of posts to show in saved screen
 	const [userPostType, setUserPostType] = useState('links')
 	const toggleUserPostType = () => {
-		setUserPostType((p) => {
+		setUserPostType(p => {
 			if (p === 'links') return 'comments'
 			return 'links'
 		})
@@ -196,14 +197,14 @@ export const MainProvider = ({ children }) => {
 		try {
 			await localRead.clear()
 			setReadPosts({})
-			setReadPostsChange((n) => n + 1)
+			setReadPostsChange(n => n + 1)
 			return true
 		} catch (_err) {
 			return false
 		}
 	}
 	const bulkAddReadPosts = (posts: { postId; numComments }[]) => {
-		setReadPosts((read) => {
+		setReadPosts(read => {
 			const now = new Date()
 			const updatedRead = {}
 			posts.forEach(({ postId, numComments }) => {
@@ -220,12 +221,12 @@ export const MainProvider = ({ children }) => {
 
 			return updatedRead
 		})
-		setReadPostsChange((n) => n + 1)
+		setReadPostsChange(n => n + 1)
 	}
 	const addReadPost = ({ postId, numComments }) => {
 		localRead.setItem(postId, { postId, numComments, time: new Date() })
-		setReadPosts((read) => {
-			setReadPostsChange((n) => n + 1)
+		setReadPosts(read => {
+			setReadPostsChange(n => n + 1)
 
 			if (Object.keys(read).length < 10000) {
 				read[postId] = { postId, numComments, time: new Date() }
@@ -239,7 +240,7 @@ export const MainProvider = ({ children }) => {
 		})
 	}
 	const toggleReadPost = async ({ postId, numComments }) => {
-		setReadPosts((read) => {
+		setReadPosts(read => {
 			if (read?.[postId]) {
 				localRead.removeItem(postId)
 				delete read[postId]
@@ -247,7 +248,7 @@ export const MainProvider = ({ children }) => {
 				read[postId] = { postId, numComments, time: new Date() }
 				localRead.setItem(postId, { postId, numComments, time: new Date() })
 			}
-			setReadPostsChange((n) => n + 1)
+			setReadPostsChange(n => n + 1)
 
 			return read
 		})
@@ -278,13 +279,13 @@ export const MainProvider = ({ children }) => {
 	const [replyFocus, setReplyFocus] = useState(false)
 	/*To keep subreddit/user filters responsive */
 	const [updateFilters, setUpdateFilters] = useState(0)
-	const toggleFilter = (filter) => {
+	const toggleFilter = filter => {
 		switch (filter) {
 			case 'seen':
-				setSeenFilter((r) => !r)
+				setSeenFilter(r => !r)
 				break
 			case 'read':
-				setReadFilter((r) => !r)
+				setReadFilter(r => !r)
 				break
 			case 'images':
 				//toggle off orientation filters if no videos and images
@@ -293,11 +294,16 @@ export const MainProvider = ({ children }) => {
 					setImgLandScapeFilter(false)
 				}
 				//toggle orientation filters on automatically if enabling images
-				if (imgFilter === false && vidFilter === false && imgPortraitFilter === false && imgLandscapeFilter === false) {
+				if (
+					imgFilter === false &&
+					vidFilter === false &&
+					imgPortraitFilter === false &&
+					imgLandscapeFilter === false
+				) {
 					setImgPortraitFilter(true)
 					setImgLandScapeFilter(true)
 				}
-				setImgFilter((i) => !i)
+				setImgFilter(i => !i)
 				break
 			case 'videos':
 				//toggle off orientation filters if no videos and images
@@ -306,27 +312,36 @@ export const MainProvider = ({ children }) => {
 					setImgLandScapeFilter(false)
 				}
 				//toggle orientation filter on automatically if enabling videos
-				if (vidFilter === false && imgFilter === false && imgPortraitFilter === false && imgLandscapeFilter === false) {
+				if (
+					vidFilter === false &&
+					imgFilter === false &&
+					imgPortraitFilter === false &&
+					imgLandscapeFilter === false
+				) {
 					setImgPortraitFilter(true)
 					setImgLandScapeFilter(true)
 				}
-				setVidFilter((v) => !v)
+				setVidFilter(v => !v)
 				break
 			case 'galleries':
-				setGalFilter((g) => !g)
+				setGalFilter(g => !g)
 				break
 			case 'self':
-				setSelfFilter((s) => !s)
+				setSelfFilter(s => !s)
 				break
 			case 'links':
-				setLinkFilter((l) => !l)
+				setLinkFilter(l => !l)
 				break
 			case 'score':
-				setScoreFilter((s) => !s)
+				setScoreFilter(s => !s)
 				break
 			case 'portrait':
 				//if orientation toggled on and video+images toggled off, toggle them on
-				if (imgPortraitFilter === false && imgFilter === false && vidFilter === false) {
+				if (
+					imgPortraitFilter === false &&
+					imgFilter === false &&
+					vidFilter === false
+				) {
 					setImgFilter(true)
 					setVidFilter(true)
 				}
@@ -335,11 +350,15 @@ export const MainProvider = ({ children }) => {
 					setImgFilter(false)
 					setVidFilter(false)
 				}
-				setImgPortraitFilter((p) => !p)
+				setImgPortraitFilter(p => !p)
 				break
 			case 'landscape':
 				//if orientation toggled on and video+images toggled off, toggle them on
-				if (imgLandscapeFilter === false && imgFilter === false && vidFilter === false) {
+				if (
+					imgLandscapeFilter === false &&
+					imgFilter === false &&
+					vidFilter === false
+				) {
 					setImgFilter(true)
 					setVidFilter(true)
 				}
@@ -348,7 +367,7 @@ export const MainProvider = ({ children }) => {
 					setImgFilter(false)
 					setVidFilter(false)
 				}
-				setImgLandScapeFilter((l) => !l)
+				setImgLandScapeFilter(l => !l)
 				break
 		}
 	}
@@ -369,7 +388,7 @@ export const MainProvider = ({ children }) => {
 		//need filtersapplied number to be unique each time filters are applied to prevent shortening items array for Masonic when react-query updates stale feed
 		//positive will be used to determine if any filters are active
 
-		setApplyFilters((f) => {
+		setApplyFilters(f => {
 			//any filter on
 			const {
 				seenFilter,
@@ -396,12 +415,12 @@ export const MainProvider = ({ children }) => {
 			}
 			return (Math.abs(f) + 1) * -1
 		})
-		setProgressKey((p) => p + 1)
+		setProgressKey(p => p + 1)
 	}
 
 	const updateLikes = (i, like) => {
 		if (posts?.[i]?.data) {
-			setPosts((p) => {
+			setPosts(p => {
 				p[i].data.likes = like
 				return p
 			})
@@ -410,7 +429,7 @@ export const MainProvider = ({ children }) => {
 
 	const updateSaves = (i, save) => {
 		if (posts?.[i]?.data) {
-			setPosts((p) => {
+			setPosts(p => {
 				p[i].data.saved = save
 				return p
 			})
@@ -419,7 +438,7 @@ export const MainProvider = ({ children }) => {
 	const updateHidden = (i, hidden) => {
 		const p = posts
 		if (p?.[i]?.data) {
-			setPosts((p) => {
+			setPosts(p => {
 				p[i].data.hidden = hidden
 				return p
 			})
@@ -430,21 +449,21 @@ export const MainProvider = ({ children }) => {
 	const [localFavoriteSubs, setLocalFavoriteSubs] = useState([])
 	const subToSub = async (action, sub) => {
 		if (action === 'sub') {
-			return await addLocalSub(sub)
+			return addLocalSub(sub)
 		} else if (action === 'unsub') {
-			return await removeLocalSub(sub)
+			return removeLocalSub(sub)
 		} else return false
 	}
-	const addLocalSub = async (sub) => {
-		const found = localSubs.find((s) => s?.toUpperCase() === sub?.toUpperCase())
+	const addLocalSub = async sub => {
+		const found = localSubs.find(s => s?.toUpperCase() === sub?.toUpperCase())
 		if (!found) {
-			setLocalSubs((p) => [...p, sub])
+			setLocalSubs(p => [...p, sub])
 		}
 		return true
 	}
-	const removeLocalSub = async (sub) => {
-		setLocalSubs((p) => {
-			const filtered = p.filter((s) => s?.toUpperCase() !== sub?.toUpperCase())
+	const removeLocalSub = async sub => {
+		setLocalSubs(p => {
+			const filtered = p.filter(s => s?.toUpperCase() !== sub?.toUpperCase())
 			if (!(filtered.length > 0)) {
 				localStorage.removeItem('localSubs')
 				localForage.setItem('localSubs', [])
@@ -455,13 +474,17 @@ export const MainProvider = ({ children }) => {
 	}
 	const favoriteLocalSub = async (makeFavorite, subname) => {
 		if (makeFavorite === true) {
-			const found = localFavoriteSubs.find((s) => s?.toUpperCase() === subname?.toUpperCase())
+			const found = localFavoriteSubs.find(
+				s => s?.toUpperCase() === subname?.toUpperCase()
+			)
 			if (!found) {
-				setLocalFavoriteSubs((p) => [...p, subname])
+				setLocalFavoriteSubs(p => [...p, subname])
 			}
 		} else {
-			setLocalFavoriteSubs((p) => {
-				const filtered = p.filter((s) => s?.toUpperCase() !== subname?.toUpperCase())
+			setLocalFavoriteSubs(p => {
+				const filtered = p.filter(
+					s => s?.toUpperCase() !== subname?.toUpperCase()
+				)
 				if (!(filtered.length > 0)) {
 					localForage.setItem('localFavoriteSubs', [])
 				}
@@ -471,16 +494,16 @@ export const MainProvider = ({ children }) => {
 	}
 
 	const toggleAudioOnHover = () => {
-		setaudioOnHover((a) => !a)
+		setaudioOnHover(a => !a)
 	}
 
 	const toggleMediaOnly = () => {
-		setMediaOnly((m) => !m)
+		setMediaOnly(m => !m)
 	}
 
 	//syncs wideui and savedwide ui
 	const toggleWideUI = () => {
-		setSaveWideUI((w) => {
+		setSaveWideUI(w => {
 			setWideUI(!w)
 			syncWideUI && setPostWideUI(!w)
 			return !w
@@ -488,11 +511,11 @@ export const MainProvider = ({ children }) => {
 	}
 	//to force refresh feed so width set properly when in one column mode
 	useEffect(() => {
-		cardStyle !== 'row1' && columnOverride === 1 && setFastRefresh((f) => f + 1)
+		cardStyle !== 'row1' && columnOverride === 1 && setFastRefresh(f => f + 1)
 	}, [wideUI])
 
 	const toggleSyncWideUI = () => {
-		setSyncWideUI((w) => {
+		setSyncWideUI(w => {
 			if (!w) {
 				setPostWideUI(saveWideUI)
 			}
@@ -501,20 +524,20 @@ export const MainProvider = ({ children }) => {
 	}
 
 	const togglePostWideUI = () => {
-		setPostWideUI((w) => !w)
+		setPostWideUI(w => !w)
 	}
 
 	const toggleNSFW = () => {
-		setNSFW((prevNSFW) => !prevNSFW)
+		setNSFW(prevNSFW => !prevNSFW)
 	}
 	const toggleHoverPlay = () => {
-		setHoverPlay((a) => !a)
+		setHoverPlay(a => !a)
 	}
 	const toggleAutoplay = () => {
-		setAutoplay((a) => !a)
+		setAutoplay(a => !a)
 	}
 	const toggleLoginModal = () => {
-		setLoginModal((m) => !m)
+		setLoginModal(m => !m)
 	}
 
 	useEffect(() => {
@@ -541,7 +564,9 @@ export const MainProvider = ({ children }) => {
 				} else {
 					fallback = true
 					const local_autoplay = localStorage.getItem('autoplay')
-					local_autoplay?.includes('true') ? setAutoplay(true) : setAutoplay(false)
+					local_autoplay?.includes('true')
+						? setAutoplay(true)
+						: setAutoplay(false)
 				}
 			}
 
@@ -553,7 +578,9 @@ export const MainProvider = ({ children }) => {
 				} else {
 					fallback = true
 					const local_hoverplay = localStorage.getItem('hoverplay')
-					local_hoverplay?.includes('true') ? setHoverPlay(true) : setHoverPlay(false)
+					local_hoverplay?.includes('true')
+						? setHoverPlay(true)
+						: setHoverPlay(false)
 				}
 			}
 
@@ -565,43 +592,61 @@ export const MainProvider = ({ children }) => {
 				} else {
 					fallback = true
 					const local_mediaOnly = localStorage.getItem('mediaOnly')
-					local_mediaOnly?.includes('true') ? setMediaOnly(true) : setMediaOnly(false)
+					local_mediaOnly?.includes('true')
+						? setMediaOnly(true)
+						: setMediaOnly(false)
 				}
 			}
 
 			const audioOnHover = async () => {
 				const saved_audioOnHover = await localForage.getItem('audioOnHover')
 				if (saved_audioOnHover !== null) {
-					saved_audioOnHover === true ? setaudioOnHover(true) : setaudioOnHover(false)
+					saved_audioOnHover === true
+						? setaudioOnHover(true)
+						: setaudioOnHover(false)
 					localStorage.removeItem('audioOnHover')
 				} else {
 					fallback = true
 					const local_audioOnHover = localStorage.getItem('audioOnHover')
-					local_audioOnHover?.includes('true') ? setaudioOnHover(true) : setaudioOnHover(false)
+					local_audioOnHover?.includes('true')
+						? setaudioOnHover(true)
+						: setaudioOnHover(false)
 				}
 			}
 
 			const columnOverride = async () => {
-				const saved_columnOverride: number = await localForage.getItem('columnOverride')
+				const saved_columnOverride: number = await localForage.getItem(
+					'columnOverride'
+				)
 				if (saved_columnOverride !== null) {
-					saved_columnOverride > 0 ? setColumnOverride(saved_columnOverride) : setColumnOverride(0)
+					saved_columnOverride > 0
+						? setColumnOverride(saved_columnOverride)
+						: setColumnOverride(0)
 					localStorage.removeItem('columnOverride')
 				} else {
 					fallback = true
-					const local_columnOverride = parseInt(localStorage.getItem('columnOverride'))
-					local_columnOverride > 0 ? setColumnOverride(local_columnOverride) : setColumnOverride(0)
+					const local_columnOverride = parseInt(
+						localStorage.getItem('columnOverride')
+					)
+					local_columnOverride > 0
+						? setColumnOverride(local_columnOverride)
+						: setColumnOverride(0)
 				}
 			}
 
 			const savedWideUI = async () => {
 				const saved_saveWideUI = await localForage.getItem('saveWideUI')
 				if (saved_saveWideUI !== null) {
-					saved_saveWideUI === false ? setSaveWideUI(false) : setSaveWideUI(true)
+					saved_saveWideUI === false
+						? setSaveWideUI(false)
+						: setSaveWideUI(true)
 					localStorage.removeItem('saveWideUI')
 				} else {
 					fallback = true
 					const local_saveWideUI = localStorage.getItem('saveWideUI')
-					local_saveWideUI?.includes('false') ? setSaveWideUI(false) : setSaveWideUI(true)
+					local_saveWideUI?.includes('false')
+						? setSaveWideUI(false)
+						: setSaveWideUI(true)
 				}
 			}
 
@@ -624,12 +669,16 @@ export const MainProvider = ({ children }) => {
 			const postWideUI = async () => {
 				const saved_postWideUI = await localForage.getItem('postWideUI')
 				if (saved_postWideUI !== null) {
-					saved_postWideUI === false ? setPostWideUI(false) : setPostWideUI(true)
+					saved_postWideUI === false
+						? setPostWideUI(false)
+						: setPostWideUI(true)
 					localStorage.removeItem('postWideUI')
 				} else {
 					fallback = true
 					const local_postWideUI = localStorage.getItem('postWideUI')
-					local_postWideUI?.includes('false') ? setPostWideUI(false) : setPostWideUI(true)
+					local_postWideUI?.includes('false')
+						? setPostWideUI(false)
+						: setPostWideUI(true)
 				}
 			}
 
@@ -653,7 +702,9 @@ export const MainProvider = ({ children }) => {
 				} else {
 					fallback = true
 					const local_cardStyle = localStorage.getItem('cardStyle')
-					local_cardStyle?.length > 0 ? setCardStyle(saved_cardStyle) : setCardStyle('default')
+					local_cardStyle?.length > 0
+						? setCardStyle(saved_cardStyle)
+						: setCardStyle('default')
 				}
 			}
 
@@ -709,7 +760,9 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const loadImgPortraitFilter = async () => {
-				const saved_imgPortraitFilter = await localForage.getItem('imgPortraitFilter')
+				const saved_imgPortraitFilter = await localForage.getItem(
+					'imgPortraitFilter'
+				)
 				if (saved_imgPortraitFilter !== null) {
 					if (saved_imgPortraitFilter === false) {
 						filters.imgPortraitFilter = false
@@ -720,7 +773,8 @@ export const MainProvider = ({ children }) => {
 					localStorage.removeItem('imgPortraitFilter')
 				} else {
 					fallback = true
-					const local_imgPortraitFilter = localStorage.getItem('imgPortraitFilter')
+					const local_imgPortraitFilter =
+						localStorage.getItem('imgPortraitFilter')
 					if (local_imgPortraitFilter?.includes('false')) {
 						setImgPortraitFilter(false)
 						filters.imgPortraitFilter = false
@@ -731,7 +785,9 @@ export const MainProvider = ({ children }) => {
 			}
 
 			const loadImgLandscapeFilter = async () => {
-				const saved_imgLandscapeFilter = await localForage.getItem('imgLandscapeFilter')
+				const saved_imgLandscapeFilter = await localForage.getItem(
+					'imgLandscapeFilter'
+				)
 				if (saved_imgLandscapeFilter !== null) {
 					if (saved_imgLandscapeFilter === false) {
 						filters.imgLandscapeFilter = false
@@ -742,7 +798,8 @@ export const MainProvider = ({ children }) => {
 					localStorage.removeItem('imgLandscapeFilter')
 				} else {
 					fallback = true
-					const local_imgLandscapeFilter = localStorage.getItem('imgLandscapeFilter')
+					const local_imgLandscapeFilter =
+						localStorage.getItem('imgLandscapeFilter')
 					if (local_imgLandscapeFilter?.includes('false')) {
 						filters.imgLandscapeFilter = false
 						setImgLandScapeFilter(false)
@@ -854,23 +911,39 @@ export const MainProvider = ({ children }) => {
 			//new settings don't need localstorage fallback..
 			const loadRibbonCollapseOnly = async () => {
 				const saved = await localForage.getItem('ribbonCollapseOnly')
-				saved === true ? setRibbonCollapseOnly(true) : setRibbonCollapseOnly(false)
+				saved === true
+					? setRibbonCollapseOnly(true)
+					: setRibbonCollapseOnly(false)
 			}
 			const loadCollapseChildrenOnly = async () => {
-				const saved_collapseChildrenOnly = await localForage.getItem('collapseChildrenOnly')
-				saved_collapseChildrenOnly === true ? setCollapseChildrenOnly(true) : setCollapseChildrenOnly(false)
+				const saved_collapseChildrenOnly = await localForage.getItem(
+					'collapseChildrenOnly'
+				)
+				saved_collapseChildrenOnly === true
+					? setCollapseChildrenOnly(true)
+					: setCollapseChildrenOnly(false)
 			}
 			const loadDefaultCollapseChildren = async () => {
-				const saved_defaultCollapseChildren = await localForage.getItem('defaultCollapseChildren')
-				saved_defaultCollapseChildren === true ? setDefaultCollapseChildren(true) : setDefaultCollapseChildren(false)
+				const saved_defaultCollapseChildren = await localForage.getItem(
+					'defaultCollapseChildren'
+				)
+				saved_defaultCollapseChildren === true
+					? setDefaultCollapseChildren(true)
+					: setDefaultCollapseChildren(false)
 			}
 			const loadShowUserIcons = async () => {
-				const saved_loadShowUserIcons = await localForage.getItem('showUserIcons')
-				saved_loadShowUserIcons === false ? setShowUserIcons(false) : setShowUserIcons(true)
+				const saved_loadShowUserIcons = await localForage.getItem(
+					'showUserIcons'
+				)
+				saved_loadShowUserIcons === false
+					? setShowUserIcons(false)
+					: setShowUserIcons(true)
 			}
 			const loadShowAwardings = async () => {
 				const saved_showAwardings = await localForage.getItem('showAwardings')
-				saved_showAwardings === false ? setShowAwardings(false) : setShowAwardings(true)
+				saved_showAwardings === false
+					? setShowAwardings(false)
+					: setShowAwardings(true)
 			}
 			const loadShowFlairs = async () => {
 				const saved_showFlairs = await localForage.getItem('showFlairs')
@@ -878,7 +951,9 @@ export const MainProvider = ({ children }) => {
 			}
 			const loadShowUserFlairs = async () => {
 				const saved_showUserFlairs = await localForage.getItem('showUserFlairs')
-				saved_showUserFlairs === false ? setShowUserFlairs(false) : setShowUserFlairs(true)
+				saved_showUserFlairs === false
+					? setShowUserFlairs(false)
+					: setShowUserFlairs(true)
 			}
 			const loadExpandedSubPane = async () => {
 				const saved = await localForage.getItem('expandedSubPane')
@@ -919,7 +994,9 @@ export const MainProvider = ({ children }) => {
 			}
 			const autoRefreshComments = async () => {
 				const saved = await localForage.getItem('autoRefreshComments')
-				saved === false ? setAutoRefreshComments(false) : setAutoRefreshComments(true)
+				saved === false
+					? setAutoRefreshComments(false)
+					: setAutoRefreshComments(true)
 			}
 			const askToUpdateFeed = async () => {
 				const saved = await localForage.getItem('askToUpdateFeed')
@@ -938,7 +1015,9 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const fastRefreshInterval = async () => {
-				const saved = (await localForage.getItem('fastRefreshInterval')) as number
+				const saved = (await localForage.getItem(
+					'fastRefreshInterval'
+				)) as number
 				if (typeof saved === 'number' && saved >= 10 * 1000) {
 					setFastRefreshInterval(saved)
 				} else {
@@ -946,7 +1025,9 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const slowRefreshInterval = async () => {
-				const saved = (await localForage.getItem('slowRefreshInterval')) as number
+				const saved = (await localForage.getItem(
+					'slowRefreshInterval'
+				)) as number
 				if (typeof saved === 'number' && saved >= 10 * 1000) {
 					setSlowRefreshInterval(saved)
 				} else {
@@ -954,7 +1035,9 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const defaultSortComments = async () => {
-				const saved = (await localForage.getItem('defaultSortComments')) as string
+				const saved = (await localForage.getItem(
+					'defaultSortComments'
+				)) as string
 				if (typeof saved === 'string') {
 					setDefaultSortComments(saved)
 				} else {
@@ -970,7 +1053,9 @@ export const MainProvider = ({ children }) => {
 				}
 			}
 			const waitForVidInterval = async () => {
-				const saved = (await localForage.getItem('waitForVidInterval')) as boolean
+				const saved = (await localForage.getItem(
+					'waitForVidInterval'
+				)) as boolean
 				if (saved === false) {
 					setWaitForVidInterval(false)
 				} else {

@@ -1,23 +1,21 @@
-import DropdownPane from './DropdownPane'
-import Search from './Search'
+import { useWindowWidth } from '@react-hook/window-size'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { usePlausible } from 'next-plausible'
 import React, { useEffect, useState } from 'react'
-
+import { AiOutlineSearch } from 'react-icons/ai'
+import { CgMenu } from 'react-icons/cg'
+import useNavBarScrollHelper from '../hooks/useNavBarScrollHelper'
+import useRefresh from '../hooks/useRefresh'
+import { useMainContext } from '../MainContext'
+import DropdownPane from './DropdownPane'
 import NavMenu from './NavMenu'
+import Search from './Search'
 import NavMessage from './NavMessage'
 import SideNav from './SideNav'
 import SortMenu from './SortMenu'
-import { useRouter } from 'next/router'
-import { CgMenu } from 'react-icons/cg'
-
-import { useMainContext } from '../MainContext'
-import useNavBarScrollHelper from '../hooks/useNavBarScrollHelper'
-import useRefresh from '../hooks/useRefresh'
 import FilterMenu from './FilterMenu'
 import LoginProfile from './LoginProfile'
-import { useWindowWidth } from '@react-hook/window-size'
-import { usePlausible } from 'next-plausible'
-import { AiOutlineSearch } from 'react-icons/ai'
 
 const NavBar = ({ toggleSideNav = 0 }) => {
 	const context: any = useMainContext()
@@ -87,7 +85,10 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 			setHidden(true)
 			setallowHide(true)
 			setAllowShow(false)
-		} else if (context?.mediaMode === false && router.pathname !== '/download') {
+		} else if (
+			context?.mediaMode === false &&
+			router.pathname !== '/download'
+		) {
 			setHidden(false)
 			setAllowShow(true)
 		} else if (router.pathname !== '/download') {
@@ -96,7 +97,7 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 	}, [context.mediaMode])
 
 	useEffect(() => {
-		const updateMousePosition = (ev) => {
+		const updateMousePosition = ev => {
 			//console.log({ x: ev.clientX, y: ev.clientY });
 			if (allowShow && ev.clientY < 100) {
 				setHidden(false)
@@ -117,30 +118,38 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 			<header
 				className={`${
 					hidden ? '-translate-y-full' : ' translate-y-0 '
-				} z-50 fixed top-0 transition ease-in-out transform  w-screen  ${hidden ? ' duration-500' : ' duration-200'}`}
+				} z-50 fixed top-0 transition ease-in-out transform  w-screen  ${
+					hidden ? ' duration-500' : ' duration-200'
+				}`}
 			>
 				{/* <NavMessage hide={router.asPath?.includes('/comments/')} timeSinceNav={timeSinceNav} /> */}
 				<SideNav visible={sidebarVisible} toggle={setSidebarVisible} />
-				<nav className='relative flex flex-row items-center flex-grow h-12 shadow-lg bg-th-background2 md:justify-between '>
+				<nav className="relative flex flex-row items-center flex-grow h-12 shadow-lg bg-th-background2 md:justify-between ">
 					<CgMenu
-						className='flex-none w-10 h-10 cursor-pointer md:hidden'
+						className="flex-none w-10 h-10 cursor-pointer md:hidden"
 						onClick={() => {
-							setSidebarVisible((vis) => !vis)
+							setSidebarVisible(vis => !vis)
 							// plausible("sidenav");
 						}}
 					/>
-					<div className='flex flex-row items-center justify-start h-full mr-2 space-x-2'>
-						<Link href='/' passHref>
-							<h1 className='ml-2 text-2xl align-middle cursor-pointer select-none' onClick={homeClick}>
+					<div className="flex flex-row items-center justify-start h-full mr-2 space-x-2">
+						<Link href="/" passHref>
+							<h1
+								className="ml-2 text-2xl align-middle cursor-pointer select-none"
+								onClick={homeClick}
+							>
 								{'troddit'}
 							</h1>
 						</Link>
 
-						<div className='flex-none hidden h-full py-1.5 md:block w-60' onClick={() => plausible('dropdownPane')}>
+						<div
+							className="flex-none hidden h-full py-1.5 md:block w-60"
+							onClick={() => plausible('dropdownPane')}
+						>
 							<DropdownPane hide={hidden} />
 						</div>
 					</div>
-					<div className='hidden w-full h-full py-1.5 max-w-5xl md:block'>
+					<div className="hidden w-full h-full py-1.5 max-w-5xl md:block">
 						<Search id={'subreddit search main'} />
 					</div>
 					<div
@@ -151,46 +160,57 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 						}`}
 					>
 						{showSearch && (
-							<Search id={'subreddit search main'} setShowSearch={windowWidth < 1024 ? setShowSearch : (_a) => {}} />
+							<Search
+								id={'subreddit search main'}
+								setShowSearch={windowWidth < 1024 ? setShowSearch : _a => {}}
+							/>
 						)}
 					</div>
-					<div className='flex flex-row items-center justify-end h-full py-1.5 ml-auto mr-2 space-x-1 md:ml-2'>
+					<div className="flex flex-row items-center justify-end h-full py-1.5 ml-auto mr-2 space-x-1 md:ml-2">
 						<button
 							disabled={mounted && windowWidth > 768}
-							aria-label='show search'
+							aria-label="show search"
 							className={
 								'flex md:hidden items-center justify-center flex-none w-10 h-full border border-transparent rounded-md outline-none hover:border-th-border '
 							}
-							onClick={(e) => {
+							onClick={e => {
 								e.preventDefault()
 								e.stopPropagation()
-								setShowSearch((s) => !s)
+								setShowSearch(s => !s)
 							}}
 						>
-							<AiOutlineSearch className='flex-none w-6 h-6' />
+							<AiOutlineSearch className="flex-none w-6 h-6" />
 						</button>
-						<div className='w-20 h-full'>
+						<div className="w-20 h-full">
 							<SortMenu hide={hidden} />
 						</div>
-						<div className='flex flex-row items-center w-10 h-full mr-2 ' onClick={() => plausible('filters')}>
+						<div
+							className="flex flex-row items-center w-10 h-full mr-2 "
+							onClick={() => plausible('filters')}
+						>
 							<FilterMenu hide={hidden} />
 						</div>
 						<div
-							className={'hidden w-20 h-full border  hover:border-th-border border-transparent rounded-md md:block'}
+							className={
+								'hidden w-20 h-full border  hover:border-th-border border-transparent rounded-md md:block'
+							}
 							//onClick={() => plausible("login")}
 						>
 							<LoginProfile />
 						</div>
 
-						<div className='flex flex-row items-center w-10 h-full mr-2 ' onClick={() => plausible('options')}>
+						<div
+							className="flex flex-row items-center w-10 h-full mr-2 "
+							onClick={() => plausible('options')}
+						>
 							<NavMenu hide={hidden} />
 						</div>
 					</div>
 				</nav>
 				{fetchingCount > 0 && (
-					<div className='relative'>
-						<div className='absolute top-0 z-40 w-screen h-1 bg-th-accent animate-pulse' />
-						<div className='absolute top-0 z-30 w-screen h-1 bg-th-base' />
+					<div className="relative">
+						<div className="absolute top-0 z-40 w-screen h-1 bg-th-accent animate-pulse" />
+						<div className="absolute top-0 z-30 w-screen h-1 bg-th-base" />
 					</div>
 				)}
 			</header>
