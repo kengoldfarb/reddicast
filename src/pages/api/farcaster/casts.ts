@@ -27,6 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		const parentUrl = (req.query.parentUrl as string) ?? null
 		const after = (req.query.after as string) ?? null
 		const fname = (req.query.fname as string) ?? null
+		const mode = (req.query.mode as string) ?? null
 		let fid: number | undefined
 		if (fname) {
 			const ud = await db
@@ -71,12 +72,35 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			)
 		}
 
-		if (parentUrl) {
+		if (parentUrl === 'popular') {
+			const mostReactions = await db
+				.selectFrom('reactions')
+				.select('targetHash')
+				.select([sql<string>`COUNT(target_hash)`.as('numReactions')])
+				.where('timestamp', '>', DateTime.now().minus({ days: 7 }).toJSDate())
+				.groupBy('targetHash')
+				.orderBy('numReactions', 'desc')
+				.limit(25)
+				.execute()
+			castsPromise = castsPromise.where(
+				'casts.hash',
+				'in',
+				mostReactions.map(r => r.targetHash)
+			)
+		} else if (parentUrl) {
 			castsPromise = castsPromise.where('casts.parentUrl', '=', parentUrl)
 		}
 
 		if (!hash && !parentHash && !parentUrl && !fid) {
 			castsPromise = castsPromise.where('casts.parentUrl', 'is not', null)
+		}
+
+		console.log({ after, mode })
+
+		if (mode === 'submitted') {
+			castsPromise = castsPromise.where('casts.parentHash', 'is', null)
+		} else if (mode === 'comments') {
+			castsPromise = castsPromise.where('casts.parentHash', 'is not', null)
 		}
 
 		if (after) {

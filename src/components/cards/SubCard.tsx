@@ -1,19 +1,18 @@
+import Image from 'next/legacy/image'
+import Link from 'next/link'
+import router from 'next/router'
+import { useSession } from 'next-auth/react'
+import React, { useEffect, useState } from 'react'
+import { BsBoxArrowInUpRight } from 'react-icons/bs'
+import { GrRefresh } from 'react-icons/gr'
+import { IoMdRefresh } from 'react-icons/io'
 import { numToString, secondsToDate } from '../../../lib/utils'
-import { useMainContext } from '../../MainContext'
 import useRefresh from '../../hooks/useRefresh'
+import { useMainContext } from '../../MainContext'
 import Login from '../Login'
 import SubButton from '../SubButton'
 import SubIcon from '../SubIcon'
 import SubOptButton from '../SubOptButton'
-import { useSession } from 'next-auth/react'
-import Image from 'next/legacy/image'
-import Link from 'next/link'
-import router from 'next/router'
-import React from 'react'
-import { useEffect, useState } from 'react'
-import { BsBoxArrowInUpRight } from 'react-icons/bs'
-import { GrRefresh } from 'react-icons/gr'
-import { IoMdRefresh } from 'react-icons/io'
 
 const SubCard = ({
 	data,
@@ -23,8 +22,10 @@ const SubCard = ({
 	currMulti = undefined,
 	subArray = undefined,
 	openDescription = () => {},
-	isSelf = false
+	isSelf = false,
+	userMode = false
 }) => {
+	console.log({ data })
 	const context: any = useMainContext()
 	const session = useSession()
 	const { invalidateKey, refreshCurrent } = useRefresh()
@@ -85,25 +86,37 @@ const SubCard = ({
 
 	const main = (
 		<div
-			className={`relative  transition-colors bg-contain border  shadow-md bg-th-post  ${tall ? '  ' : ' rounded-lg '}${
+			className={`relative  transition-colors bg-contain border  shadow-md bg-th-post  ${
+				tall ? '  ' : ' rounded-lg '
+			}${
 				tall
 					? ' border-transparent  border-b-th-border '
 					: ' group hover:bg-th-postHover border-th-border hover:shadow-2xl  hover:cursor-pointer '
 			}`}
 		>
 			<div
-				className={` absolute  w-full  bg-cover bg-center  ${tall ? ' ' : ' rounded-t-lg '}${
-					tall ? ' h-[121px] border-b ' : ' h-16'
-				}${
-					hideNSFW || (subBanner?.backgroundImage?.length < 9 && subBanner?.backgroundColor?.length < 2)
+				className={` absolute  w-full  bg-cover bg-center  ${
+					tall ? ' ' : ' rounded-t-lg '
+				}${tall ? ' h-[121px] border-b ' : ' h-16'}${
+					hideNSFW ||
+					(subBanner?.backgroundImage?.length < 9 &&
+						subBanner?.backgroundColor?.length < 2)
 						? '  bg-th-scrollbar '
 						: ''
 				}`}
 				style={hideNSFW ? {} : subBanner}
 			/>
 
-			<div className={`flex flex-col my-2 ${tall ? ' md:h-40 mx-6 md:mx-16 ' : '  h-24  mx-2 '}`}>
-				<div className={`flex  ${tall ? ' mt-[4.5rem] flex-col md:flex-row ' : ' mt-6 flex-row'}`}>
+			<div
+				className={`flex flex-col my-2 ${
+					tall ? ' md:h-40 mx-6 md:mx-16 ' : '  h-24  mx-2 '
+				}`}
+			>
+				<div
+					className={`flex  ${
+						tall ? ' mt-[4.5rem] flex-col md:flex-row ' : ' mt-6 flex-row'
+					}`}
+				>
 					<div
 						className={`z-20 flex-none  border-4 hover:cursor-pointer rounded-full bg-th-post ${
 							tall ? ' -mt-2 w-24 h-24 mx-auto md:mx-0' : ' w-16 h-16'
@@ -115,11 +128,11 @@ const SubCard = ({
 						{thumbURL?.includes('https') && !hideNSFW ? (
 							<Image
 								src={thumbURL}
-								alt=''
+								alt=""
 								height={data?.data?.icon_size?.[0] ?? 256}
 								width={data?.data?.icon_size?.[1] ?? 256}
 								unoptimized={true}
-								objectFit='cover'
+								objectFit="cover"
 								className={'rounded-full '}
 							/>
 						) : (
@@ -129,16 +142,23 @@ const SubCard = ({
 									' w-full h-full  text-white text-6xl overflow-hidden items-center justify-center flex relative '
 								}
 							>
-								{data?.kind === 't2' ? 'u/' : data?.kind === 't5' ? 'r/' : ' '}
+								{data?.kind === 't2' || userMode
+									? 'u/'
+									: data?.kind === 't5'
+									? 'r/'
+									: ' '}
 								{hideNSFW && (
-									<span className='absolute right-0 opacity-70 ' style={{ fontSize: '0.5rem' }}>
+									<span
+										className="absolute right-0 opacity-70 "
+										style={{ fontSize: '0.5rem' }}
+									>
 										{'18+'}
 									</span>
 								)}
 							</div>
 						)}
 					</div>
-					<div className='flex flex-col '>
+					<div className="flex flex-col ">
 						<div
 							className={`z-10 flex flex-row mx-auto    space-x-2  pl-auto bg-th-post ${
 								tall
@@ -148,13 +168,19 @@ const SubCard = ({
 						>
 							{loading ? (
 								<>
-									<div className='h-6 w-52' />
+									<div className="h-6 w-52" />
 								</>
 							) : (
 								<>
 									<Link
 										legacyBehavior
-										href={data?.kind === 't2' ? `/u/${data?.data?.name}` : `/r/${data?.data?.display_name}`}
+										href={
+											data?.kind === 't2' || userMode
+												? `/u/${data?.data?.display_name}`
+												: `/r/${encodeURIComponent(
+														data?.data?.display_name
+												  ).toLowerCase()}`
+										}
 										passHref
 									>
 										<a>
@@ -166,51 +192,66 @@ const SubCard = ({
 													!link && data?.kind === 't2'
 														? invalidateKey([
 																'feed',
-																session?.data?.user?.name === data?.data?.name ? 'SELF' : 'USER',
+																session?.data?.user?.name === data?.data?.name
+																	? 'SELF'
+																	: 'USER',
 																data?.data?.name
 														  ])
-														: invalidateKey(['feed', 'SUBREDDIT', data?.data?.display_name]) //context.setForceRefresh((p) => p + 1);
+														: invalidateKey([
+																'feed',
+																'SUBREDDIT',
+																data?.data?.display_name
+														  ]) //context.setForceRefresh((p) => p + 1);
 												}}
 											>
 												{data?.kind === 't2'
 													? `u/${data?.data?.name}`
-													: data?.data?.display_name_prefixed ?? (
-															<div className='w-16 text-transparent'>{'loading..'}</div>
+													: data?.data?.display_name ?? (
+															<div className="w-16 text-transparent">
+																{'loading..'}
+															</div>
 													  )}
 											</h1>
 										</a>
 									</Link>
 									{!link && (data?.data?.url || data?.data?.subreddit?.url) && (
 										<a
-											href={`https://www.reddit.com${data?.data?.url ?? data?.data?.subreddit?.url}`}
+											href={`https://www.reddit.com${
+												data?.data?.url ?? data?.data?.subreddit?.url
+											}`}
 											target={'_blank'}
-											rel='noreferrer'
-											className='mb-3 ml-2 rounded hover:bg-th-postHover'
+											rel="noreferrer"
+											className="mb-3 ml-2 rounded hover:bg-th-postHover"
 										>
-											<BsBoxArrowInUpRight className='w-3 h-3 -ml-1 hover:scale-110 ' />
+											<BsBoxArrowInUpRight className="w-3 h-3 -ml-1 hover:scale-110 " />
 										</a>
 									)}
 
-									<h1 className='text-xs font-semibold pb-0.5'>
-										{data?.kind === 't2' && (data?.data?.comment_karma || data?.data?.link_karma) ? (
+									<h1 className="text-xs font-semibold pb-0.5">
+										{data?.kind === 't2' &&
+										(data?.data?.comment_karma || data?.data?.link_karma) ? (
 											`${numToString(
-												parseInt(data?.data?.comment_karma) + parseInt(data?.data?.link_karma),
+												parseInt(data?.data?.comment_karma) +
+													parseInt(data?.data?.link_karma),
 												1000
 											)} karma`
 										) : data?.data?.subscribers ? (
-											`${data?.data?.subscribers?.toLocaleString('en-US')} members`
+											`${data?.data?.subscribers?.toLocaleString(
+												'en-US'
+											)} members`
 										) : (
 											<div className={'w-40'} />
 										)}
 									</h1>
 									{!link && data?.data?.active_user_count && (
-										<span className='text-xs font-semibold opacity-70 pb-0.5'>
-											{data?.data?.active_user_count?.toLocaleString('en-US')} here
+										<span className="text-xs font-semibold opacity-70 pb-0.5">
+											{data?.data?.active_user_count?.toLocaleString('en-US')}{' '}
+											here
 										</span>
 									)}
 									{(data?.data?.over18 || data?.data?.subreddit?.over_18) && (
 										<>
-											<span className='text-xs text-th-red pb-0.5'>NSFW</span>
+											<span className="text-xs text-th-red pb-0.5">NSFW</span>
 										</>
 									)}
 								</>
@@ -219,16 +260,25 @@ const SubCard = ({
 					</div>
 				</div>
 
-				<div className={`flex flex-row   ${tall ? ' md:ml-[6.25rem]  mt-2  md:-mt-3 ' : ' pl-5 ml-[3.25rem]'}`}>
+				<div
+					className={`flex flex-row   ${
+						tall ? ' md:ml-[6.25rem]  mt-2  md:-mt-3 ' : ' pl-5 ml-[3.25rem]'
+					}`}
+				>
 					<h1
 						className={` text-xs overflow-x-hidden overflow-y-scroll scrollbar-none md:mx-0${
-							tall ? ' text-center md:text-left md:h-8 md:-mt-6 mx-auto ' : ' -mt-6 h-8'
+							tall
+								? ' text-center md:text-left md:h-8 md:-mt-6 mx-auto '
+								: ' -mt-6 h-8'
 						}`}
 					>
-						{data?.data?.subreddit?.public_description ?? data?.data?.public_description}
+						{data?.data?.subreddit?.public_description ??
+							data?.data?.public_description}
 					</h1>
 					<div
-						className={`relative  mb-auto ml-auto mt-[-1.6rem] space-x-1 ${tall ? ' hidden md:flex  flex-row  ' : ' '}`}
+						className={`relative  mb-auto ml-auto mt-[-1.6rem] space-x-1 ${
+							tall ? ' hidden md:flex  flex-row  ' : ' '
+						}`}
 					>
 						{isSelf ? (
 							<div
@@ -239,9 +289,13 @@ const SubCard = ({
 								<Login />
 							</div>
 						) : (
-							<div className='flex-none w-24 h-full ml-2'>
+							<div className="flex-none w-24 h-full ml-2">
 								<SubButton
-									sub={data?.kind === 't5' ? data?.data?.display_name : data?.data?.subreddit?.display_name}
+									sub={
+										data?.kind === 't5'
+											? data?.data?.display_name
+											: data?.data?.subreddit?.display_name
+									}
 									userMode={data?.kind === 't2'}
 								/>
 							</div>
@@ -271,9 +325,13 @@ const SubCard = ({
 								<Login />
 							</div>
 						) : (
-							<div className='w-full'>
+							<div className="w-full">
 								<SubButton
-									sub={data?.kind === 't5' ? data?.data?.display_name : data?.data?.subreddit?.display_name}
+									sub={
+										data?.kind === 't5'
+											? data?.data?.display_name
+											: data?.data?.subreddit?.display_name
+									}
 									userMode={data?.kind === 't2'}
 								/>
 							</div>
@@ -292,15 +350,19 @@ const SubCard = ({
 		</div>
 	)
 
-	if (link)
-		return (
-			<Link
-				legacyBehavior
-				href={data?.kind === 't5' ? data?.data?.url : data?.data?.subreddit?.url?.replace('/user/', '/u/') ?? '/'}
-			>
-				{main}
-			</Link>
-		)
+	// if (link)
+	// 	return (
+	// 		<Link
+	// 			legacyBehavior
+	// 			href={
+	// 				data?.kind === 't5'
+	// 					? data?.data?.url
+	// 					: data?.data?.subreddit?.url?.replace('/user/', '/u/') ?? '/'
+	// 			}
+	// 		>
+	// 			{main}
+	// 		</Link>
+	// 	)
 
 	return <>{main}</>
 }

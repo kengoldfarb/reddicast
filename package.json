@@ -1,5 +1,5 @@
 {
-  "name": "troddit",
+  "name": "@kengoldfarb/reddicast",
   "version": "0.18.0",
   "private": true,
   "scripts": {

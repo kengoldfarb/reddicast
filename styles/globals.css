@@ -23,12 +23,12 @@
   --border2: theme("colors.gray.300");
   --borderHighlight2: theme("colors.gray.400");
   --green: theme("colors.green.600");
-  --upvote: theme("colors.orange.500");
+  --upvote: #8A63D2;
   --downvote: theme("colors.blue.400");
   --red: theme("colors.red.400");
   --scrollbar: theme("colors.blue.400");
-  --link: theme("colors.blue.700");
-  --linkHover: theme("colors.blue.500");
+  --link: #8A63D2;
+  --linkHover: rgba(138, 99, 210, 0.8);
   --commentRibbon: theme("colors.blue.600");
   --commentRibbonHover: theme("colors.blue.400");
   --backgroundComment: theme("colors.white");
@@ -42,8 +42,8 @@
   --textBody: theme("colors.stone.100");
   --textStrong: theme("colors.rose.400");
   --textHeading: theme("colors.stone.200");
-  --accent: #2c8ebb; /*theme('colors.blue.600');*/
-  --base: theme("colors.black");
+  --accent: #8A63D2; /*theme('colors.blue.600');*/
+  --base: #8A63D2;
   --background: #1a1a1b;
   --background2: #1a1a1b;
   --post: #1a1a1b;
@@ -55,12 +55,12 @@
   --border2: theme("colors.trueGray.700");
   --borderHighlight2: theme("colors.trueGray.500");
   --green: #7afbd6;
-  --upvote: theme("colors.orange.500");
+  --upvote: #8A63D2;
   --downvote: theme("colors.blue.400");
-  --scrollbar: #2c8ebb; /*theme('colors.red.800');*/
+  --scrollbar: #8A63D2; /*theme('colors.red.800');*/
   --red: theme("colors.red.700");
-  --link: theme("colors.blue.400");
-  --linkHover: theme("colors.blue.300");
+  --link: #8A63D2;
+  --linkHover: rgba(138, 99, 210, 0.8);
   --commentRibbon: #2c8ebb; /**theme('colors.red.700');**/
   --commentRibbonHover: #00d2f7; /** theme('colors.red.500');**/
   --backgroundComment: #161616;

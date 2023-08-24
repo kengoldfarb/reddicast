@@ -2,23 +2,25 @@ import { promises as fs } from 'fs'
 import * as path from 'path'
 import { fileURLToPath } from 'url'
 import {
-	HashScheme,
 	MessageType,
 	ReactionType,
-	SignatureScheme,
-	UserDataType
+	UserDataType,
+	HashScheme,
+	SignatureScheme
 } from '@farcaster/hub-nodejs'
 import {
+	Kysely,
 	CamelCasePlugin,
-	FileMigrationProvider,
 	Generated,
 	GeneratedAlways,
-	Kysely,
-	Migrator
+	Migrator,
+	FileMigrationProvider,
+	NO_MIGRATIONS
 } from 'kysely'
 import { PostgresJSDialect } from 'kysely-postgres-js'
-import { Result, err, ok } from 'neverthrow'
+import { err, ok, Result } from 'neverthrow'
 import postgres from 'postgres'
+import { Logger } from './log'
 
 export interface Database {
 	hubSubscriptions: {
@@ -38,7 +40,12 @@ export interface Database {
 		parentHash: Uint8Array | null
 		parentFid: number | null
 		parentUrl: string | null
-		embeds: Generated<string[]>
+		embeds: Generated<
+			{
+				url?: string | undefined
+				castId?: object | undefined
+			}[]
+		>
 		mentions: Generated<number[]>
 		mentionsPositions: Generated<number[]>
 	}
@@ -131,6 +138,7 @@ export interface Database {
 	}
 
 	links: {
+		hash: Uint8Array
 		id: GeneratedAlways<string>
 		fid: number
 		targetFid: number | null
@@ -149,14 +157,15 @@ export const getDbClient = (connectionString: string) => {
 			connectionString,
 			options: {
 				max: 10,
-				ssl: true,
 				types: {
 					// BigInts will not exceed Number.MAX_SAFE_INTEGER for our use case.
 					// Return as JavaScript's `number` type so it's easier to work with.
 					bigint: {
 						to: 20,
 						from: 20,
+						// rome-ignore lint/suspicious/noExplicitAny: legacy code, avoid using ignore for new code
 						parse: (x: any) => Number(x),
+						// rome-ignore lint/suspicious/noExplicitAny: legacy code, avoid using ignore for new code
 						serialize: (x: any) => x.toString()
 					}
 				}
@@ -164,9 +173,6 @@ export const getDbClient = (connectionString: string) => {
 			postgres
 		}),
 		plugins: [new CamelCasePlugin()]
-		// log: e => {
-		// 	console.log(e)
-		// }
 	})
 }
 

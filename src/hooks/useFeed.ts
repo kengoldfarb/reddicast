@@ -67,7 +67,7 @@ const useFeed = (params?: Params) => {
 			filters: fetchParams?.queryKey?.[fetchParams?.queryKey?.length - 1]
 		}
 		//console.log("fetchParams?", fetchParams);
-		// console.log('feedParms', feedParams)
+		console.log('feedParms', feedParams)
 
 		let data
 		//short circuiting with initialData here instead of using param in infinite query hook..
@@ -228,6 +228,7 @@ const useFeed = (params?: Params) => {
 			: Infinity,
 		// refetchInterval: 10000,
 		getNextPageParam: lastPage => {
+			console.log({ lastPage })
 			if (
 				(lastPage.after || lastPage.after === '') &&
 				lastPage.filtered.length > 0
@@ -238,7 +239,14 @@ const useFeed = (params?: Params) => {
 					prevPosts: lastPage?.prevPosts ?? {}
 				}
 			}
-			return undefined
+			return {
+				after:
+					lastPage?.filtered && lastPage.filtered.length > 0
+						? lastPage.filtered[lastPage.filtered.length - 1].data?.created_utc
+						: '',
+				count: lastPage?.count ?? 0,
+				prevPosts: lastPage?.prevPosts ?? {}
+			}
 		}
 		// setting initial data directly in fetchFeed() instead
 		// initialData: () => {

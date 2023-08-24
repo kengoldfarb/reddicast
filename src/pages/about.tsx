@@ -16,7 +16,7 @@ const AboutPage = ({ changelog }) => {
 			<div className='h-full text-justify text-th-text '>
 				<div className='flex flex-col justify-center max-w-xl min-h-full gap-4 mx-auto space-y-1 overflow-y-scroll scrollbar-none '>
 					<p className=''>
-						Troddit is a web app for Reddit. Follow subreddits and users locally or login with your Reddit account to
+						ReddiCast is a web app for Reddit. Follow subreddits and users locally or login with your Reddit account to
 						vote, comment, and manage your existing subscriptions.
 					</p>
 
@@ -27,8 +27,8 @@ const AboutPage = ({ changelog }) => {
 
 					<p className=''>
 						For any feature requests, bug reports, or general conversation head over to{' '}
-						<Link href={'/r/TrodditForReddit'} className={link}>
-							r/TrodditForReddit
+						<Link href={'/r/ReddiCastForReddit'} className={link}>
+							r/ReddiCastForReddit
 						</Link>
 						. You can also create an issue on{' '}
 						<a href='https://www.github.com/burhan-syed/troddit' target='_blank' rel='noreferrer' className={link}>

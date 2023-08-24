@@ -14,7 +14,7 @@ class MyDocument extends Document {
 				<Head>
 					<meta
 						name='description'
-						content='Browse Reddit better with Troddit. Grid views, single column mode, galleries, and a number of post styles. Login with Reddit to see your own subs, vote, and comment. Open source. '
+						content='Browse Reddit better with ReddiCast. Grid views, single column mode, galleries, and a number of post styles. Login with Reddit to see your own subs, vote, and comment. Open source. '
 					/>
 
 					<meta httpEquiv='Content-Type' content='text/html; charset=utf-8' />

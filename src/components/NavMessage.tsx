@@ -20,9 +20,9 @@ const NavMessage = ({ hide, timeSinceNav }) => {
 				}`}
 			>
 				<p>
-					Troddit will be closing public access June 30th.
+					ReddiCast will be closing public access June 30th.
 					<br />
-					<Link href={'/r/TrodditForReddit/comments/14745id/the_future_of_troddit'}>
+					<Link href={'/r/ReddiCastForReddit/comments/14745id/the_future_of_troddit'}>
 						Join private access or <span className='underline'>read more here</span>
 					</Link>
 				</p>

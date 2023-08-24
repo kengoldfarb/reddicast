@@ -43,8 +43,9 @@ const Sort = ({ query }) => {
 
 	useEffect(() => {
 		const sessionLoad = async (user, mode) => {
+			console.log('sessionLoad', { user, mode })
 			if (
-				(!user || session?.user?.name?.toUpperCase() !== user.toUpperCase()) &&
+				(!user || user?.name?.toUpperCase() !== user.toUpperCase()) &&
 				(mode === 'SAVED' ||
 					mode === 'UPVOTED' ||
 					mode === 'DOWNVOTED' ||
@@ -101,7 +102,7 @@ const Sort = ({ query }) => {
 		<div className="-mt-2 overflow-x-hidden overflow-y-auto">
 			<Head>
 				<title>
-					{query?.slug?.[0] ? `troddit · ${query?.slug?.[0]}` : 'troddit'}
+					{query?.slug?.[0] ? `ReddiCast · ${query?.slug?.[0]}` : 'ReddiCast'}
 				</title>
 			</Head>
 			<main className="">

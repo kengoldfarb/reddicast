@@ -85,8 +85,11 @@ const Feed = ({ initialData = {} as any }) => {
 
 	return (
 		<>
-			<LoginModal />
-			<div className="flex flex-col items-center flex-none w-screen pt-1">
+			<div
+				className={`flex flex-col items-center flex-none w-screen ${
+					mode !== 'SUBREDDIT' ? 'pt-[4rem]' : ''
+				}`}
+			>
 				<div
 					className={`w-[98%] mx-auto ${
 						context.columnOverride === 1 &&

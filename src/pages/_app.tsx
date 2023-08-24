@@ -33,7 +33,7 @@ function MyApp({ Component, pageProps }) {
 					t => (
 						<ToastCustom
 							t={t}
-							message={'Troddit updated! Click to see changelog'}
+							message={'ReddiCast updated! Click to see changelog'}
 							mode={'version'}
 						/>
 					),

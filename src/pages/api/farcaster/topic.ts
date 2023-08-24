@@ -14,7 +14,7 @@ export interface IGetSubredditResponse {
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
-		const parentUrl = req.query.parentUrl as string
+		const parentUrl = (req.query.parentUrl as string).toLowerCase()
 
 		// const db = getDbClient(process.env.DATABASE_URL ?? '')
 

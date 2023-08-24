@@ -1,0 +1,15 @@
+# A working Docker Compose configuration file that starts a working hub.
+#
+# See https://www.thehubble.xyz/intro/install.html#installing-hubble for full
+# instructions.
+
+version: '3.9'
+
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000' # Gossip
+    volumes:
+      - ./.env:/app/.env
+

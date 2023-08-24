@@ -1,15 +1,14 @@
-import { loadFront } from '../FarcasterAPI'
 // import { loadFront } from '../RedditAPI'
 // import { loadPost } from '../RedditAPI'
-import Feed from '../components/Feed'
-import Card1 from '../components/cards/Card1'
-import Modal from '../components/ui/Modal'
+import Head from 'next/head'
 import { getToken } from 'next-auth/jwt'
 import { getSession, useSession } from 'next-auth/react'
 /* eslint-disable react-hooks/rules-of-hooks */
-import Head from 'next/head'
-import { useEffect, useState } from 'react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import Card1 from '../components/cards/Card1'
+import Feed from '../components/Feed'
+import Modal from '../components/ui/Modal'
+import { loadFront } from '../FarcasterAPI'
 
 const index = ({ postData, user }) => {
 	const [initialData, setInitialData] = useState({})
@@ -18,17 +17,22 @@ const index = ({ postData, user }) => {
 	const isloading = data.status === 'loading'
 	useEffect(() => {
 		if (!isloading) {
-			const parseCookie = (str) =>
+			const parseCookie = str =>
 				str
 					.split(';')
-					.map((v) => v.split('='))
+					.map(v => v.split('='))
 					.reduce((acc, v) => {
-						acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim())
+						acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(
+							v[1].trim()
+						)
 						return acc
 					}, {})
 			const cookies = parseCookie(document.cookie)
 			//can't use initial ssr props if login mismatch or local subs changed
-			if (user !== (data?.data?.user?.name ?? '') || (cookies?.['localSubs'] && cookies?.['localSubs'] !== 'false')) {
+			if (
+				user !== (data?.data?.user?.name ?? '') ||
+				(cookies?.localSubs && cookies?.localSubs !== 'false')
+			) {
 				setInitialData({})
 			} else {
 				setInitialData(postData)
@@ -40,12 +44,12 @@ const index = ({ postData, user }) => {
 		}
 	}, [postData, isloading, user, data?.data?.user?.name])
 	return (
-		<div className='overflow-x-hidden '>
+		<div className="overflow-x-hidden ">
 			<Head>
-				<title>troddit · a web app for Reddit </title>
+				<title>ReddiCast · a web app for Farcaster</title>
 				<meta
-					name='description'
-					content='Browse Reddit better with Troddit. Grid views, single column mode, galleries, and a number of post styles. Login with Reddit to see your own subs, vote, and comment. Open source.'
+					name="description"
+					content="Browse Farcaster better with ReddiCast. Grid views, single column mode, galleries, and a number of post styles. Login with Farcaster to see your own subs, vote, and comment. Open source."
 				/>
 			</Head>
 			<main>{ready && <Feed initialData={initialData} />}</main>
@@ -58,13 +62,27 @@ index.getInitialProps = async ({ req, query, res }) => {
 		const session = await getSession({ req })
 		let data: any = {}
 		if (!session && req.cookies?.localSubs !== 'true' && res) {
-			let localSubs = new Array() as [string]
-			if (req.cookies.localSubs !== 'false' && req.cookies.localSubs?.length > 0) {
+			let localSubs = [] as [string]
+			if (
+				req.cookies.localSubs !== 'false' &&
+				req.cookies.localSubs?.length > 0
+			) {
 				localSubs = req.cookies.localSubs?.split(',') as [string]
 			} else {
-				res.setHeader('Cache-Control', 'max-age=0, s-maxage=1200, stale-while-revalidate=30')
+				res.setHeader(
+					'Cache-Control',
+					'max-age=0, s-maxage=1200, stale-while-revalidate=30'
+				)
 			}
-			data = await loadFront(false, undefined, undefined, undefined, undefined, undefined, localSubs)
+			data = await loadFront(
+				false,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				localSubs
+			)
 		} else if (session) {
 			const token: any = await getToken({
 				req,
@@ -75,7 +93,16 @@ index.getInitialProps = async ({ req, query, res }) => {
 				refreshToken: token.reddit.refreshToken,
 				expires: token.expires
 			}
-			data = await loadFront(true, tokenData, undefined, undefined, undefined, undefined, undefined, true)
+			data = await loadFront(
+				true,
+				tokenData,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				true
+			)
 		}
 		// if (data?.children && data?.after) {
 		// 	return {
@@ -90,7 +117,7 @@ index.getInitialProps = async ({ req, query, res }) => {
 		console.log({ data })
 		return {
 			user: session?.user?.name ?? '',
-			query: query,
+			query,
 			postData: {
 				// children: [...data.children.slice(0, 6)] //only send the first n posts to limit page size
 			}

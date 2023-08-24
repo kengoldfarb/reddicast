@@ -80,7 +80,7 @@ export interface ISDKProps {
 	children?: ReactNode
 }
 
-const CLIENT_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? 'feddit'
+const CLIENT_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? 'reddicast'
 
 export const UserProvider: React.FC<ISDKProps> = ({ ...props }: ISDKProps) => {
 	const [isConnected, setIsConnected] = useState(false)

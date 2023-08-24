@@ -41,7 +41,7 @@ const SubredditBanner = ({
 		setCurrSubData(currSubInfo)
 	}, [currSubInfo])
 
-	console.log(subsContext)
+	console.log({ userMode })
 
 	//entry point
 	useEffect(() => {
@@ -230,6 +230,7 @@ const SubredditBanner = ({
 				/>
 			) : (
 				<SubCard
+					userMode={userMode}
 					data={currSubInfo}
 					link={false}
 					tall={true}

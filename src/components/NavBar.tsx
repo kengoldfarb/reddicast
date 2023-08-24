@@ -9,13 +9,13 @@ import useNavBarScrollHelper from '../hooks/useNavBarScrollHelper'
 import useRefresh from '../hooks/useRefresh'
 import { useMainContext } from '../MainContext'
 import DropdownPane from './DropdownPane'
-import NavMenu from './NavMenu'
-import Search from './Search'
-import NavMessage from './NavMessage'
-import SideNav from './SideNav'
-import SortMenu from './SortMenu'
 import FilterMenu from './FilterMenu'
 import LoginProfile from './LoginProfile'
+import NavMenu from './NavMenu'
+import NavMessage from './NavMessage'
+import Search from './Search'
+import SideNav from './SideNav'
+import SortMenu from './SortMenu'
 
 const NavBar = ({ toggleSideNav = 0 }) => {
 	const context: any = useMainContext()
@@ -137,8 +137,11 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 							<h1
 								className="ml-2 text-2xl align-middle cursor-pointer select-none"
 								onClick={homeClick}
+								style={{
+									color: '#8A63D2'
+								}}
 							>
-								{'troddit'}
+								{'ReddiCast'}
 							</h1>
 						</Link>
 
@@ -149,9 +152,9 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 							<DropdownPane hide={hidden} />
 						</div>
 					</div>
-					<div className="hidden w-full h-full py-1.5 max-w-5xl md:block">
+					{/* <div className="hidden w-full h-full py-1.5 max-w-5xl md:block">
 						<Search id={'subreddit search main'} />
-					</div>
+					</div> */}
 					<div
 						className={`flex-none  h-10 transition  duration-200 ease-in-out origin-top md:origin-top-right lg:origin-right ${
 							showSearch
@@ -214,7 +217,7 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 					</div>
 				)}
 			</header>
-			<div className={' h-[6.5rem]'} />
+			{/* <div className={' h-[6.5rem]'} /> */}
 		</>
 	)
 }

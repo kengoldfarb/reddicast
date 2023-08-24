@@ -1,4 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react'
+import { useRouter } from 'next/router'
 import { signIn } from 'next-auth/react'
 import { usePlausible } from 'next-plausible'
 /* This example requires Tailwind CSS v2.0+ */
@@ -12,6 +13,7 @@ const Login = () => {
 	const context: any = useMainContext()
 	const cancelButtonRef = useRef(null)
 	const plausible = usePlausible()
+	const router = useRouter()
 	useEffect(() => {
 		if (context.loginModal) {
 			plausible('loginPrompt')
@@ -77,7 +79,7 @@ const Login = () => {
 										<div className="mt-3">
 											<p className="text-sm text-th-text opacity-80">
 												A login is required to vote and access additional
-												features. You can login with your Reddit account below.
+												features. You can login with your Warpcast account.
 											</p>
 										</div>
 									</div>
@@ -89,8 +91,7 @@ const Login = () => {
 									type="button"
 									className="inline-flex justify-center w-full px-4 py-2 text-base font-medium border border-transparent rounded-md shadow-sm bg-th-accent hover:brightness-125 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-th-accent sm:ml-3 sm:w-auto sm:text-sm"
 									onClick={() => {
-										context.setLoginModal(false)
-										signIn('reddit')
+										router.push('/login')
 									}}
 								>
 									Login

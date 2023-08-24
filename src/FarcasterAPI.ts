@@ -55,6 +55,7 @@ export const castToPost = (cast: Record<string, any>) => {
 				break
 
 			default:
+				domainLink = `/r/${encodeURIComponent(cast.parentUrl).toLowerCase()}`
 				break
 		}
 	}
@@ -74,8 +75,6 @@ export const castToPost = (cast: Record<string, any>) => {
 		default:
 			break
 	}
-
-	console.log({ cast })
 
 	const post = {
 		kind: 't3',
@@ -260,10 +259,10 @@ export const loadSubreddits = async (
 	_loggedIn,
 	_token,
 	subreddits: string,
-	_sort: string,
-	_range: string,
-	_after = '',
-	_count = 0,
+	sort: string,
+	range: string,
+	after = '',
+	count = 0,
 	sr_detail = false
 ) => {
 	const _getSRDetail =
@@ -272,11 +271,19 @@ export const loadSubreddits = async (
 		subreddits?.toUpperCase()?.includes('POPULAR') ||
 		subreddits?.toUpperCase()?.includes('ALL')
 
+	console.log('loadSubreddits', {
+		subreddits
+	})
+
 	try {
 		const result = await request
 			.get(`${process.env.NEXT_PUBLIC_HOST}/api/farcaster/casts`)
 			.query({
-				parentUrl: subreddits
+				parentUrl: subreddits,
+				after,
+				sort,
+				count,
+				range
 			})
 		const casts: IGetCastsResponse['casts'] = result.body.casts
 
@@ -650,7 +657,7 @@ export const loadUserPosts = async (
 	range: string,
 	after = '',
 	count = 0,
-	type?
+	mode?
 ) => {
 	// const { returnToken, accessToken } = await checkToken(loggedIn, token)
 	try {
@@ -662,7 +669,8 @@ export const loadUserPosts = async (
 				fname: username,
 				after,
 				count,
-				sort
+				sort,
+				mode
 			})
 		const casts: IGetCastsResponse['casts'] = result.body.casts
 
@@ -790,6 +798,7 @@ export const loadUserSelf = async (
 
 export const getSubreddits = async (after?, type = 'popular') => {
 	try {
+		console.log('getSubreddits', type)
 		logApiRequest('r/', false)
 		const res = await axios.get(`${REDDIT}/subreddits/${type}.json`, {
 			params: { after, raw_json: 1, include_over_18: 1 }
@@ -799,7 +808,9 @@ export const getSubreddits = async (after?, type = 'popular') => {
 			return { after: data?.data?.after, children: data?.data?.children }
 		}
 		return undefined
-	} catch (_err) {}
+	} catch (_err) {
+		console.log(_err)
+	}
 	return undefined
 }
 
@@ -1145,7 +1156,6 @@ export const loadComments = async (permalink, _sort = 'top') => {
 		// //console.log(res?.[1]);
 		// return res?.[1]?.data?.children ?? null
 		const slug = permalink.match(/\/([^/]+)$/)
-		// console.log({ slug })
 		const result = await request
 			.get(`${process.env.NEXT_PUBLIC_HOST}/api/farcaster/casts`)
 			.query({

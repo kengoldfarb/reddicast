@@ -63,7 +63,7 @@ const ErrMessage = () => {
 			) : (
 				<p>
 					{
-						"Troddit can't connect to Reddit. This may be because Reddit is down or because your browser or a browser extension is blocking this connection. "
+						"ReddiCast can't connect to Reddit. This may be because Reddit is down or because your browser or a browser extension is blocking this connection. "
 					}
 				</p>
 			)}
