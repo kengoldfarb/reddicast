@@ -271,10 +271,6 @@ export const loadSubreddits = async (
 		subreddits?.toUpperCase()?.includes('POPULAR') ||
 		subreddits?.toUpperCase()?.includes('ALL')
 
-	console.log('loadSubreddits', {
-		subreddits
-	})
-
 	try {
 		const result = await request
 			.get(`${process.env.NEXT_PUBLIC_HOST}/api/farcaster/casts`)

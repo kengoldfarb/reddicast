@@ -228,7 +228,6 @@ const useFeed = (params?: Params) => {
 			: Infinity,
 		// refetchInterval: 10000,
 		getNextPageParam: lastPage => {
-			console.log({ lastPage })
 			if (
 				(lastPage.after || lastPage.after === '') &&
 				lastPage.filtered.length > 0

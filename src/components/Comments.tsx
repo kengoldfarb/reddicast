@@ -36,8 +36,6 @@ const Comments = ({
 		}
 	}
 
-	console.log({ comments })
-
 	return (
 		<div className="">
 			{commentsData?.map((comment, i) => (

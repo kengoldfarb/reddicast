@@ -207,7 +207,7 @@ const SubredditsPage = ({ query = undefined }) => {
 
 	return (
 		<>
-			<div className="flex flex-col justify-center gap-3 mx-4 md:gap-0 md:mx-auto pt-[4rem]">
+			<div className={`flex flex-col justify-center gap-3 mx-4 md:gap-0 md:mx-auto pt-[4rem]>
 				<>
 					{/* {copyMySubs.length > 0 ? (
 						<>

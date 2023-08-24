@@ -35,11 +35,11 @@ const MediaWrapper = ({
 	const [postData, setPostData] = useState<any>()
 	const [isXPost, setIsXPost] = useState(false)
 
-	console.log({
-		hideText,
-		postData,
-		isXPost
-	})
+	// console.log({
+	// 	hideText,
+	// 	postData,
+	// 	isXPost
+	// })
 
 	useEffect(() => {
 		post?.over_18 && post?.spoiler

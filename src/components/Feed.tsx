@@ -14,7 +14,7 @@ import LoginModal from './LoginModal'
 import ToastCustom from './toast/ToastCustom'
 
 const Feed = ({ initialData = {} as any }) => {
-	const { mode, subreddits } = useLocation()
+	const { mode, subreddits, userMode } = useLocation()
 	const { key, feed } = useFeed({
 		initialPosts: initialData
 	})
@@ -83,11 +83,15 @@ const Feed = ({ initialData = {} as any }) => {
 		toast.remove('feed_error')
 	}
 
+	// console.log({ mode, userMode, subreddits })
+
 	return (
 		<>
 			<div
 				className={`flex flex-col items-center flex-none w-screen ${
-					mode !== 'SUBREDDIT' ? 'pt-[4rem]' : ''
+					(mode === 'SUBREDDIT' && subreddits !== 'popular') || mode === 'USER'
+						? ''
+						: 'pt-[4rem]'
 				}`}
 			>
 				<div

@@ -73,20 +73,30 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		}
 
 		if (parentUrl === 'popular') {
-			const mostReactions = await db
+			let mostReactionsPromise = db
 				.selectFrom('reactions')
 				.select('targetHash')
 				.select([sql<string>`COUNT(target_hash)`.as('numReactions')])
-				.where('timestamp', '>', DateTime.now().minus({ days: 7 }).toJSDate())
+				.where('timestamp', '>', DateTime.now().minus({ days: 60 }).toJSDate())
 				.groupBy('targetHash')
 				.orderBy('numReactions', 'desc')
-				.limit(25)
-				.execute()
-			castsPromise = castsPromise.where(
-				'casts.hash',
-				'in',
-				mostReactions.map(r => r.targetHash)
-			)
+
+			if (after) {
+				const a = DateTime.fromSeconds(+after).toJSDate()
+				mostReactionsPromise = mostReactionsPromise.where(
+					'reactions.timestamp',
+					'<',
+					a
+				)
+			}
+			const mostReactions = await mostReactionsPromise.limit(25).execute()
+			if (mostReactions.length > 0) {
+				castsPromise = castsPromise.where(
+					'casts.hash',
+					'in',
+					mostReactions.map(r => r.targetHash)
+				)
+			}
 		} else if (parentUrl) {
 			castsPromise = castsPromise.where('casts.parentUrl', '=', parentUrl)
 		}

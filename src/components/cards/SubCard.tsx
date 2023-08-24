@@ -260,56 +260,58 @@ const SubCard = ({
 					</div>
 				</div>
 
-				<div
-					className={`flex flex-row   ${
-						tall ? ' md:ml-[6.25rem]  mt-2  md:-mt-3 ' : ' pl-5 ml-[3.25rem]'
-					}`}
-				>
-					<h1
-						className={` text-xs overflow-x-hidden overflow-y-scroll scrollbar-none md:mx-0${
-							tall
-								? ' text-center md:text-left md:h-8 md:-mt-6 mx-auto '
-								: ' -mt-6 h-8'
-						}`}
-					>
-						{data?.data?.subreddit?.public_description ??
-							data?.data?.public_description}
-					</h1>
+				{!userMode && (
 					<div
-						className={`relative  mb-auto ml-auto mt-[-1.6rem] space-x-1 ${
-							tall ? ' hidden md:flex  flex-row  ' : ' '
+						className={`flex flex-row   ${
+							tall ? ' md:ml-[6.25rem]  mt-2  md:-mt-3 ' : ' pl-5 ml-[3.25rem]'
 						}`}
 					>
-						{isSelf ? (
-							<div
-								className={
-									'w-24 text-center flex justify-center items-center rounded-md bg-th-background2 border border-th-border hover:border-th-borderHighlight  focus:outline-none  p-1'
-								}
-							>
-								<Login />
-							</div>
-						) : (
-							<div className="flex-none w-24 h-full ml-2">
-								<SubButton
-									sub={
-										data?.kind === 't5'
-											? data?.data?.display_name
-											: data?.data?.subreddit?.display_name
+						<h1
+							className={` text-xs overflow-x-hidden overflow-y-scroll scrollbar-none md:mx-0${
+								tall
+									? ' text-center md:text-left md:h-8 md:-mt-6 mx-auto '
+									: ' -mt-6 h-8'
+							}`}
+						>
+							{data?.data?.subreddit?.public_description ??
+								data?.data?.public_description}
+						</h1>
+						<div
+							className={`relative  mb-auto ml-auto mt-[-1.6rem] space-x-1 ${
+								tall ? ' hidden md:flex  flex-row  ' : ' '
+							}`}
+						>
+							{isSelf ? (
+								<div
+									className={
+										'w-24 text-center flex justify-center items-center rounded-md bg-th-background2 border border-th-border hover:border-th-borderHighlight  focus:outline-none  p-1'
 									}
-									userMode={data?.kind === 't2'}
+								>
+									<Login />
+								</div>
+							) : (
+								<div className="flex-none w-24 h-full ml-2">
+									<SubButton
+										sub={
+											data?.kind === 't5'
+												? data?.data?.display_name
+												: data?.data?.subreddit?.display_name
+										}
+										userMode={data?.kind === 't2'}
+									/>
+								</div>
+							)}
+							{data?.kind === 't5' && !link && (
+								<SubOptButton
+									subInfo={subInfo}
+									currMulti={currMulti}
+									subArray={subArray}
+									openDescription={openDescription}
 								/>
-							</div>
-						)}
-						{data?.kind === 't5' && !link && (
-							<SubOptButton
-								subInfo={subInfo}
-								currMulti={currMulti}
-								subArray={subArray}
-								openDescription={openDescription}
-							/>
-						)}
+							)}
+						</div>
 					</div>
-				</div>
+				)}
 				{tall && (
 					<div
 						className={`z-20 md:hidden flex flex-row mx-auto mt-2 space-x-1  min-w-full justify-between${
