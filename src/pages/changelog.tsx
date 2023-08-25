@@ -1,9 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import fs from 'fs'
-import { useTheme } from 'next-themes'
 import Head from 'next/head'
-import React from 'react'
-import { useEffect, useState } from 'react'
+import { useTheme } from 'next-themes'
+import React, { useEffect, useState } from 'react'
 import { AiOutlineGithub } from 'react-icons/ai'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -21,8 +20,8 @@ const ChangeLogPage = ({ changelog }) => {
 			<Head>
 				<title>troddit · changelog</title>
 			</Head>
-			<div className='flex items-center justify-center my-10 '>
-				<div className='flex flex-col max-w-lg gap-10 lg:max-w-2xl'>
+			<div className="flex items-center justify-center my-10 ">
+				<div className="flex flex-col max-w-lg gap-10 lg:max-w-2xl">
 					<p
 						className={
 							' prose-headings:text-th-textHeading text-th-text ' +
@@ -30,23 +29,29 @@ const ChangeLogPage = ({ changelog }) => {
 							'  shadow-md hover:shadow-2xl '
 						}
 					>
-						<ReactMarkdown rehypePlugins={[rehypeRaw]}>{changelog}</ReactMarkdown>
+						<ReactMarkdown rehypePlugins={[rehypeRaw]}>
+							{changelog}
+						</ReactMarkdown>
 					</p>
-					<div className='flex items-center justify-between '>
-						<a href='https://ko-fi.com/K3K47IYH1' target='_blank' rel='noreferrer'>
+					<div className="flex items-center justify-between ">
+						<a
+							href="https://ko-fi.com/K3K47IYH1"
+							target="_blank"
+							rel="noreferrer"
+						>
 							<img
-								src='https://uploads-ssl.webflow.com/5c14e387dab576fe667689cf/61e11e22d8ff4a5b4a1b3346_Supportbutton-1-p-500.png'
-								alt='Buy Me a Coffee at ko-fi.com'
-								className='h-10 transition-all border rounded-md border-th-border hover:scale-110'
+								src="https://uploads-ssl.webflow.com/5c14e387dab576fe667689cf/61e11e22d8ff4a5b4a1b3346_Supportbutton-1-p-500.png"
+								alt="Buy Me a Coffee at ko-fi.com"
+								className="h-10 transition-all border rounded-md border-th-border hover:scale-110"
 							/>
 						</a>
 						<a
-							href='https://www.github.com/burhan-syed/troddit'
-							target='_blank'
-							rel='noreferrer'
-							className='hover:cursor-pointer'
+							href="https://www.github.com/burhan-syed/troddit"
+							target="_blank"
+							rel="noreferrer"
+							className="hover:cursor-pointer"
 						>
-							<AiOutlineGithub className='w-12 h-12 transition-all hover:scale-110' />
+							<AiOutlineGithub className="w-12 h-12 transition-all hover:scale-110" />
 						</a>
 					</div>
 				</div>
@@ -56,7 +61,7 @@ const ChangeLogPage = ({ changelog }) => {
 }
 
 export const getStaticProps = async () => {
-	const changelog = fs.readFileSync('changelog.md', 'utf-8')
+	const changelog = fs.readFileSync('CHANGELOG.md', 'utf-8')
 	return {
 		props: {
 			changelog
