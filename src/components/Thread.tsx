@@ -670,7 +670,7 @@ const Thread = ({
 													archived={post?.archived === true}
 												/>
 											</div>
-											<div className="flex flex-row flex-wrap items-center justify-start gap-1 ">
+											{/* <div className="flex flex-row flex-wrap items-center justify-start gap-1 ">
 												{windowWidth >= SIDEBYSIDE_THRESHOLD && (
 													<>
 														<button
@@ -721,9 +721,9 @@ const Thread = ({
 															)}
 														</button>
 													)}
-											</div>
+											</div> */}
 											<div className="flex flex-row flex-wrap items-center justify-end gap-1 text-sm ">
-												<div>
+												{/* <div>
 													<button
 														aria-label="reply"
 														disabled={
@@ -743,12 +743,6 @@ const Thread = ({
 																: ' hover:border-th-borderHighlight '
 														}`}
 													>
-														{/* <BsReply
-                              className={
-                                "flex-none w-5 h-5 scale-x-[-1] " +
-                                (!usePortrait && " md:mr-1")
-                              }
-                            /> */}
 														<BiComment className="flex-none w-5 h-5 " />
 
 														<span
@@ -759,7 +753,7 @@ const Thread = ({
 															Reply
 														</span>
 													</button>
-												</div>
+												</div> */}
 												<div>
 													<button
 														aria-label="share"
@@ -822,7 +816,7 @@ const Thread = ({
 														useKeys={true}
 													/>
 												</div>
-												<a
+												{/* <a
 													href={
 														`${post?.url}` ??
 														`https://www.reddit.com${post?.permalink ?? ''}`
@@ -844,8 +838,8 @@ const Thread = ({
 															Source
 														</span>
 													</div>
-												</a>
-												<a
+												</a> */}
+												{/* <a
 													href={`https://www.reddit.com${
 														post?.permalink ?? ''
 													}`}
@@ -866,10 +860,10 @@ const Thread = ({
 															Original
 														</span>
 													</div>
-												</a>
-												<div className="relative z-50 mx-1">
+												</a> */}
+												{/* <div className="relative z-50 mx-1">
 													<PostOptButton post={post} mode="post" />
-												</div>
+												</div> */}
 											</div>
 										</div>
 									</div>
@@ -1080,11 +1074,11 @@ const Thread = ({
 													} w-5 h-5 flex-none`}
 												/>
 											</button>
-											{!commentMode && (
+											{/* {!commentMode && (
 												<div className="z-10 flex-none mb-1 h-9">
 													<CommentSort updateSort={updateSort} sortBy={sort} />
 												</div>
-											)}
+											)} */}
 										</div>
 									</div>
 									{/* Loading Comments */}

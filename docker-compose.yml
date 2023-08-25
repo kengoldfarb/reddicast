@@ -9,7 +9,7 @@ services:
   app:
     build: .
     ports:
-      - '3000:3000' # Gossip
+      - '3000:3000'
     volumes:
       - ./.env:/app/.env
 

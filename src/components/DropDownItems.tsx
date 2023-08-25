@@ -161,7 +161,7 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 						</MyLink>
 					)}
 				</Menu.Item> */}
-				<Menu.Item>
+				{/* <Menu.Item>
 					{({ active }) => (
 						<MyLink href="/subreddits">
 							<div
@@ -174,7 +174,7 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 							</div>
 						</MyLink>
 					)}
-				</Menu.Item>
+				</Menu.Item> */}
 			</div>
 			{/* {!hideExtra && (
 				<div className="flex flex-row items-center justify-center mx-1 mb-2">
@@ -190,7 +190,7 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 				</div>
 			)} */}
 
-			{favoriteSubs?.length > 0 && (
+			{false && favoriteSubs?.length > 0 && (
 				<>
 					<div
 						onClick={() => setExpandFavorites(e => !e)}
@@ -360,7 +360,7 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 							</div>
 						</>
 					)} */}
-					{myLocalSubs?.length > 0 ? (
+					{false && myLocalSubs?.length > 0 && (
 						<>
 							<div
 								onClick={() => setExpandSubs(m => !m)}
@@ -430,7 +430,7 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 										: ''}
 								</div>
 							</div>
-							{myLocalFollows?.length > 0 && (
+							{false && myLocalFollows?.length > 0 && (
 								<>
 									<div
 										onClick={() => setExpandFollowing(m => !m)}
@@ -510,21 +510,11 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 								</>
 							)}
 						</>
-					) : (
-						<button
-							aria-label="sign in"
-							className={`p-2 m-2  border rounded-md  border-th-border hover:border-th-borderHighlight ${
-								hideExtra ? ' w-full ' : ''
-							}`}
-							onClick={() => signIn('reddit')}
-						>
-							<span className="text-th-accent ">Login</span> to see your subs
-						</button>
 					)}
 				</>
 			)}
 
-			{session && (
+			{false && session && (
 				<>
 					{/* Multis */}
 					{/* onClick={() => {setloadedMultis(m => !m);setloadedSubs(s => !s)}} */}
@@ -614,76 +604,61 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 						)}
 					</div>
 
-					{/* Subs */}
-					<div
-						onClick={() => setExpandSubs(e => !e)}
-						className={`px-2 py-0.5 items-center text-xs tracking-widest hover:bg-th-highlight  hover:cursor-pointer hover:font-semibold flex flex-row justify-between${
-							expandSubs ? ' ' : ' mb-2'
-						}`}
-					>
-						<p>subs</p>
-						{!hideExtra && (
-							<BsChevronDown
-								className={`${
-									expandSubs ? '-rotate-180 ' : 'rotate-0 '
-								}transform transition duration-200`}
-							/>
-						)}
-					</div>
-					<div
-						className={` ${
-							expandSubs ? ' max-h-full' : ' max-h-0 overflow-hidden'
-						}`}
-					>
-						{!loadedSubs ? (
-							<>
-								<div className="py-2">
-									<div className="px-4 py-1 ">
-										{/* Repeated rows */}
-										{[...Array(5)].map((_u, i) => (
-											<div key={i} className="py-1">
-												<div className="flex flex-row items-center text-sm text-center animate-pulse ">
-													{/* Image */}
-													<div className="flex flex-row items-center w-6 h-6 ml-1 ">
-														<div className="w-6 h-6 text-center text-white bg-blue-700 rounded-full ">
-															{'r/'}
+					{false && (
+						<>
+							{/* Subs */}
+							<div
+								onClick={() => setExpandSubs(e => !e)}
+								className={`px-2 py-0.5 items-center text-xs tracking-widest hover:bg-th-highlight  hover:cursor-pointer hover:font-semibold flex flex-row justify-between${
+									expandSubs ? ' ' : ' mb-2'
+								}`}
+							>
+								<p>subs</p>
+								{!hideExtra && (
+									<BsChevronDown
+										className={`${
+											expandSubs ? '-rotate-180 ' : 'rotate-0 '
+										}transform transition duration-200`}
+									/>
+								)}
+							</div>
+							<div
+								className={` ${
+									expandSubs ? ' max-h-full' : ' max-h-0 overflow-hidden'
+								}`}
+							>
+								{!loadedSubs ? (
+									<>
+										<div className="py-2">
+											<div className="px-4 py-1 ">
+												{/* Repeated rows */}
+												{[...Array(5)].map((_u, i) => (
+													<div key={i} className="py-1">
+														<div className="flex flex-row items-center text-sm text-center animate-pulse ">
+															{/* Image */}
+															<div className="flex flex-row items-center w-6 h-6 ml-1 ">
+																<div className="w-6 h-6 text-center text-white bg-blue-700 rounded-full ">
+																	{'r/'}
+																</div>
+															</div>
+															{/* Text */}
+															<div className="w-full h-6 ml-2 rounded bg-th-highlight " />
 														</div>
 													</div>
-													{/* Text */}
-													<div className="w-full h-6 ml-2 rounded bg-th-highlight " />
-												</div>
+												))}
 											</div>
-										))}
-									</div>
-								</div>
-							</>
-						) : (
-							<div className={'py-2'}>
-								{mySubs
-									? mySubs.map((sub, i) => {
-											return (
-												<Menu.Item
-													key={`sub_${i}`}
-													disabled={
-														!expandSubs ||
-														(filter !== '' &&
-															!(
-																sub.data?.display_name_prefixed
-																	?.toUpperCase()
-																	.includes(filter.toUpperCase()) ||
-																sub.data?.display_name
-																	?.toUpperCase()
-																	.includes(filter.toUpperCase())
-															))
-													}
-												>
-													{({ active }) => (
-														<MyLink href={sub?.data?.url}>
-															<div
-																className={`${
-																	active ? 'bg-th-highlight' : ' '
-																} px-4 py-2 group ${
-																	filter !== '' &&
+										</div>
+									</>
+								) : (
+									<div className={'py-2'}>
+										{mySubs
+											? mySubs.map((sub, i) => {
+													return (
+														<Menu.Item
+															key={`sub_${i}`}
+															disabled={
+																!expandSubs ||
+																(filter !== '' &&
 																	!(
 																		sub.data?.display_name_prefixed
 																			?.toUpperCase()
@@ -691,22 +666,41 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 																		sub.data?.display_name
 																			?.toUpperCase()
 																			.includes(filter.toUpperCase())
-																	)
-																		? ' hidden'
-																		: ''
-																}`}
-															>
-																<DropdownItem sub={sub} />
-															</div>
-														</MyLink>
-													)}
-												</Menu.Item>
-											)
-									  })
-									: ''}
+																	))
+															}
+														>
+															{({ active }) => (
+																<MyLink href={sub?.data?.url}>
+																	<div
+																		className={`${
+																			active ? 'bg-th-highlight' : ' '
+																		} px-4 py-2 group ${
+																			filter !== '' &&
+																			!(
+																				sub.data?.display_name_prefixed
+																					?.toUpperCase()
+																					.includes(filter.toUpperCase()) ||
+																				sub.data?.display_name
+																					?.toUpperCase()
+																					.includes(filter.toUpperCase())
+																			)
+																				? ' hidden'
+																				: ''
+																		}`}
+																	>
+																		<DropdownItem sub={sub} />
+																	</div>
+																</MyLink>
+															)}
+														</Menu.Item>
+													)
+											  })
+											: ''}
+									</div>
+								)}
 							</div>
-						)}
-					</div>
+						</>
+					)}
 
 					{/* Follows */}
 					{myFollowing?.length > 0 && (
@@ -779,7 +773,7 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 					)}
 				</>
 			)}
-			{session && (
+			{false && session && (
 				<button
 					onClick={e => {
 						e.preventDefault()
@@ -795,7 +789,7 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 					/>
 				</button>
 			)}
-			{session && error && (
+			{false && session && error && (
 				<>
 					<div className="flex flex-row items-center justify-center p-4">
 						{"Can't connect to Reddit. Try refreshing."}

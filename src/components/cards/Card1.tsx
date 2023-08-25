@@ -203,7 +203,7 @@ const Card1 = ({
 						<div>
 							<div className="flex flex-row items-center py-1 text-xs truncate select-auto text-th-textLight ">
 								<div
-									className={`flex flex-row flex-wrap items-center text-xs truncate select-auto gap-2 ${
+									className={`flex flex-row flex-wrap items-center text-xs truncate select-auto gap-2 w-full ${
 										linkMode ? ' w-2/3 pr-2' : ' '
 									}`}
 								>
@@ -215,7 +215,7 @@ const Card1 = ({
 											<a
 												title={`go to r/${post?.subreddit}`}
 												className={
-													'flex flex-row items-center mr-1 font-semibold text-th-text hover:underline '
+													'flex flex-row items-center mr-1 font-semibold text-th-text hover:underline w-full '
 												}
 												onClick={e => {
 													e.stopPropagation()
@@ -343,9 +343,13 @@ const Card1 = ({
 								)}
 							</div>
 
-							<div className={` ${linkMode ? ' flex gap-2 pt-2 ' : ' py-2 '}`}>
+							<div
+								className={` ${
+									linkMode ? ' flex flex-col gap-2 pt-2 ' : ' py-2 '
+								}`}
+							>
 								<span
-									className={`  text-lg font-semibold  leading-none cursor-pointer pb-2 flex flex-row flex-wrap gap-2${
+									className={`  text-lg font-semibold  leading-none cursor-pointer pb-2 flex flex-row flex-wrap w-full gap-2${
 										linkMode
 											? ' w-2/3 flex-col-reverse items-start justify-end '
 											: ' items-center '
@@ -365,9 +369,25 @@ const Card1 = ({
 										<TitleFlair post={post} />
 									</span>
 								</span>
-								{linkMode && post?.mediaInfo?.imageInfo?.[0]?.src && (
+								{linkMode && post?.embeds?.[0] && (
 									<>
-										{post?.crosspost_parent_list?.[0] ? (
+										<div className="w-full">
+											<MediaWrapper
+												hideNSFW={hideNSFW}
+												post={post}
+												forceMute={forceMute}
+												postMode={false}
+												imgFull={true}
+												read={read}
+												card={true}
+												fill={true}
+												columns={columns}
+												cardStyle={'card1'}
+												mediaOnly={true}
+												checkCardHeight={checkCardHeight}
+											/>
+										</div>
+										{/* {post?.crosspost_parent_list?.[0] ? (
 											<div className="relative flex items-center justify-center w-1/3 -mt-10 overflow-hidden rounded-md bg-th-base aspect-video">
 												<div className="w-full">
 													<MediaWrapper
@@ -417,7 +437,7 @@ const Card1 = ({
 													/>
 												</div>
 											</a>
-										)}
+										)} */}
 									</>
 								)}
 							</div>
@@ -678,7 +698,7 @@ const Card1 = ({
 									postTime={post?.created_utc}
 								/>
 							</div>
-							<div className="flex flex-row items-center justify-end gap-2 ml-auto -mr-2">
+							<div className="flex flex-row items-center justify-end gap-2 ml-auto -pr-2">
 								<a
 									href={post?.permalink}
 									onClick={e => {
@@ -706,7 +726,7 @@ const Card1 = ({
 											)}
 									</span>
 								</a>
-								<PostOptButton post={post} mode="" />
+								{/* <PostOptButton post={post} mode="" /> */}
 							</div>
 						</div>
 					)}

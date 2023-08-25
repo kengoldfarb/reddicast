@@ -34,6 +34,7 @@ const MediaWrapper = ({
 	const [hideText, setHideText] = useState('')
 	const [postData, setPostData] = useState<any>()
 	const [isXPost, setIsXPost] = useState(false)
+	const [isImageError, setIsImageError] = useState(false)
 
 	// console.log({
 	// 	hideText,
@@ -228,31 +229,74 @@ const MediaWrapper = ({
 		return null
 	}
 
-	if (postData && (!isXPost || !showCrossPost)) return <>{NSFWWrapper}</>
-	if (postData && isXPost)
+	if (!isImageError && postData && postData.embeds[0]) {
 		return (
-			<div
-				className={
-					(!mediaOnly || postMode
-						? 'flex flex-col overflow-hidden transition-colors  bg-th-post  '
-						: '') +
-					(cardStyle === 'card2' && !postMode ? ' ' : '') +
-					((cardStyle !== 'card2' && !mediaOnly) || postMode
-						? ' border hover:bg-th-postHover border-th-border2 hover:border-th-borderHighlight2 rounded'
-						: '')
-				}
-			>
-				{(cardStyle === 'card1' ||
-					cardStyle === 'default' ||
-					cardStyle === 'row1' ||
-					postMode) &&
-					(!mediaOnly || postMode) && <>{XPostData}</>}
-				{showCrossPostMedia && (
-					<div className="relative w-full">{NSFWWrapper}</div>
-				)}
-				{cardStyle === 'card2' && !postMode && <>{XPostData}</>}
-			</div>
+			<img
+				src={postData.embeds[0].url}
+				onError={() => {
+					setIsImageError(true)
+				}}
+			/>
+			// <Media
+			// 	post={postData}
+			// 	forceMute={forceMute}
+			// 	imgFull={imgFull}
+			// 	postMode={postMode}
+			// 	containerDims={containerDims}
+			// 	columns={columns}
+			// 	mediaDimensions={mediaDimensions}
+			// 	read={read}
+			// 	card={card}
+			// 	fill={fill}
+			// 	handleClick={handleClick}
+			// 	fullMediaMode={fullMediaMode}
+			// 	hide={hide}
+			// 	fullRes={fullRes}
+			// 	uniformMediaMode={uniformMediaMode}
+			// 	curPostName={curPostName}
+			// 	xPostMode={isXPost && showCrossPost}
+			// 	inView={inView}
+			// 	checkCardHeight={checkCardHeight}
+			// />
 		)
+	} else if (isImageError && postData && postData.embeds[0]) {
+		return (
+			<a
+				href={postData.embeds[0].url}
+				target="_blank"
+				rel="noreferrer"
+				className="overflow-ellipsis overflow-hidden break-all"
+			>
+				{postData.embeds[0].url}
+			</a>
+		)
+	}
+
+	// if (postData && (!isXPost || !showCrossPost)) return <>{NSFWWrapper}</>
+	// if (postData)
+	// 	return (
+	// 		<div
+	// 			className={
+	// 				(!mediaOnly || postMode
+	// 					? 'flex flex-col overflow-hidden transition-colors  bg-th-post  '
+	// 					: '') +
+	// 				(cardStyle === 'card2' && !postMode ? ' ' : '') +
+	// 				((cardStyle !== 'card2' && !mediaOnly) || postMode
+	// 					? ' border hover:bg-th-postHover border-th-border2 hover:border-th-borderHighlight2 rounded'
+	// 					: '')
+	// 			}
+	// 		>
+	// 			{(cardStyle === 'card1' ||
+	// 				cardStyle === 'default' ||
+	// 				cardStyle === 'row1' ||
+	// 				postMode) &&
+	// 				(!mediaOnly || postMode) && <>{XPostData}</>}
+	// 			{showCrossPostMedia && (
+	// 				<div className="relative w-full">{NSFWWrapper}</div>
+	// 			)}
+	// 			{cardStyle === 'card2' && !postMode && <>{XPostData}</>}
+	// 		</div>
+	// 	)
 
 	return <></>
 }

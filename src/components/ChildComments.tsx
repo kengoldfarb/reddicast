@@ -289,11 +289,10 @@ const ChildComments = ({
 										'flex items-center group justify-start group gap-1'
 									}
 								>
-									{comment?.data?.profile_img?.includes('http') &&
-									context.showUserIcons ? (
+									{comment.data?.user?.pfp ? (
 										<div className="w-6 h-6 rounded-full overflow-hidden mr-0.5">
 											<Image
-												src={comment.data.profile_img}
+												src={comment.data.user?.pfp}
 												height={'256'}
 												width={'256'}
 												alt={''}
@@ -507,7 +506,7 @@ const ChildComments = ({
 													</button>
 												)}
 										</div>
-										<button
+										{/* <button
 											aria-label="reply"
 											disabled={
 												comment?.data?.archived ||
@@ -532,7 +531,7 @@ const ChildComments = ({
 											}}
 										>
 											Reply
-										</button>
+										</button> */}
 										<div className="text-sm cursor-pointer hover:underline">
 											<SaveButton
 												id={comment?.data?.name}
