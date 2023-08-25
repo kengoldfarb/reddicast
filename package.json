@@ -1,6 +1,6 @@
 {
   "name": "@kengoldfarb/reddicast",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "scripts": {
     "local": "NODE_OPTIONS='--inspect=4006' next dev -p 3000",
