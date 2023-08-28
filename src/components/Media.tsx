@@ -449,8 +449,6 @@ const Media = ({
 		</a>
 	)
 
-	console.log({ post })
-
 	return (
 		<div
 			className={

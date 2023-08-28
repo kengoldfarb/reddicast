@@ -187,8 +187,6 @@ const CommentReply = ({
 		}
 	}, [])
 
-	console.log({ user })
-
 	return (
 		<div className="relative ">
 			{user?.displayName && (

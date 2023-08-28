@@ -114,7 +114,6 @@ index.getInitialProps = async ({ req, query, res }) => {
 		// 	}
 		// }
 		// return { query: query, postData: {}, user: '' }
-		console.log({ data })
 		return {
 			user: session?.user?.name ?? '',
 			query,

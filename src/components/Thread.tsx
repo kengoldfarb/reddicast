@@ -100,8 +100,6 @@ const Thread = ({
 	const { sub } = useSubreddit(post?.subreddit)
 	const { signer } = useUser()
 
-	console.log({ initialData })
-
 	const [postComments, setPostComments] = useState<any[]>([])
 	const [commentsReady, setCommentsReady] = useState(false)
 	const [origCommentCount, setOrigCommentCount] = useState<number>()
@@ -336,8 +334,6 @@ const Thread = ({
 		),
 		[]
 	)
-
-	console.log({ data: thread.data, post })
 
 	if (thread.isError) {
 		toast.custom(

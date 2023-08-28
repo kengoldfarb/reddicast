@@ -42,8 +42,6 @@ const SubredditBanner = ({
 		setCurrSubData(currSubInfo)
 	}, [currSubInfo])
 
-	console.log({ userMode })
-
 	//entry point
 	useEffect(() => {
 		const s = subreddits.sort((a, b) => {
@@ -198,11 +196,7 @@ const SubredditBanner = ({
 		}
 	}, [myMultis, myLocalMultis])
 
-	console.log({ subreddits, subArray, currSubInfo })
-
-	const { domain, domainLink } = getDomainInfo(subreddits?.[0])
-
-	console.log({ domain, domainLink })
+	const { domain } = getDomainInfo(subreddits?.[0])
 
 	return (
 		<div

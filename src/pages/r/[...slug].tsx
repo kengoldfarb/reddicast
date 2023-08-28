@@ -64,9 +64,7 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 		}
 	}, [query])
 
-	const { domain, domainLink } = getDomainInfo(query.slug[0])
-
-	console.log({ subsArray })
+	const { domain } = getDomainInfo(query.slug[0])
 
 	return (
 		<div
@@ -182,12 +180,7 @@ SubredditPage.getInitialProps = async d => {
 		const { domain, chain, domainLink, highlight } = getDomainInfo(
 			query.slug?.[0]
 		)
-		// console.log({
-		// 	subreddits,
-		// 	query
-		// })
 
-		console.log({ query, domain, chain, domainLink, highlight })
 		const loadPosts = async () => {
 			const data = await loadSubreddits(
 				session?.user?.name ? true : false,
@@ -220,8 +213,6 @@ SubredditPage.getInitialProps = async d => {
 				'max-age=0, s-maxage=1200, stale-while-revalidate=30'
 			)
 		}
-
-		console.log({ metaTags })
 
 		return {
 			query,

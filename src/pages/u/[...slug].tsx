@@ -76,7 +76,6 @@ const Sort = ({ query }) => {
 			sessionLoad(query?.slug?.[0], query?.slug?.[1]?.toUpperCase())
 		} else {
 			setIsUser(true)
-			console.log({ feedQuery: query })
 			setFeedQuery(query)
 			if (query?.slug?.[1] === 'm' && query?.slug?.[2]?.length > 0) {
 				setIsMulti(true)

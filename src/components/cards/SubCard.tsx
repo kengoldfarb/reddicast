@@ -25,7 +25,6 @@ const SubCard = ({
 	isSelf = false,
 	userMode = false
 }) => {
-	console.log({ data })
 	const context: any = useMainContext()
 	const session = useSession()
 	const { invalidateKey, refreshCurrent } = useRefresh()
