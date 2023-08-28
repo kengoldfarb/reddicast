@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/kengoldfarb/reddicast/compare/v1.0.3...v1.1.0) (2023-08-25)
+
+
+### Features
+
+* cleanup and hide UI elements that aren't hooked up ([f461067](https://github.com/kengoldfarb/reddicast/commit/f461067))
+
 ## [1.0.3](https://github.com/kengoldfarb/reddicast/compare/v1.0.2...v1.0.3) (2023-08-25)
 
 
