@@ -1,8 +1,7 @@
+import HtmlToReact from 'html-to-react'
+import React, { useEffect, useState } from 'react'
 import ParseATag from '../components/ParseATag'
 /* eslint-disable react/display-name */
-import React, { useEffect, useState } from 'react'
-
-import HtmlToReact from 'html-to-react'
 
 const HtmlToReactParser = HtmlToReact.Parser
 const htmlToReactParser = new HtmlToReactParser()
@@ -14,7 +13,7 @@ const isValidNode = function () {
 const processNodeDefinitions = new HtmlToReact.ProcessNodeDefinitions(React)
 const processingInstructions = [
 	{
-		shouldProcessNode: function (node) {
+		shouldProcessNode(node) {
 			const check =
 				node.parent?.name &&
 				node.parent.name === 'a' &&
@@ -23,13 +22,13 @@ const processingInstructions = [
 				node.name !== 'img' //leave comment gifs alone
 			return check
 		},
-		processNode: function (node, _children, index) {
+		processNode(node, _children, index) {
 			return React.createElement(ParseATag, { key: index }, node) //node?.data?.toUpperCase();
 		}
 	},
 	{
 		// Anything else
-		shouldProcessNode: function (_node) {
+		shouldProcessNode(_node) {
 			return true
 		},
 		processNode: processNodeDefinitions.processDefaultNode
@@ -42,9 +41,14 @@ const checkSupport = (link: string, node: any) => {
 	}
 
 	const imgurRegex = /([A-z.]+\.)?(imgur(\.com))+(\/)+([A-z0-9]){7}\./gm
-	const redditRegex = /(preview+\.)+(reddit(\.com)|redd(\.it))+(\/[A-z0-9]+)+(\.(png|jpg))\./gm
+	const redditRegex =
+		/(preview+\.)+(reddit(\.com)|redd(\.it))+(\/[A-z0-9]+)+(\.(png|jpg))\./gm
 	const greedyRegex = /(\.(png|jpg))/gm
-	return !!(link.match(imgurRegex) || link.match(redditRegex) || link.match(greedyRegex))
+	return !!(
+		link.match(imgurRegex) ||
+		link.match(redditRegex) ||
+		link.match(greedyRegex)
+	)
 }
 
 const useParseBodyHTML = ({ rawHTML, newTabLinks = false }) => {
@@ -52,20 +56,20 @@ const useParseBodyHTML = ({ rawHTML, newTabLinks = false }) => {
 
 	useEffect(() => {
 		const PROTOCOL = window.location.protocol
-		const DOMAIN = window?.location?.host ?? 'troddit.com'
+		const DOMAIN = window?.location?.host ?? 'reddica.st'
 
-		const blankTargets = (str) => {
+		const blankTargets = str => {
 			if (str?.includes('<a ')) {
 				str = str?.replaceAll('<a ', '<a target="_blank" rel="noreferrer" ')
 			}
 			return str
 		}
 
-		const replaceDomains = (str) => {
+		const replaceDomains = str => {
 			if (typeof str === 'undefined' || !str) return
 			const splitstr = str.split('<a')
 			const replaceall: string[] = []
-			splitstr.forEach((substr) => replaceall.push(replaceUserDomains(substr)))
+			splitstr.forEach(substr => replaceall.push(replaceUserDomains(substr)))
 			return replaceall.join('<a')
 		}
 
@@ -73,11 +77,16 @@ const useParseBodyHTML = ({ rawHTML, newTabLinks = false }) => {
 			const redditRegex = /([A-z.]+\.)?(reddit(\.com)|redd(\.it))/gm
 			const matchRegex1 = /([A-z.]+\.)?(reddit(\.com)|redd(\.it))+(\/[ru]\/)/gm
 			const matchRegex2 = /([A-z.]+\.)?(reddit(\.com)|redd(\.it))+(\/user\/)/gm
-			const matchRegex3 = /([A-z.]+\.)?(reddit(\.com)|redd(\.it))+(\/)+([A-z0-9]){6}("|\s)/gm
+			const matchRegex3 =
+				/([A-z.]+\.)?(reddit(\.com)|redd(\.it))+(\/)+([A-z0-9]){6}("|\s)/gm
 			// let youtubeRegex = /([A-z.]+\.)?youtu(be\.com|\.be)/gm;
 			// let twitterRegex = /([A-z.]+\.)?twitter\.com/gm;
 			// let instagramRegex = /([A-z.]+\.)?instagram.com/gm;
-			if (str.match(matchRegex1) || str.match(matchRegex2) || str.match(matchRegex3)) {
+			if (
+				str.match(matchRegex1) ||
+				str.match(matchRegex2) ||
+				str.match(matchRegex3)
+			) {
 				str = str.replace(redditRegex, DOMAIN) //.replace(/(https:\/\/|http:\/\/)/g,PROTOCOL);
 				if (str.includes('https:') && PROTOCOL !== 'https:') {
 					str = str.replace('https:', PROTOCOL)
@@ -87,8 +96,12 @@ const useParseBodyHTML = ({ rawHTML, newTabLinks = false }) => {
 			return str
 		}
 
-		const parseHTML = (html) => {
-			const reactElement = htmlToReactParser.parseWithInstructions(html, isValidNode, processingInstructions)
+		const parseHTML = html => {
+			const reactElement = htmlToReactParser.parseWithInstructions(
+				html,
+				isValidNode,
+				processingInstructions
+			)
 			return reactElement
 		}
 

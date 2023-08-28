@@ -8,6 +8,7 @@ import { BiRightTopArrowCircle } from 'react-icons/bi'
 import { BsChevronDown, BsList } from 'react-icons/bs'
 import { CgLivePhoto, CgPlayListSearch } from 'react-icons/cg'
 import { IoMdRefresh } from 'react-icons/io'
+import { channels } from '../FarcasterAPI'
 import { useSubsContext } from '../MySubs'
 import DropdownItem from './DropdownItem'
 import DropdownSubCard from './DropdownSubCard'
@@ -98,7 +99,7 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 	return (
 		<>
 			<div className="flex flex-col py-2 font-light">
-				{(router.pathname.includes('/r/') || router.pathname.includes('/u/')) &&
+				{/* {(router.pathname.includes('/r/') || router.pathname.includes('/u/')) &&
 					currSubInfo &&
 					mySubs &&
 					!multi &&
@@ -109,7 +110,9 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 							<DropdownSubCard
 								sub={{
 									kind: 't5',
-									data: currSubInfo?.data?.subreddit ?? currSubInfo?.data
+									data: {
+										name: currSubInfo?.data?.display_name ?? currSubInfo?.data
+									}
 								}}
 								userMode={router.pathname.includes('/u/') ? true : false}
 								// mySubs={mySubs.length > 0 ? mySubs : myLocalSubs}
@@ -118,7 +121,7 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 								// subsLoaded={loadedSubs}
 							/>
 						</div>
-					)}
+					)} */}
 				<Menu.Item>
 					{({ active }) => (
 						<MyLink href="/">
@@ -189,6 +192,56 @@ const DropDownItems = ({ show, hideExtra = false }) => {
 					/>
 				</div>
 			)} */}
+
+			<div
+				onClick={() => setExpandFavorites(e => !e)}
+				className={`px-2 py-0.5 items-center text-xs tracking-widest hover:bg-th-highlight  hover:cursor-pointer hover:font-semibold flex flex-row justify-between${
+					expandFavorites ? ' ' : ' mb-2'
+				}`}
+			>
+				<p>Channels</p>
+				{!hideExtra && (
+					<BsChevronDown
+						className={`${
+							expandFavorites ? '-rotate-180 ' : 'rotate-0 '
+						}transform transition duration-200`}
+					/>
+				)}
+			</div>
+			<div
+				className={` ${
+					expandFavorites ? ' max-h-full' : ' max-h-0 overflow-hidden'
+				}`}
+			>
+				<div className={'py-2'}>
+					{Object.keys(channels).map((channelId, i) => {
+						const channel = channels[channelId]
+						// chain://eip155:1/erc721:0xa45662638e9f3bbb7a6fecb4b17853b7ba0f3a60
+						return (
+							<Menu.Item key={`sub_${i}`}>
+								<MyLink
+									href={`/r/${encodeURIComponent(
+										`chain://eip155:${channel.chainId}/${channel.tokenType}:${channelId}`
+									)}`}
+								>
+									<div className={``}>
+										{/* <p>{channel.domain}</p> */}
+										<DropdownItem
+											className="mb-3"
+											sub={{
+												// kind: sub?.kind,
+												data: {
+													name: channel.domain
+												}
+											}}
+										/>
+									</div>
+								</MyLink>
+							</Menu.Item>
+						)
+					})}
+				</div>
+			</div>
 
 			{false && favoriteSubs?.length > 0 && (
 				<>

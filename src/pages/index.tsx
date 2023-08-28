@@ -46,7 +46,7 @@ const index = ({ postData, user }) => {
 	return (
 		<div className="overflow-x-hidden ">
 			<Head>
-				<title>ReddiCast · a web app for Farcaster</title>
+				<title>ReddiCast</title>
 				<meta
 					name="description"
 					content="Browse Farcaster better with ReddiCast. Grid views, single column mode, galleries, and a number of post styles. Login with Farcaster to see your own subs, vote, and comment. Open source."
@@ -114,7 +114,6 @@ index.getInitialProps = async ({ req, query, res }) => {
 		// 	}
 		// }
 		// return { query: query, postData: {}, user: '' }
-		console.log({ data })
 		return {
 			user: session?.user?.name ?? '',
 			query,

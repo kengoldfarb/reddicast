@@ -44,30 +44,9 @@ const ErrMessage = () => {
 	}, [])
 
 	return (
-		<div className='flex flex-col gap-2 text-sm'>
-			{browser?.includes('Firefox') ? (
-				<>
-					<p>{'Are you using Firefox? You may have Enhanced Tracking Protection enabled.'}</p>
-					<p>{'ETP blocks connections to Reddit. Consider turning this off:'}</p>
-					<a
-						className='text-th-link hover:text-th-linkHover'
-						target={'_blank'}
-						rel={'noreferrer'}
-						href='https://support.mozilla.org/en-US/kb/enhanced-tracking-protection-firefox-desktop#w_what-to-do-if-a-site-seems-broken'
-					>
-						{
-							'https://support.mozilla.org/en-US/kb/enhanced-tracking-protection-firefox-desktop#w_what-to-do-if-a-site-seems-broken'
-						}
-					</a>
-				</>
-			) : (
-				<p>
-					{
-						"ReddiCast can't connect to Reddit. This may be because Reddit is down or because your browser or a browser extension is blocking this connection. "
-					}
-				</p>
-			)}
-			<p className='text-xs text-th-textLight' />
+		<div className="flex flex-col gap-2 text-sm">
+			<p>{"ReddiCast can't connect. Please try again"}</p>
+			<p className="text-xs text-th-textLight" />
 		</div>
 	)
 }

@@ -1,12 +1,12 @@
+import { useRouter } from 'next/dist/client/router'
+import { useSession } from 'next-auth/react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import useCardHeightTrigger from '../hooks/useCardHeightTrigger'
 import { useRead } from '../hooks/useRead'
 import Card1 from './cards/Card1'
 import Card2 from './cards/Card2'
 import CommentCard from './cards/CommentCard'
 import Row1 from './cards/Row1'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/dist/client/router'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 const Post = ({
 	post,
@@ -36,7 +36,9 @@ const Post = ({
 	const [origCommentCount, setOrigCommentCount] = useState<number>()
 
 	useEffect(() => {
-		showNSFW === false && post?.data?.over_18 ? setHideNSFW(true) : setHideNSFW(false)
+		showNSFW === false && post?.data?.over_18
+			? setHideNSFW(true)
+			: setHideNSFW(false)
 		post?.data.spoiler && setHideNSFW(true)
 		return () => {
 			setHideNSFW(false)
@@ -53,11 +55,19 @@ const Post = ({
 				router.push('', `${post?.data.id}`, { shallow: true })
 			} else if (
 				router.pathname?.includes('/u/') &&
-				session?.user?.name?.toUpperCase() === router?.query?.slug?.[0]?.toUpperCase()
+				session?.user?.name?.toUpperCase() ===
+					router?.query?.slug?.[0]?.toUpperCase()
 			) {
-				router.push('', `/u/${router?.query?.slug?.[0]}/${post.data.permalink}${queryParams}`, { shallow: true })
+				router.push(
+					'',
+					`/u/${router?.query?.slug?.[0]}/${post.data.permalink}${queryParams}`,
+					{ shallow: true }
+				)
 			} else if (router.pathname?.includes('/u/')) {
-				if (router.query?.slug?.[1]?.toUpperCase() === 'M' && router?.query?.slug?.[2]) {
+				if (
+					router.query?.slug?.[1]?.toUpperCase() === 'M' &&
+					router?.query?.slug?.[2]
+				) {
 					router.push(
 						'',
 						`/u/${router.query?.slug?.[0]}/m/${router.query.slug[2]}${post.data.permalink}${queryParams}`,
@@ -66,9 +76,13 @@ const Post = ({
 						}
 					)
 				} else {
-					router.push('', `/u/${post?.data.author}/${post.data.permalink}${queryParams}`, {
-						shallow: true
-					})
+					router.push(
+						'',
+						`/u/${post?.data.author}/${post.data.permalink}${queryParams}`,
+						{
+							shallow: true
+						}
+					)
 				}
 			} else {
 				router.push('', `${post?.data.permalink}${queryParams}`, {
@@ -98,7 +112,11 @@ const Post = ({
 				}}
 			>
 				{post?.kind === 't1' ? (
-					<CommentCard data={post?.data} postNum={postNum} handleClick={handleClick} />
+					<CommentCard
+						data={post?.data}
+						postNum={postNum}
+						handleClick={handleClick}
+					/>
 				) : cardStyle === 'row1' ? (
 					<Row1
 						post={post?.data}

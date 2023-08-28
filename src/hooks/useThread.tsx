@@ -137,7 +137,6 @@ const useThread = (permalink, sort, _initialData?, withContext = false) => {
 	}
 
 	const fetchThread = async (feedParams: QueryFunctionContext) => {
-		// console.log('fetching thread', feedParams)
 		if (feedParams?.pageParam?.children?.length > 0) {
 			const { post_comments, token } = await loadChildComments(
 				feedParams.pageParam.children,

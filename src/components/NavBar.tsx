@@ -10,6 +10,7 @@ import useRefresh from '../hooks/useRefresh'
 import { useMainContext } from '../MainContext'
 import DropdownPane from './DropdownPane'
 import FilterMenu from './FilterMenu'
+import { GithubIcon } from './GithubIcon'
 import LoginProfile from './LoginProfile'
 import NavMenu from './NavMenu'
 import NavMessage from './NavMessage'
@@ -133,6 +134,12 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 						}}
 					/>
 					<div className="flex flex-row items-center justify-start h-full mr-2 space-x-2">
+						<img
+							src="/android-chrome-192x192.png"
+							height={35}
+							width={35}
+							className="ml-6"
+						/>
 						<Link href="/" passHref>
 							<h1
 								className="ml-2 text-2xl align-middle cursor-pointer select-none"
@@ -169,31 +176,33 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 							/>
 						)}
 					</div>
-					<div className="flex flex-row items-center justify-end h-full py-1.5 ml-auto mr-2 space-x-1 md:ml-2">
-						<button
-							disabled={mounted && windowWidth > 768}
-							aria-label="show search"
-							className={
-								'flex md:hidden items-center justify-center flex-none w-10 h-full border border-transparent rounded-md outline-none hover:border-th-border '
-							}
-							onClick={e => {
-								e.preventDefault()
-								e.stopPropagation()
-								setShowSearch(s => !s)
-							}}
-						>
-							<AiOutlineSearch className="flex-none w-6 h-6" />
-						</button>
-						{/* <div className="w-20 h-full">
+					<div className="flex flex-row items-center justify-end align-middle">
+						<GithubIcon className="w-4 mr-10 self-start" />
+						<div className="flex flex-row items-center justify-end h-full py-1.5 ml-auto mr-2 space-x-1 md:ml-2">
+							<button
+								disabled={mounted && windowWidth > 768}
+								aria-label="show search"
+								className={
+									'flex md:hidden items-center justify-center flex-none w-10 h-full border border-transparent rounded-md outline-none hover:border-th-border '
+								}
+								onClick={e => {
+									e.preventDefault()
+									e.stopPropagation()
+									setShowSearch(s => !s)
+								}}
+							>
+								<AiOutlineSearch className="flex-none w-6 h-6" />
+							</button>
+							{/* <div className="w-20 h-full">
 							<SortMenu hide={hidden} />
 						</div> */}
-						{/* <div
+							{/* <div
 							className="flex flex-row items-center w-10 h-full mr-2 "
 							onClick={() => plausible('filters')}
 						>
 							<FilterMenu hide={hidden} />
 						</div> */}
-						{/* <div
+							{/* <div
 							className={
 								'hidden w-20 h-full border  hover:border-th-border border-transparent rounded-md md:block'
 							}
@@ -202,11 +211,12 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 							<LoginProfile />
 						</div> */}
 
-						<div
-							className="flex flex-row items-center w-10 h-full mr-2 "
-							onClick={() => plausible('options')}
-						>
-							<NavMenu hide={hidden} />
+							<div
+								className="flex flex-row items-center w-10 h-full mr-2 "
+								onClick={() => plausible('options')}
+							>
+								<NavMenu hide={hidden} />
+							</div>
 						</div>
 					</div>
 				</nav>

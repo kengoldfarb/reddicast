@@ -66,8 +66,6 @@ const useFeed = (params?: Params) => {
 			prevPosts: fetchParams.pageParam?.prevPosts ?? {},
 			filters: fetchParams?.queryKey?.[fetchParams?.queryKey?.length - 1]
 		}
-		//console.log("fetchParams?", fetchParams);
-		console.log('feedParms', feedParams)
 
 		let data
 		//short circuiting with initialData here instead of using param in infinite query hook..
@@ -238,6 +236,11 @@ const useFeed = (params?: Params) => {
 					prevPosts: lastPage?.prevPosts ?? {}
 				}
 			}
+
+			if (lastPage.filtered.length === 0) {
+				return undefined
+			}
+
 			return {
 				after:
 					lastPage?.filtered && lastPage.filtered.length > 0

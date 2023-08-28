@@ -6,7 +6,7 @@ import {
 } from '../src/MainContext'
 import { GalleryInfo, ImageInfo, MediaInfo, VideoInfo } from '../types'
 
-const DOMAIN = 'www.troddit.com'
+const DOMAIN = 'reddica.st'
 export const secondsToTime = (
 	seconds,
 	verbiage = [

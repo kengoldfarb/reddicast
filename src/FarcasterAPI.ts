@@ -11,29 +11,161 @@ import type { IGetCastsResponse } from './pages/api/farcaster/casts'
 // let url = "https://www.reddit.com" + subUrl + "/" + sortType + "/.json?" + sortUrl + "&" + limitUrl + afterUrl + countUrl;
 // chain://eip155:1/erc721:0xa45662638e9f3bbb7a6fecb4b17853b7ba0f3a60
 
-export const castToPost = (cast: Record<string, any>) => {
-	let score = 0
-	cast.reactions.forEach(r => {
-		switch (r.reactionType) {
-			case 1:
-				score += 1
-				break
+export const channels: {
+	[key: string]: {
+		chainId: number
+		tokenType: string
+		domain: string
+		highlight?: string
+		domainLink?: string
+	}
+} = {
+	'0xa45662638e9f3bbb7a6fecb4b17853b7ba0f3a60': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Purple',
+		highlight: '#8A63D2',
+		domainLink:
+			'https://nouns.build/dao/ethereum/0xa45662638e9f3bbb7a6fecb4b17853b7ba0f3a60'
+	},
+	'0xc18f6a34019f5ba0fc5bc8cb6fe52e898d6bbbee': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Books ($BKS)'
+	},
+	'0xec0ba367a6edf483a252c3b093f012b9b1da8b3f': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Food ($FOOD)'
+	},
+	'0xc4934dbb7a71f76e4068cd04fade20ad6c0023dd': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Screens ($SCREENS)'
+	},
+	'0xfd8427165df67df6d7fd689ae67c8ebf56d9ca61': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Memes ($MEME)'
+	},
+	'0xdf3abf79aedcc085e9a41a569964e9fb53f33728': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Podcasts ($POD)'
+	},
+	'0xee442da02f2cdcbc0140162490a068c1da94b929': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Fitness ($FIT)'
+	},
+	'0x8cb43a65b27461b61d6c8989e6f9d88e5426833d': {
+		chainId: 7777777,
+		tokenType: 'erc721',
+		domain: 'Dogs'
+	},
+	'0x7abfe142031532e1ad0e46f971cc0ef7cf4b98b0': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Soccer ($SOCCER)'
+	},
+	'0x1538c5ddbb073638b7cd1ae41ec2d9f9a4c24a7e': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Art ($ART)'
+	},
+	'0x05acde54e82e7e38ec12c5b5b4b1fd1c8d32658d': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Electronic ($ELECTRONIC)'
+	},
+	'0xca21d4228cdcc68d4e23807e5e370c07577dd152': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Zorbs (ZORB)'
+	},
+	'0x038adac316a87c29c3acc8641e1d8320bb0144c2': {
+		chainId: 7777777,
+		tokenType: 'erc721',
+		domain: 'Cats'
+	},
+	'0x427b8efee2d6453bb1c59849f164c867e4b2b376': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'BEB (BEB)'
+	},
+	'0x37fb80ef28008704288087831464058a4a3940ae': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'EVM ($EVM)'
+	},
+	'0x7ea3dff0fcd9a203f594c7474f7c6bd098af0427': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Event Pass ($EVENT)'
+	},
+	'0xc7e230ce8d67b2ad116208c69d616dd6bfc96a8d': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'UnlonelyNFCsV2 (LNLY)'
+	},
+	'0x7dd4e31f1530ac682c8ea4d8016e95773e08d8b0': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Dev ($FCDEV)'
+	},
+	'0xfdd5e7949bd72c95907c46a630d2c791f0e842c6': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'NY ($NY)'
+	},
+	'0x8f0055447ffae257e9025b781643127ca604baaa': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Welcome'
+	},
+	'0x5fcd7a54fdf08c8dbcb969bc1f021ae87affafa8': {
+		chainId: 8453,
+		tokenType: 'erc721',
+		domain: 'Gigs'
+	},
+	'0xec30bb189781bbd87478f625d19d9deeeb771964': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'ZK'
+	},
+	'0x36ef4ed7a949ee87d5d2983f634ae87e304a9ea2': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Photography'
+	},
+	'0x4f86113fc3e9783cf3ec9a552cbb566716a57628': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'Warpcast'
+	},
+	'0x5747eef366fd36684e8893bf4fe628efc2ac2d10': {
+		chainId: 1,
+		tokenType: 'erc721',
+		domain: 'AI'
+	}
+}
 
-			case 2:
-				score += 10
-				break
-
-			default:
-				break
+export const getDomainInfo = (url?: string) => {
+	if (!url || typeof url !== 'string') {
+		return {
+			domain: '',
+			domainLink: '',
+			chain: '',
+			highlight: ''
 		}
-	})
+	}
 
-	const matches = cast.parentUrl
-		? cast.parentUrl.match(/chain:\/\/eip155:(\d+)\/erc\d+:([0-9a-fx]+)/)
-		: null
+	const matches = url
+		.toLowerCase()
+		.match(/chain:\/\/eip155:(\d+)\/erc\d+:([0-9a-fx]+)/)
 
-	let domain = cast.parentUrl
-	let domainLink = cast.parentUrl
+	let domain = url
+	let domainLink = url
 	let chain = null
 
 	let highlight = null
@@ -55,94 +187,47 @@ export const castToPost = (cast: Record<string, any>) => {
 				break
 
 			default:
-				domainLink = `/r/${encodeURIComponent(cast.parentUrl).toLowerCase()}`
+				domainLink = `/r/${encodeURIComponent(url).toLowerCase()}`
 				break
 		}
 	}
 
-	switch (domain.toLowerCase()) {
-		case '0xa45662638e9f3bbb7a6fecb4b17853b7ba0f3a60':
-			domain = 'Purple'
-			highlight = '#8A63D2'
-			domainLink =
-				'https://nouns.build/dao/ethereum/0xa45662638e9f3bbb7a6fecb4b17853b7ba0f3a60'
-			break
-
-		case '0xc18f6a34019f5ba0fc5bc8cb6fe52e898d6bbbee':
-			domain = 'Books ($BKS)'
-			break
-
-		case '0xec0ba367a6edf483a252c3b093f012b9b1da8b3f':
-			domain = 'Food ($FOOD)'
-			break
-
-		case '0xc4934dbb7a71f76e4068cd04fade20ad6c0023dd':
-			domain = 'Screens ($SCREENS)'
-			break
-
-		case '0xfd8427165df67df6d7fd689ae67c8ebf56d9ca61':
-			domain = 'Memes ($MEME)'
-			break
-
-		case '0xdf3abf79aedcc085e9a41a569964e9fb53f33728':
-			domain = 'Podcasts ($POD)'
-			break
-
-		case '0xee442da02f2cdcbc0140162490a068c1da94b929':
-			domain = 'Fitness ($FIT)'
-			break
-
-		case '0x8cb43a65b27461b61d6c8989e6f9d88e5426833d':
-			domain = 'Dogs'
-			break
-
-		case '0x7abfe142031532e1ad0e46f971cc0ef7cf4b98b0':
-			domain = 'Soccer ($SOCCER)'
-			break
-
-		case '0x1538c5ddbb073638b7cd1ae41ec2d9f9a4c24a7e':
-			domain = 'Art ($ART)'
-			break
-
-		case '0x05acde54e82e7e38ec12c5b5b4b1fd1c8d32658d':
-			domain = 'Electronic ($ELECTRONIC)'
-			break
-
-		case '0xca21d4228cdcc68d4e23807e5e370c07577dd152':
-			domain = 'Zorbs (ZORB)'
-			break
-
-		case '0x038adac316a87c29c3acc8641e1d8320bb0144c2':
-			domain = 'Cats'
-			break
-
-		case '0x427b8efee2d6453bb1c59849f164c867e4b2b376':
-			domain = 'BEB (BEB)'
-			break
-
-		case '0x37fb80ef28008704288087831464058a4a3940ae':
-			domain = 'EVM ($EVM)'
-			break
-
-		case '0x7ea3dff0fcd9a203f594c7474f7c6bd098af0427':
-			domain = 'Event Pass ($EVENT)'
-			break
-
-		case '0xc7e230ce8d67b2ad116208c69d616dd6bfc96a8d':
-			domain = 'UnlonelyNFCsV2 (LNLY)'
-			break
-
-		case '0x7dd4e31f1530ac682c8ea4d8016e95773e08d8b0':
-			domain = 'Dev ($FCDEV)'
-			break
-
-		case '0xfdd5e7949bd72c95907c46a630d2c791f0e842c6':
-			domain = 'NY ($NY)'
-			break
-
-		default:
-			break
+	if (domain && typeof domain === 'string' && domain.length > 0) {
+		const d = domain.toLowerCase()
+		if (channels[d]) {
+			domain = channels[d].domain
+			highlight = channels[d].highlight
+			domainLink = channels[d].domainLink
+		}
 	}
+
+	return {
+		url,
+		domain,
+		domainLink,
+		chain,
+		highlight
+	}
+}
+
+export const castToPost = (cast?: Record<string, any>) => {
+	let score = 0
+	cast?.reactions.forEach(r => {
+		switch (r.reactionType) {
+			case 1:
+				score += 1
+				break
+
+			case 2:
+				score += 10
+				break
+
+			default:
+				break
+		}
+	})
+
+	const { domain, domainLink, highlight } = getDomainInfo(cast?.parentUrl)
 
 	const post = {
 		kind: 't3',
@@ -622,19 +707,22 @@ export const loadSubredditInfo = async (query, _loaduser = false) => {
 			//   if (res?.data?.children?.[i]?.data?.display_name?.toUpperCase() === query.toUpperCase()) return res?.data?.children?.[i]?.data
 			// }
 
-			const { body } = await request
-				.get(`${process.env.NEXT_PUBLIC_HOST}/api/farcaster/topic`)
-				.query({
-					parentUrl: query
-				})
+			// const { body } = await request
+			// 	.get(`${process.env.NEXT_PUBLIC_HOST}/api/farcaster/topic`)
+			// 	.query({
+			// 		parentUrl: query
+			// 	})
 
 			// console.log(body)
+
+			const { domain, chain, domainLink, highlight } = getDomainInfo(query)
 
 			return {
 				kind: 't5',
 				data: {
-					title: query,
-					display_name: query,
+					title: domain,
+					display_name: domain,
+					link: domainLink,
 					description_html: query,
 					description: query,
 					header_title: query

@@ -100,8 +100,6 @@ const Thread = ({
 	const { sub } = useSubreddit(post?.subreddit)
 	const { signer } = useUser()
 
-	console.log({ initialData })
-
 	const [postComments, setPostComments] = useState<any[]>([])
 	const [commentsReady, setCommentsReady] = useState(false)
 	const [origCommentCount, setOrigCommentCount] = useState<number>()
@@ -153,7 +151,7 @@ const Thread = ({
 
 	useEffect(() => {
 		const getMediaInfo = async post => {
-			const domain = window?.location?.hostname ?? 'www.troddit.com'
+			const domain = window?.location?.hostname ?? 'reddica.st'
 			const mInfo = await findMediaInfo(post, false, domain)
 			setMediaInfo(mInfo)
 		}
@@ -337,8 +335,6 @@ const Thread = ({
 		[]
 	)
 
-	console.log({ data: thread.data, post })
-
 	if (thread.isError) {
 		toast.custom(
 			_t => (
@@ -505,9 +501,12 @@ const Thread = ({
 													</a>
 												</Link>
 												{post?.subreddit && (
-													<Link legacyBehavior href={`/r/${post?.subreddit}`}>
+													<Link
+														legacyBehavior
+														href={`/r/${encodeURIComponent(post?.subreddit)}`}
+													>
 														<a
-															title={`go to r/${post?.subreddit}`}
+															title={`go to r/${post?.subreddit_display_name}`}
 															className="mr-1 -translate-y-0.5"
 															onClick={e => {
 																e.stopPropagation()
@@ -515,7 +514,7 @@ const Thread = ({
 														>
 															on{' '}
 															<span className="font-semibold hover:underline">
-																r/{post?.subreddit ?? 'unknown'}
+																r/{post?.subreddit_display_name ?? 'unknown'}
 															</span>
 														</a>
 													</Link>
@@ -759,7 +758,7 @@ const Thread = ({
 														aria-label="share"
 														onClick={async e => {
 															e.preventDefault()
-															const shareLink = `https://www.troddit.com/${
+															const shareLink = `https://reddica.st/${
 																post?.permalink?.split('/')?.[4]
 															}`
 															const shareData = {

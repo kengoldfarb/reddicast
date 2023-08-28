@@ -25,7 +25,7 @@ function MyApp({ Component, pageProps }) {
 	const _plausible = usePlausible()
 	useEffect(() => {
 		const curVersion = VERSION
-		const prevVersion = localStorage.getItem('trodditVersion')
+		const prevVersion = localStorage.getItem('reddicastVersion')
 		if (prevVersion) {
 			const compare = checkVersion(curVersion, prevVersion)
 			if (compare === 1) {
@@ -41,7 +41,7 @@ function MyApp({ Component, pageProps }) {
 				)
 			}
 		}
-		localStorage.setItem('trodditVersion', curVersion)
+		localStorage.setItem('reddicastVersion', curVersion)
 	}, [])
 	useEffect(() => {
 		log.setOptions({
@@ -50,7 +50,7 @@ function MyApp({ Component, pageProps }) {
 	}, [])
 	return (
 		<>
-			<Script defer data-domain={'troddit.com'} src="/js/script.js" />
+			<Script defer data-domain={'reddica.st'} src="/js/script.js" />
 
 			<Head>
 				<meta
@@ -86,7 +86,7 @@ function MyApp({ Component, pageProps }) {
 										<Component {...pageProps} />
 										<Toaster position="bottom-center" />
 										<Analytics />
-										<ReactQueryDevtools initialIsOpen={false} />
+										{/* <ReactQueryDevtools initialIsOpen={false} /> */}
 									</QueryClientProvider>
 								</MyCollectionsProvider>
 							</MySubsProvider>

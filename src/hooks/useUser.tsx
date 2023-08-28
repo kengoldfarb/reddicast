@@ -155,42 +155,42 @@ export const UserProvider: React.FC<ISDKProps> = ({ ...props }: ISDKProps) => {
 		})()
 	}, [])
 
-	useEffect(() => {
-		if (localStorage.getItem('farsign-signer-' + CLIENT_NAME) === null) {
-			;(async () => {
-				if (token.token.length > 0) {
-					// eslint-disable-next-line no-constant-condition
-					while (true) {
-						await new Promise(resolve => setTimeout(resolve, 3000))
+	// useEffect(() => {
+	// 	if (localStorage.getItem('farsign-signer-' + CLIENT_NAME) === null) {
+	// 		;(async () => {
+	// 			if (token.token.length > 0) {
+	// 				// eslint-disable-next-line no-constant-condition
+	// 				while (true) {
+	// 					await new Promise(resolve => setTimeout(resolve, 3000))
 
-						const data = await requestSignerAuthStatus(token.token)
+	// 					const data = await requestSignerAuthStatus(token.token)
 
-						if (data.result && data.result.signerRequest.base64SignedMessage) {
-							localStorage.setItem(
-								'farsign-signer-' + CLIENT_NAME,
-								JSON.stringify(data.result)
-							)
+	// 					if (data.result && data.result.signerRequest.base64SignedMessage) {
+	// 						localStorage.setItem(
+	// 							'farsign-signer-' + CLIENT_NAME,
+	// 							JSON.stringify(data.result)
+	// 						)
 
-							setSigner({
-								signerRequest: data.result.signerRequest,
-								isConnected: true
-							})
-							setIsConnected(true)
-							break
-						}
-					}
-				}
-			})()
-		} else {
-			setSigner({
-				...(JSON.parse(
-					localStorage.getItem('farsign-signer-' + CLIENT_NAME)
-				) as Signer),
-				isConnected: true
-			})
-			setIsConnected(true)
-		}
-	}, [token])
+	// 						setSigner({
+	// 							signerRequest: data.result.signerRequest,
+	// 							isConnected: true
+	// 						})
+	// 						setIsConnected(true)
+	// 						break
+	// 					}
+	// 				}
+	// 			}
+	// 		})()
+	// 	} else {
+	// 		setSigner({
+	// 			...(JSON.parse(
+	// 				localStorage.getItem('farsign-signer-' + CLIENT_NAME)
+	// 			) as Signer),
+	// 			isConnected: true
+	// 		})
+	// 		setIsConnected(true)
+	// 	}
+	// }, [token])
 
 	useEffect(() => {
 		if (isConnected) {

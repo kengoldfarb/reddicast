@@ -1,12 +1,12 @@
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
 import { findMediaInfo } from '../../../lib/utils'
-import { loadPost } from '../../RedditAPI'
 import Feed from '../../components/Feed'
 import LoginModal from '../../components/LoginModal'
 import NavBar from '../../components/NavBar'
 import PostModal from '../../components/PostModal'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import { loadPost } from '../../RedditAPI'
 
 const FrontSortPage = ({ query, metaTags, post }) => {
 	return (
@@ -14,25 +14,40 @@ const FrontSortPage = ({ query, metaTags, post }) => {
 			<Head>
 				<title>
 					{metaTags?.ogTitle
-						? `troddit · ${metaTags?.ogTitle}`
+						? `ReddiCast · ${metaTags?.ogTitle}`
 						: query?.frontsort
-						? `troddit · ${query?.frontsort}`
-						: 'troddit'}
+						? `ReddiCast · ${query?.frontsort}`
+						: 'ReddiCast'}
 				</title>
 				{metaTags?.ogSiteName && (
 					<>
-						<meta property='og:site_name' content={metaTags?.ogSiteName} />
-						{metaTags?.ogDescription && <meta property='og:description' content={metaTags?.ogDescription} />}
-						{metaTags?.ogTitle && <meta property='og:title' content={metaTags?.ogTitle} />}
-						{metaTags?.ogImage && <meta property='og:image' content={metaTags?.ogImage} />}
-						{metaTags?.ogHeight && <meta property='og:image:height' content={metaTags?.ogHeight} />}
-						{metaTags?.ogWidth && <meta property='og:image:width' content={metaTags?.ogWidth} />}
-						{metaTags?.ogType && <meta property='og:type' content={metaTags?.ogType} />}
+						<meta property="og:site_name" content={metaTags?.ogSiteName} />
+						{metaTags?.ogDescription && (
+							<meta
+								property="og:description"
+								content={metaTags?.ogDescription}
+							/>
+						)}
+						{metaTags?.ogTitle && (
+							<meta property="og:title" content={metaTags?.ogTitle} />
+						)}
+						{metaTags?.ogImage && (
+							<meta property="og:image" content={metaTags?.ogImage} />
+						)}
+						{metaTags?.ogHeight && (
+							<meta property="og:image:height" content={metaTags?.ogHeight} />
+						)}
+						{metaTags?.ogWidth && (
+							<meta property="og:image:width" content={metaTags?.ogWidth} />
+						)}
+						{metaTags?.ogType && (
+							<meta property="og:type" content={metaTags?.ogType} />
+						)}
 					</>
 				)}
 			</Head>
 
-			<main className=''>
+			<main className="">
 				{query.frontsort === 'best' ||
 				query.frontsort === 'hot' ||
 				query.frontsort === 'new' ||
@@ -43,7 +58,7 @@ const FrontSortPage = ({ query, metaTags, post }) => {
 					</>
 				) : (
 					<>
-						<div className='mt-10'>
+						<div className="mt-10">
 							<LoginModal />
 							<PostModal
 								permalink={`/${query?.frontsort}`}
@@ -62,10 +77,13 @@ const FrontSortPage = ({ query, metaTags, post }) => {
 	)
 }
 
-FrontSortPage.getInitialProps = async (d) => {
+FrontSortPage.getInitialProps = async d => {
 	const { query, req, res } = d
 	if (req) {
-		res.setHeader('Cache-Control', 'max-age=0, s-maxage=1200, stale-while-revalidate=30')
+		res.setHeader(
+			'Cache-Control',
+			'max-age=0, s-maxage=1200, stale-while-revalidate=30'
+		)
 	}
 	const url = query.frontsort
 	if (
@@ -79,11 +97,17 @@ FrontSortPage.getInitialProps = async (d) => {
 	) {
 		try {
 			const { post } = await loadPost(`/${url}`)
-			const media = await findMediaInfo(post, true, d?.req?.headers.host?.split(':')?.[0])
-			post['mediaInfo'] = media
+			const media = await findMediaInfo(
+				post,
+				true,
+				d?.req?.headers.host?.split(':')?.[0]
+			)
+			post.mediaInfo = media
 			const metaTags = {
-				ogSiteName: 'troddit',
-				ogDescription: `Post on r/${post.subreddit} by u/${post.author} • ${post.score?.toLocaleString(
+				ogSiteName: 'ReddiCast',
+				ogDescription: `Post on r/${post.subreddit} by u/${
+					post.author
+				} • ${post.score?.toLocaleString(
 					'en-US'
 				)} points and ${post.num_comments?.toLocaleString('en-US')} comments`,
 				ogTitle: post.title,
