@@ -18,7 +18,7 @@ const ChangeLogPage = ({ changelog }) => {
 	return (
 		<>
 			<Head>
-				<title>troddit · changelog</title>
+				<title>Changelog | Reddicast</title>
 			</Head>
 			<div className="flex items-center justify-center my-10 ">
 				<div className="flex flex-col max-w-lg gap-10 lg:max-w-2xl">

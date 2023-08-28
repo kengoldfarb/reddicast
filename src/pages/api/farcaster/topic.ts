@@ -18,8 +18,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 		// const db = getDbClient(process.env.DATABASE_URL ?? '')
 
-		console.log({ parentUrl })
-
 		const [info, firstCast] = await Promise.all([
 			db
 				.selectFrom('casts')

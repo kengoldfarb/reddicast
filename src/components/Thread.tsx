@@ -505,9 +505,12 @@ const Thread = ({
 													</a>
 												</Link>
 												{post?.subreddit && (
-													<Link legacyBehavior href={`/r/${post?.subreddit}`}>
+													<Link
+														legacyBehavior
+														href={`/r/${encodeURIComponent(post?.subreddit)}`}
+													>
 														<a
-															title={`go to r/${post?.subreddit}`}
+															title={`go to r/${post?.subreddit_display_name}`}
 															className="mr-1 -translate-y-0.5"
 															onClick={e => {
 																e.stopPropagation()
@@ -515,7 +518,7 @@ const Thread = ({
 														>
 															on{' '}
 															<span className="font-semibold hover:underline">
-																r/{post?.subreddit ?? 'unknown'}
+																r/{post?.subreddit_display_name ?? 'unknown'}
 															</span>
 														</a>
 													</Link>

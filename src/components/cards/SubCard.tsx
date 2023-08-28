@@ -118,12 +118,12 @@ const SubCard = ({
 					}`}
 				>
 					<div
-						className={`z-20 flex-none  border-4 hover:cursor-pointer rounded-full bg-th-post ${
+						className={`z-20 flex-none  border-4 rounded-full bg-th-post ${
 							tall ? ' -mt-2 w-24 h-24 mx-auto md:mx-0' : ' w-16 h-16'
 						}`}
-						onClick={() => {
-							!link && openDescription() //context.setForceRefresh((p) => p + 1);
-						}}
+						// onClick={() => {
+						// 	!link && openDescription() //context.setForceRefresh((p) => p + 1);
+						// }}
 					>
 						{thumbURL?.includes('https') && !hideNSFW ? (
 							<Image
@@ -172,48 +172,35 @@ const SubCard = ({
 								</>
 							) : (
 								<>
-									<Link
-										legacyBehavior
-										href={
-											data?.kind === 't2' || userMode
-												? `/u/${data?.data?.display_name}`
-												: `/r/${encodeURIComponent(
+									<h1
+										className={`font-semibold ${
+											tall ? ` ${data?.kind ? 'mb-[-0.075rem]' : ''} ` : ' '
+										}`}
+										onClick={() => {
+											!link && data?.kind === 't2'
+												? invalidateKey([
+														'feed',
+														session?.data?.user?.name === data?.data?.name
+															? 'SELF'
+															: 'USER',
+														data?.data?.name
+												  ])
+												: invalidateKey([
+														'feed',
+														'SUBREDDIT',
 														data?.data?.display_name
-												  ).toLowerCase()}`
-										}
-										passHref
+												  ]) //context.setForceRefresh((p) => p + 1);
+										}}
 									>
-										<a>
-											<h1
-												className={`font-semibold hover:cursor-pointer hover:underline group-hover:underline${
-													tall ? ` ${data?.kind ? 'mb-[-0.075rem]' : ''} ` : ' '
-												}`}
-												onClick={() => {
-													!link && data?.kind === 't2'
-														? invalidateKey([
-																'feed',
-																session?.data?.user?.name === data?.data?.name
-																	? 'SELF'
-																	: 'USER',
-																data?.data?.name
-														  ])
-														: invalidateKey([
-																'feed',
-																'SUBREDDIT',
-																data?.data?.display_name
-														  ]) //context.setForceRefresh((p) => p + 1);
-												}}
-											>
-												{data?.kind === 't2'
-													? `u/${data?.data?.name}`
-													: data?.data?.display_name ?? (
-															<div className="w-16 text-transparent">
-																{'loading..'}
-															</div>
-													  )}
-											</h1>
-										</a>
-									</Link>
+										{data?.kind === 't2'
+											? `u/${data?.data?.name}`
+											: data?.data?.display_name ?? (
+													<div className="w-16 text-transparent">
+														{'loading..'}
+													</div>
+											  )}
+									</h1>
+
 									{!link && (data?.data?.url || data?.data?.subreddit?.url) && (
 										<a
 											href={`https://www.reddit.com${
@@ -260,7 +247,7 @@ const SubCard = ({
 					</div>
 				</div>
 
-				{!userMode && (
+				{/* {!userMode && (
 					<div
 						className={`flex flex-row   ${
 							tall ? ' md:ml-[6.25rem]  mt-2  md:-mt-3 ' : ' pl-5 ml-[3.25rem]'
@@ -311,7 +298,7 @@ const SubCard = ({
 							)}
 						</div>
 					</div>
-				)}
+				)} */}
 				{tall && (
 					<div
 						className={`z-20 md:hidden flex flex-row mx-auto mt-2 space-x-1  min-w-full justify-between${

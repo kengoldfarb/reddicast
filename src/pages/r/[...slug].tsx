@@ -17,7 +17,8 @@ import {
 	loadSubredditInfo,
 	loadSubreddits,
 	getWikiContent,
-	loadPost
+	loadPost,
+	getDomainInfo
 } from '../../FarcasterAPI'
 import useThread from '../../hooks/useThread'
 const SubredditPage = ({ query, metaTags, post, postData }) => {
@@ -27,7 +28,7 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 	const [commentThread, setCommentThread] = useState(false)
 	const [postThread, setPostThread] = useState(false)
 	const [withCommentContext, setWithCommentContext] = useState(false)
-	console.log({ query, metaTags, post, postData })
+
 	useEffect(() => {
 		const getWiki = async wikiquery => {
 			const data = await getWikiContent(wikiquery)
@@ -63,7 +64,9 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 		}
 	}, [query])
 
-	console.log({ subsArray, wikiMode, postThread })
+	const { domain, domainLink } = getDomainInfo(query.slug[0])
+
+	console.log({ subsArray })
 
 	return (
 		<div
@@ -75,9 +78,7 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 			} overflow-x-hidden overflow-y-auto `}
 		>
 			<Head>
-				<title>
-					{query?.slug?.[0] ? `troddit · ${query?.slug?.[0]}` : 'troddit'}
-				</title>
+				<title>{`${domain} | ReddiCast`}</title>
 				{metaTags?.ogDescription && (
 					<meta name="description" content={metaTags.ogDescription} />
 				)}
@@ -113,7 +114,7 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
 				subsArray?.[0]?.toUpperCase() !== 'POPULAR' &&
 				subsArray?.length > 0 ? (
 					<div className="w-screen ">
-						<SubredditBanner subreddits={subsArray} userMode={false} />
+						<SubredditBanner subreddits={[subsArray]} userMode={false} />
 					</div>
 				) : (
 					<div className="" />
@@ -178,11 +179,15 @@ SubredditPage.getInitialProps = async d => {
 			}
 		}
 		let posts
-		let subInfo
+		const { domain, chain, domainLink, highlight } = getDomainInfo(
+			query.slug?.[0]
+		)
 		// console.log({
 		// 	subreddits,
 		// 	query
 		// })
+
+		console.log({ query, domain, chain, domainLink, highlight })
 		const loadPosts = async () => {
 			const data = await loadSubreddits(
 				session?.user?.name ? true : false,
@@ -196,18 +201,18 @@ SubredditPage.getInitialProps = async d => {
 			)
 			posts = data?.children
 		}
-		const loadSub = async () => {
-			const data = await loadSubredditInfo(subreddits?.split('+')?.[0])
-			subInfo = data
-		}
-		await Promise.all([loadPosts(), loadSub()])
+		// const loadSub = async () => {
+		// 	const data = await loadSubredditInfo(subreddits?.split('+')?.[0])
+		// 	subInfo = data
+		// }
+		await Promise.all([loadPosts()])
 		const metaTags = {
-			ogSiteName: 'troddit',
-			ogDescription: `r/${subInfo?.display_name}: ${subInfo?.public_description}`,
-			ogImage: subInfo?.icon_img ?? subInfo?.header_img,
-			ogTitle: `${subInfo?.display_name ?? subreddits} on troddit`,
-			ogHeight: subInfo?.icon_size?.[0],
-			ogWidth: subInfo?.icon_size?.[1]
+			ogSiteName: 'ReddiCast',
+			ogDescription: `r/${domainLink}`,
+			// ogImage: '',
+			ogTitle: `${domain ?? subreddits} | ReddiCast`
+			// ogHeight: '',
+			// ogWidth: '',
 		}
 		if (!session?.user?.name) {
 			res.setHeader(
@@ -215,6 +220,8 @@ SubredditPage.getInitialProps = async d => {
 				'max-age=0, s-maxage=1200, stale-while-revalidate=30'
 			)
 		}
+
+		console.log({ metaTags })
 
 		return {
 			query,

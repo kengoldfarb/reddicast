@@ -2,6 +2,7 @@ import Link from 'next/link'
 import router, { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
+import { getDomainInfo } from '../FarcasterAPI'
 import { useUser } from '../hooks/useUser'
 import { useSubsContext } from '../MySubs'
 import SubCard from './cards/SubCard'
@@ -197,7 +198,11 @@ const SubredditBanner = ({
 		}
 	}, [myMultis, myLocalMultis])
 
-	console.log({ subreddits, subArray })
+	console.log({ subreddits, subArray, currSubInfo })
+
+	const { domain, domainLink } = getDomainInfo(subreddits?.[0])
+
+	console.log({ domain, domainLink })
 
 	return (
 		<div
@@ -234,7 +239,14 @@ const SubredditBanner = ({
 					data={currSubInfo}
 					link={false}
 					tall={true}
-					subInfo={currSubData}
+					subInfo={{
+						...currSubData,
+						data: {
+							...currSubData,
+							display_name: domain,
+							title: domain
+						}
+					}}
 					currMulti={currMulti}
 					subArray={subArray}
 					openDescription={toggleOpenDescription}

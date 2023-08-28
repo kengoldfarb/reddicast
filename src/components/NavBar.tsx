@@ -133,6 +133,12 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 						}}
 					/>
 					<div className="flex flex-row items-center justify-start h-full mr-2 space-x-2">
+						<img
+							src="/android-chrome-192x192.png"
+							height={35}
+							width={35}
+							className="ml-6"
+						/>
 						<Link href="/" passHref>
 							<h1
 								className="ml-2 text-2xl align-middle cursor-pointer select-none"

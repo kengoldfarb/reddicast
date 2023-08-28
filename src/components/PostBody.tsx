@@ -1,15 +1,19 @@
-import useParseBodyHTML from '../hooks/useParseBodyHTML'
-import ParseBodyHTML from './ParseBodyHTML'
 import { useTheme } from 'next-themes'
 import React, { useEffect, useRef, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { BsChevronCompactDown } from 'react-icons/bs'
+import useParseBodyHTML from '../hooks/useParseBodyHTML'
+import ParseBodyHTML from './ParseBodyHTML'
 
 const scrollStyle =
 	' scrollbar-thin scrollbar-thumb-th-scrollbar scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-track-rounded-full '
 
 const ErrorFallBack = () => {
-	return <div className='text-sm text-th-red'>{'<troddit encountered an issue rendering this text>'}</div>
+	return (
+		<div className="text-sm text-th-red">
+			{'<ReddiCast encountered an issue rendering this text>'}
+		</div>
+	)
 }
 
 const PostBody = ({
@@ -30,7 +34,9 @@ const PostBody = ({
 	const component = useParseBodyHTML({ rawHTML, newTabLinks })
 	const { theme, resolvedTheme } = useTheme()
 	const ref = useRef<HTMLDivElement>(null)
-	const [heightLimited, setHeightLimited] = useState(() => !!limitHeight ?? false)
+	const [heightLimited, setHeightLimited] = useState(
+		() => !!limitHeight ?? false
+	)
 	useEffect(() => {
 		setHeightLimited(!!limitHeight)
 	}, [limitHeight])
@@ -39,7 +45,9 @@ const PostBody = ({
 	useEffect(() => {
 		const cRef = ref.current
 		const checkIsTextHidden = () => {
-			if ((ref?.current?.scrollHeight ?? 0) > (ref.current?.clientHeight ?? 0)) {
+			if (
+				(ref?.current?.scrollHeight ?? 0) > (ref.current?.clientHeight ?? 0)
+			) {
 				setHiddenText(true)
 			} else {
 				setHiddenText(false)
@@ -62,8 +70,8 @@ const PostBody = ({
 			<ErrorBoundary FallbackComponent={ErrorFallBack}>
 				<div
 					ref={ref}
-					id='innerhtml'
-					onClick={(_e) => {
+					id="innerhtml"
+					onClick={_e => {
 						// if (post) {
 						//   e.stopPropagation();
 						// }
@@ -78,10 +86,20 @@ const PostBody = ({
 							: mode === 'post'
 							? ' w-full p-4 '
 							: ''
-					}${hideText && mode !== 'post' ? ' overflow-hidden ' : ` overflow-auto ${scrollStyle} pr-4 `}`}
+					}${
+						hideText && mode !== 'post'
+							? ' overflow-hidden '
+							: ` overflow-auto ${scrollStyle} pr-4 `
+					}`}
 					style={{
 						wordBreak: 'break-word',
-						maxHeight: `${limitHeight ? (mode === 'post' && !hideText ? '' : `${limitHeight}px`) : ''}`
+						maxHeight: `${
+							limitHeight
+								? mode === 'post' && !hideText
+									? ''
+									: `${limitHeight}px`
+								: ''
+						}`
 					}}
 				>
 					{hiddenText && heightLimited && hideText && mode !== 'post' && (
@@ -92,14 +110,14 @@ const PostBody = ({
 								}
 							/>
 							<button
-								className='absolute flex items-center justify-center w-full h-10 -translate-x-1/2 bottom-2 left-1/2 group'
-								onClick={(e) => {
+								className="absolute flex items-center justify-center w-full h-10 -translate-x-1/2 bottom-2 left-1/2 group"
+								onClick={e => {
 									e.preventDefault()
 									e.stopPropagation()
-									setHideText((h) => !h)
+									setHideText(h => !h)
 								}}
 							>
-								<BsChevronCompactDown className='flex-none w-8 h-8 stroke-white group-hover:translate-y-0.5 ease-in-out transition-transform' />
+								<BsChevronCompactDown className="flex-none w-8 h-8 stroke-white group-hover:translate-y-0.5 ease-in-out transition-transform" />
 							</button>
 						</>
 					)}
