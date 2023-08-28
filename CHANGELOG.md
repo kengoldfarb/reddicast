@@ -1,3 +1,16 @@
+# [1.2.0](https://github.com/kengoldfarb/reddicast/compare/v1.1.0...v1.2.0) (2023-08-28)
+
+
+### Bug Fixes
+
+* comment out calls to warpcast auth; increase api size payload; extra data integrity checks ([7d76de2](https://github.com/kengoldfarb/reddicast/commit/7d76de2))
+
+
+### Features
+
+* add github icon/link ([9173c59](https://github.com/kengoldfarb/reddicast/commit/9173c59))
+* show popular channels in dropdown; add favicon; hide broken ui elements ([667f61a](https://github.com/kengoldfarb/reddicast/commit/667f61a))
+
 # [1.1.0](https://github.com/kengoldfarb/reddicast/compare/v1.0.3...v1.1.0) (2023-08-25)
 
 
