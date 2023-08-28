@@ -355,16 +355,16 @@ const Card1 = ({
 											: ' items-center '
 									}`}
 								>
-									<Link
+									{/* <Link
 										href={post?.permalink}
 										onClick={e => e.preventDefault()}
-									>
-										<PostTitle
-											post={post}
-											read={read && context.dimRead}
-											newPost={newPost}
-										/>
-									</Link>
+									> */}
+									<PostTitle
+										post={post}
+										read={read && context.dimRead}
+										newPost={newPost}
+									/>
+									{/* </Link> */}
 									<span className="text-sm ">
 										<TitleFlair post={post} />
 									</span>

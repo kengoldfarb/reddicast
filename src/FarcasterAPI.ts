@@ -60,88 +60,90 @@ export const castToPost = (cast: Record<string, any>) => {
 		}
 	}
 
-	switch (domain.toLowerCase()) {
-		case '0xa45662638e9f3bbb7a6fecb4b17853b7ba0f3a60':
-			domain = 'Purple'
-			highlight = '#8A63D2'
-			domainLink =
-				'https://nouns.build/dao/ethereum/0xa45662638e9f3bbb7a6fecb4b17853b7ba0f3a60'
-			break
+	if (domain && domain.length > 0) {
+		switch (domain.toLowerCase()) {
+			case '0xa45662638e9f3bbb7a6fecb4b17853b7ba0f3a60':
+				domain = 'Purple'
+				highlight = '#8A63D2'
+				domainLink =
+					'https://nouns.build/dao/ethereum/0xa45662638e9f3bbb7a6fecb4b17853b7ba0f3a60'
+				break
 
-		case '0xc18f6a34019f5ba0fc5bc8cb6fe52e898d6bbbee':
-			domain = 'Books ($BKS)'
-			break
+			case '0xc18f6a34019f5ba0fc5bc8cb6fe52e898d6bbbee':
+				domain = 'Books ($BKS)'
+				break
 
-		case '0xec0ba367a6edf483a252c3b093f012b9b1da8b3f':
-			domain = 'Food ($FOOD)'
-			break
+			case '0xec0ba367a6edf483a252c3b093f012b9b1da8b3f':
+				domain = 'Food ($FOOD)'
+				break
 
-		case '0xc4934dbb7a71f76e4068cd04fade20ad6c0023dd':
-			domain = 'Screens ($SCREENS)'
-			break
+			case '0xc4934dbb7a71f76e4068cd04fade20ad6c0023dd':
+				domain = 'Screens ($SCREENS)'
+				break
 
-		case '0xfd8427165df67df6d7fd689ae67c8ebf56d9ca61':
-			domain = 'Memes ($MEME)'
-			break
+			case '0xfd8427165df67df6d7fd689ae67c8ebf56d9ca61':
+				domain = 'Memes ($MEME)'
+				break
 
-		case '0xdf3abf79aedcc085e9a41a569964e9fb53f33728':
-			domain = 'Podcasts ($POD)'
-			break
+			case '0xdf3abf79aedcc085e9a41a569964e9fb53f33728':
+				domain = 'Podcasts ($POD)'
+				break
 
-		case '0xee442da02f2cdcbc0140162490a068c1da94b929':
-			domain = 'Fitness ($FIT)'
-			break
+			case '0xee442da02f2cdcbc0140162490a068c1da94b929':
+				domain = 'Fitness ($FIT)'
+				break
 
-		case '0x8cb43a65b27461b61d6c8989e6f9d88e5426833d':
-			domain = 'Dogs'
-			break
+			case '0x8cb43a65b27461b61d6c8989e6f9d88e5426833d':
+				domain = 'Dogs'
+				break
 
-		case '0x7abfe142031532e1ad0e46f971cc0ef7cf4b98b0':
-			domain = 'Soccer ($SOCCER)'
-			break
+			case '0x7abfe142031532e1ad0e46f971cc0ef7cf4b98b0':
+				domain = 'Soccer ($SOCCER)'
+				break
 
-		case '0x1538c5ddbb073638b7cd1ae41ec2d9f9a4c24a7e':
-			domain = 'Art ($ART)'
-			break
+			case '0x1538c5ddbb073638b7cd1ae41ec2d9f9a4c24a7e':
+				domain = 'Art ($ART)'
+				break
 
-		case '0x05acde54e82e7e38ec12c5b5b4b1fd1c8d32658d':
-			domain = 'Electronic ($ELECTRONIC)'
-			break
+			case '0x05acde54e82e7e38ec12c5b5b4b1fd1c8d32658d':
+				domain = 'Electronic ($ELECTRONIC)'
+				break
 
-		case '0xca21d4228cdcc68d4e23807e5e370c07577dd152':
-			domain = 'Zorbs (ZORB)'
-			break
+			case '0xca21d4228cdcc68d4e23807e5e370c07577dd152':
+				domain = 'Zorbs (ZORB)'
+				break
 
-		case '0x038adac316a87c29c3acc8641e1d8320bb0144c2':
-			domain = 'Cats'
-			break
+			case '0x038adac316a87c29c3acc8641e1d8320bb0144c2':
+				domain = 'Cats'
+				break
 
-		case '0x427b8efee2d6453bb1c59849f164c867e4b2b376':
-			domain = 'BEB (BEB)'
-			break
+			case '0x427b8efee2d6453bb1c59849f164c867e4b2b376':
+				domain = 'BEB (BEB)'
+				break
 
-		case '0x37fb80ef28008704288087831464058a4a3940ae':
-			domain = 'EVM ($EVM)'
-			break
+			case '0x37fb80ef28008704288087831464058a4a3940ae':
+				domain = 'EVM ($EVM)'
+				break
 
-		case '0x7ea3dff0fcd9a203f594c7474f7c6bd098af0427':
-			domain = 'Event Pass ($EVENT)'
-			break
+			case '0x7ea3dff0fcd9a203f594c7474f7c6bd098af0427':
+				domain = 'Event Pass ($EVENT)'
+				break
 
-		case '0xc7e230ce8d67b2ad116208c69d616dd6bfc96a8d':
-			domain = 'UnlonelyNFCsV2 (LNLY)'
-			break
+			case '0xc7e230ce8d67b2ad116208c69d616dd6bfc96a8d':
+				domain = 'UnlonelyNFCsV2 (LNLY)'
+				break
 
-		case '0x7dd4e31f1530ac682c8ea4d8016e95773e08d8b0':
-			domain = 'Dev ($FCDEV)'
-			break
+			case '0x7dd4e31f1530ac682c8ea4d8016e95773e08d8b0':
+				domain = 'Dev ($FCDEV)'
+				break
 
-		case '0xfdd5e7949bd72c95907c46a630d2c791f0e842c6':
-			domain = 'NY ($NY)'
-			break
+			case '0xfdd5e7949bd72c95907c46a630d2c791f0e842c6':
+				domain = 'NY ($NY)'
+				break
 
-		default:
-			break
+			default:
+				break
+		}
 	}
 
 	const post = {
