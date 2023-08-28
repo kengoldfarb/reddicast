@@ -59,6 +59,22 @@ function MyApp({ Component, pageProps }) {
 				/>
 				<link rel="shortcut icon" href="/favicon.ico" />
 			</Head>
+			{process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+				<>
+					<Script
+						src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
+					/>
+					<Script id="google-analytics">
+						{`
+					window.dataLayer = window.dataLayer || [];
+					function gtag(){dataLayer.push(arguments);}
+					gtag('js', new Date());
+
+					gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}');
+				`}
+					</Script>
+				</>
+			)}
 			<UserProvider>
 				<SessionProvider session={pageProps.session}>
 					<ThemeProvider defaultTheme="system">

@@ -125,7 +125,7 @@ const Media = ({
 	])
 
 	useEffect(() => {
-		const DOMAIN = window?.location?.hostname ?? 'www.troddit.com'
+		const DOMAIN = window?.location?.hostname ?? 'reddica.st'
 		const shouldLoad = () => {
 			if (!post) return false
 			if (!post.url) return false
@@ -154,16 +154,25 @@ const Media = ({
 			if (post.mediaInfo.isIframe && !uniformMediaMode) {
 				c = await findIframe()
 			}
-			if (!b) {
-				a = await findImage()
-				if (
-					a &&
-					!context.preferEmbeds &&
-					context.autoPlayMode &&
-					fullMediaMode
-				) {
-					setAllowIFrame(false)
-				}
+			// if (!b) {
+			// 	a = await findImage()
+			// 	if (
+			// 		a &&
+			// 		!context.preferEmbeds &&
+			// 		context.autoPlayMode &&
+			// 		fullMediaMode
+			// 	) {
+			// 		setAllowIFrame(false)
+			// 	}
+			// }
+			console.log('SETTING IMAGE INFO', { post })
+
+			if (!b && post?.embeds && post?.embeds.length > 0) {
+				setImageInfo({
+					src: post.embeds[0],
+					height: 100,
+					width: 100
+				})
 			}
 
 			a || b || c || post?.selftext_html || (post.domain && post.domain_link)
@@ -612,6 +621,9 @@ const Media = ({
 								src={imageInfo.src}
 								height={imageInfo.height}
 								width={imageInfo.width}
+								onError={e => {
+									console.log('IMAGE ERROR', { e, imageInfo })
+								}}
 								alt={post?.title}
 								layout={
 									fill

@@ -44,8 +44,6 @@ const requestSignerAuthStatus = async (token: string) => {
 			token
 		})
 
-	console.log({ body: result.body })
-
 	return result.body
 }
 

@@ -105,8 +105,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			castsPromise = castsPromise.where('casts.parentUrl', 'is not', null)
 		}
 
-		console.log({ after, mode })
-
 		if (mode === 'submitted') {
 			castsPromise = castsPromise.where('casts.parentHash', 'is', null)
 		} else if (mode === 'comments') {
@@ -118,10 +116,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			castsPromise = castsPromise.where('casts.timestamp', '<', a)
 		}
 
-		castsPromise = castsPromise
-			// .where('casts.id', '=', 549206)
-			.orderBy('casts.timestamp', 'desc')
-			.limit(25)
+		castsPromise = castsPromise.orderBy('casts.timestamp', 'desc').limit(25)
 
 		const casts = await castsPromise.execute()
 
@@ -132,42 +127,63 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		let fids: number[] = []
 		let parentHashes: Uint8Array[] = []
 		const castHashes: Uint8Array[] = []
+		let mentionFIDs: number[] = []
 		casts.forEach(c => {
 			castHashes.push(Uint8Array.from(Buffer.from(c.hash, 'hex')))
 			if (c.parentHash) {
 				parentHashes.push(c.parentHash)
 			}
 			fids.push(c.fid)
+
+			if (c.mentions) {
+				mentionFIDs.push(...c.mentions)
+			}
 		})
 		fids = uniq(fids)
+		mentionFIDs = uniq(mentionFIDs)
 		parentHashes = uniq(parentHashes)
 
-		// console.log({ fids, parentHashes, castHashes })
-
-		const [userData, replies, reactions] = await Promise.all([
-			db.selectFrom('userData').selectAll().where('fid', 'in', fids).execute(),
-			db
-				.selectFrom('casts')
-				.selectAll()
-				.select([sql<string>`ENCODE(hash::bytea, 'hex')`.as('hash')])
-				.select([
-					sql<string>`ENCODE(parent_hash::bytea, 'hex')`.as('parentHash')
-				])
-				.where('parentHash', 'in', castHashes)
-				.orderBy('casts.timestamp', 'desc')
-				.execute(),
-			db
-				.selectFrom('reactions')
-				.selectAll()
-				.select([
-					sql<string>`ENCODE(target_hash::bytea, 'hex')`.as('targetHash')
-				])
-				.select([sql<string>`ENCODE(hash::bytea, 'hex')`.as('hash')])
-				.where('targetHash', 'in', castHashes)
-				.execute()
-		])
+		const [userData, replies, reactions, mentionedUsersData] =
+			await Promise.all([
+				fids.length > 0
+					? db
+							.selectFrom('userData')
+							.selectAll()
+							.where('fid', 'in', fids)
+							.execute()
+					: Promise.resolve(null),
+				db
+					.selectFrom('casts')
+					.selectAll()
+					.select([sql<string>`ENCODE(hash::bytea, 'hex')`.as('hash')])
+					.select([
+						sql<string>`ENCODE(parent_hash::bytea, 'hex')`.as('parentHash')
+					])
+					.where('parentHash', 'in', castHashes)
+					.orderBy('casts.timestamp', 'desc')
+					.execute(),
+				db
+					.selectFrom('reactions')
+					.selectAll()
+					.select([
+						sql<string>`ENCODE(target_hash::bytea, 'hex')`.as('targetHash')
+					])
+					.select([sql<string>`ENCODE(hash::bytea, 'hex')`.as('hash')])
+					.where('targetHash', 'in', castHashes)
+					.execute(),
+				mentionFIDs.length > 0
+					? db
+							.selectFrom('userData')
+							.selectAll()
+							.where('fid', 'in', mentionFIDs)
+							.execute()
+					: Promise.resolve([])
+			])
 		// console.log({ userData, replies, reactions })
 		const users: {
+			[fid: number]: IUserData
+		} = {}
+		const mentionedUsers: {
 			[fid: number]: IUserData
 		} = {}
 
@@ -198,10 +214,41 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			}
 		})
 
+		mentionedUsersData.forEach(ud => {
+			if (!mentionedUsers[ud.fid]) {
+				mentionedUsers[ud.fid] = {}
+			}
+			switch (ud.type) {
+				case UserDataType.PFP:
+					mentionedUsers[ud.fid].pfp = ud.value
+					break
+
+				case UserDataType.DISPLAY:
+					mentionedUsers[ud.fid].displayName = ud.value
+					break
+
+				case UserDataType.BIO:
+					mentionedUsers[ud.fid].bio = ud.value
+					break
+
+				case UserDataType.URL:
+					mentionedUsers[ud.fid].url = ud.value
+					break
+
+				case UserDataType.FNAME:
+					mentionedUsers[ud.fid].fname = ud.value
+					break
+			}
+		})
+
 		casts.forEach(c => {
 			c.user = users[c.fid]
 			c.reactions = reactions.filter(r => r.targetHash === c.hash)
 			c.replies = replies.filter(r => r.parentHash === c.hash)
+			c.mentionedUsers = []
+			c.mentions.forEach(m => {
+				c.mentionedUsers.push(mentionedUsers[m])
+			})
 			// c.hash = new TextDecoder().decode(...c.hash)
 		})
 

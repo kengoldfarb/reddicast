@@ -184,23 +184,23 @@ const NavBar = ({ toggleSideNav = 0 }) => {
 						>
 							<AiOutlineSearch className="flex-none w-6 h-6" />
 						</button>
-						<div className="w-20 h-full">
+						{/* <div className="w-20 h-full">
 							<SortMenu hide={hidden} />
-						</div>
-						<div
+						</div> */}
+						{/* <div
 							className="flex flex-row items-center w-10 h-full mr-2 "
 							onClick={() => plausible('filters')}
 						>
 							<FilterMenu hide={hidden} />
-						</div>
-						<div
+						</div> */}
+						{/* <div
 							className={
 								'hidden w-20 h-full border  hover:border-th-border border-transparent rounded-md md:block'
 							}
 							//onClick={() => plausible("login")}
 						>
 							<LoginProfile />
-						</div>
+						</div> */}
 
 						<div
 							className="flex flex-row items-center w-10 h-full mr-2 "
