@@ -35,7 +35,7 @@ const useLocation = (_params?) => {
 	})
 
 	useEffect(() => {
-		const domain = window?.location?.hostname ?? 'www.troddit.com'
+		const domain = window?.location?.hostname ?? 'reddica.st'
 		setDomain(domain)
 	}, [])
 

@@ -95,7 +95,7 @@ const useFeedPosts = ({
 		const posts = feed?.data?.pages?.flatMap((page) => page.filtered) as any[]
 		if (posts?.length > 0) {
 			let isBlocked = false
-			if (!checked && !blocked && domain === 'www.troddit.com') {
+			if (!checked && !blocked && domain === 'reddica.st') {
 				isBlocked = check(posts)
 			}
 			if (!isBlocked && !blocked) {

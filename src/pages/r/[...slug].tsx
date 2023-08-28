@@ -235,7 +235,7 @@ SubredditPage.getInitialProps = async d => {
 						: d?.req?.headers?.host
 				)
 				const metaTags = {
-					ogSiteName: 'troddit',
+					ogSiteName: 'ReddiCast',
 					ogDescription: `Post on r/${post.subreddit} by u/${
 						post.author
 					} • ${post.score?.toLocaleString(
