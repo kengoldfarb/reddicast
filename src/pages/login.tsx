@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 
-import packageInfo from '../../package.json'
 import Head from 'next/head'
 import Link from 'next/link'
 import React, { useEffect } from 'react'
 import { AiOutlineGithub } from 'react-icons/ai'
+import packageInfo from '../../package.json'
 const _VERSION = packageInfo.version
 const _link = 'text-th-link hover:underline hover:text-th-linkHover '
 import Login from '../components/Login'
@@ -39,13 +39,11 @@ const LoginPage = ({ changelog }) => {
 	// }, [token])
 
 	return (
-		<div className='h-screen mx-4 -mt-16'>
+		<div className="h-screen mx-4 -mt-16">
 			<Head>
 				<title>Login</title>
 			</Head>
-			<NoSSR>
-				<Login />
-			</NoSSR>
+			<Login />
 		</div>
 	)
 }

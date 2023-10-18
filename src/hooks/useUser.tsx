@@ -1,5 +1,15 @@
-import { NobleEd25519Signer } from '@farcaster/hub-web'
-import { generateKeyPair, sendPublicKey } from '@farsign/utils'
+import {
+	makeCastAdd,
+	getHubRpcClient,
+	FarcasterNetwork,
+	NobleEd25519Signer
+} from '@farcaster/hub-web'
+import {
+	useCheckSigner,
+	useToken,
+	useSigner,
+	useEncryptedSigner
+} from '@farsign/hooks'
 import { ethers } from 'ethers'
 import React, {
 	createContext,
@@ -81,79 +91,89 @@ export interface ISDKProps {
 const CLIENT_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? 'reddicast'
 
 export const UserProvider: React.FC<ISDKProps> = ({ ...props }: ISDKProps) => {
-	const [isConnected, setIsConnected] = useState(false)
+	const [isConnected, setIsConnected] = useCheckSigner(CLIENT_NAME)
+	// const [token] = useToken(CLIENT_NAME)
+	// const [signer] = useSigner(CLIENT_NAME, token)
+	// const [encryptedSigner] = useEncryptedSigner(CLIENT_NAME, token)
+	// const [isConnected, setIsConnected] = useState(false)
 	const [user, setUser] = useState<IUser | null>(null)
 
-	const [signer, setSigner] = useState<Signer>({
-		signerRequest: {
-			token: '',
-			publicKey: '',
-			timestamp: 0,
-			name: '',
-			fid: 0,
-			messageHash: '',
-			base64SignedMessage: ''
-		},
-		isConnected: false
-	})
+	// const [signer, setSigner] = useState<Signer>({
+	// 	signerRequest: {
+	// 		token: '',
+	// 		publicKey: '',
+	// 		timestamp: 0,
+	// 		name: '',
+	// 		fid: 0,
+	// 		messageHash: '',
+	// 		base64SignedMessage: ''
+	// 	},
+	// 	isConnected: false
+	// })
 
-	const [token, setToken] = useState<Token>({
-		token: '',
-		deepLink: ''
-	})
+	// const [token, setToken] = useState<Token>({
+	// 	token: '',
+	// 	deepLink: ''
+	// })
 
-	const [encryptedSigner, setEncryptedSigner] = useState<NobleEd25519Signer>()
+	// const [encryptedSigner, setEncryptedSigner] = useState<NobleEd25519Signer>()
 
-	useEffect(() => {
-		const go = async () => {
-			if (signer && signer.signerRequest.fid > 0) {
-				const u = await getUser(signer.signerRequest.fid)
-				setUser(u)
-			} else {
-				setUser(null)
-			}
-		}
+	// useEffect(() => {
+	// 	const go = async () => {
+	// 		if (signer && signer.signerRequest.fid > 0) {
+	// 			const u = await getUser(signer.signerRequest.fid)
+	// 			setUser(u)
+	// 		} else {
+	// 			setUser(null)
+	// 		}
+	// 	}
 
-		go()
-	}, [signer])
+	// 	go()
+	// }, [signer])
 
-	useEffect(() => {
-		if (token.token.length > 0) {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			const privateKey = localStorage.getItem(
-				'farsign-privateKey-' + CLIENT_NAME
-			)!
+	// useEffect(() => {
+	// 	if (signer.isConnected === true) {
+	// 		setIsConnected(true)
+	// 	}
+	// }, [signer])
 
-			const privateKeyEncoded = Uint8Array.from(
-				privateKey.split(',').map(split => Number(split))
-			)
-			setEncryptedSigner(new NobleEd25519Signer(privateKeyEncoded))
-		}
-	}, [token])
+	// useEffect(() => {
+	// 	if (token.token.length > 0) {
+	// 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	// 		const privateKey = localStorage.getItem(
+	// 			'farsign-privateKey-' + CLIENT_NAME
+	// 		)!
 
-	useEffect(() => {
-		;(async () => {
-			if (localStorage.getItem('farsign-signer-' + CLIENT_NAME) != null) {
-				setToken({
-					token: 'already connected',
-					deepLink: 'already connected'
-				})
-			} else {
-				const { publicKey, privateKey } = await generateKeyPair()
-				const { token: t, deepLinkUrl } = await sendPublicKey(
-					publicKey,
-					CLIENT_NAME
-				)
+	// 		const privateKeyEncoded = Uint8Array.from(
+	// 			privateKey.split(',').map(split => Number(split))
+	// 		)
+	// 		setEncryptedSigner(new NobleEd25519Signer(privateKeyEncoded))
+	// 	}
+	// }, [token])
 
-				localStorage.setItem(
-					'farsign-privateKey-' + CLIENT_NAME,
-					privateKey.toString()
-				)
+	// useEffect(() => {
+	// 	;(async () => {
+	// 		if (localStorage.getItem('farsign-signer-' + CLIENT_NAME) != null) {
+	// 			setToken({
+	// 				token: 'already connected',
+	// 				deepLink: 'already connected'
+	// 			})
+	// 		} else {
+	// 			const { publicKey, privateKey } = await generateKeyPair()
+	// 			const { token: t, deepLinkUrl } = await sendPublicKey(
+	// 				publicKey,
+	// 				CLIENT_NAME
+	// 			)
 
-				setToken({ token: t, deepLink: deepLinkUrl })
-			}
-		})()
-	}, [])
+	// 			localStorage.setItem(
+	// 				'farsign-privateKey-' + CLIENT_NAME,
+	// 				privateKey.toString()
+	// 			)
+
+	// 			setToken({ token: t, deepLink: deepLinkUrl })
+	// 		}
+	// 	})()
+	// }, [])
 
 	// useEffect(() => {
 	// 	if (localStorage.getItem('farsign-signer-' + CLIENT_NAME) === null) {
@@ -200,13 +220,15 @@ export const UserProvider: React.FC<ISDKProps> = ({ ...props }: ISDKProps) => {
 
 	const value = useMemo(
 		() => ({
-			token,
-			signer,
-			encryptedSigner,
+			// token,
+			// signer,
+			// encryptedSigner,
 			isConnected,
 			user
 		}),
-		[token, signer, encryptedSigner, isConnected, user]
+		[
+			// token, signer, encryptedSigner,
+			isConnected, user]
 	)
 
 	return <UserContext.Provider value={value} {...props} />

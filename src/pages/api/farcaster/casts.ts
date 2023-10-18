@@ -34,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 				.selectFrom('userData')
 				.select(['fid'])
 				.where('value', '=', fname)
-				.where('type', '=', UserDataType.FNAME)
+				.where('type', '=', UserDataType.USERNAME)
 				.execute()
 
 			if (!ud || !ud[0]) {
@@ -208,7 +208,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 					users[ud.fid].url = ud.value
 					break
 
-				case UserDataType.FNAME:
+				case UserDataType.USERNAME:
 					users[ud.fid].fname = ud.value
 					break
 			}
@@ -235,7 +235,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 					mentionedUsers[ud.fid].url = ud.value
 					break
 
-				case UserDataType.FNAME:
+				case UserDataType.USERNAME:
 					mentionedUsers[ud.fid].fname = ud.value
 					break
 			}
