@@ -6,10 +6,14 @@
 version: '3.9'
 
 services:
-  app:
+  reddicast:
     build: .
     ports:
       - '3000:3000'
     volumes:
       - ./.env:/app/.env
-
+    networks:
+      - petra_net
+networks:
+  petra_net:
+    external: true
